@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "321253756082",
+    "project_id": "watchfuleyes-c2a9d",
+    "storage_bucket": "watchfuleyes-c2a9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321253756082:android:5aa51edcfa0d845e788dab",
+        "android_client_info": {
+          "package_name": "com.example.watchfuleyes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDex47P0QzSiSZyTW9IJgp-bKxlXnqdLEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
