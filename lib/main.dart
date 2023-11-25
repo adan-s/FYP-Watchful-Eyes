@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'user-panel.dart';
+import 'package:fyp/screens/user-panel.dart';
 
 void main() {
   runApp(const MyApp());

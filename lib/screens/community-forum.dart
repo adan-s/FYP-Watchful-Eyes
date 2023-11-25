@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fyp/post-new-item.dart';
-import 'package:fyp/safety-directory.dart';
-import 'package:fyp/user-panel.dart';
+import 'package:fyp/screens/post-new-item.dart';
+import 'package:fyp/screens/safety-directory.dart';
+import 'package:fyp/screens/user-panel.dart';
+import 'package:fyp/screens/user-profile.dart';
+
 import 'map.dart';
-import 'user-profile.dart';
 
 class CommunityFormPage extends StatelessWidget {
   const CommunityFormPage({Key? key}) : super(key: key);

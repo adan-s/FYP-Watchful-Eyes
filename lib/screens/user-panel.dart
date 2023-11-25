@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fyp/safety-directory.dart';
-import 'map.dart';
+import 'package:fyp/screens/safety-directory.dart';
 import 'community-forum.dart';
+import 'map.dart';
 import 'user-profile.dart';
 
 class UserPanel extends StatelessWidget {

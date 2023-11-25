@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fyp/safety-directory.dart';
+import 'package:fyp/screens/community-forum.dart';
+import 'package:fyp/screens/safety-directory.dart';
+import 'package:fyp/screens/user-panel.dart';
+import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'community-forum.dart';
-import 'user-panel.dart';
-import 'user-profile.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
