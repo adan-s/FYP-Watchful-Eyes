@@ -15,3 +15,4 @@ class SafetyDirectory extends StatelessWidget {
     );
   }
 }
+

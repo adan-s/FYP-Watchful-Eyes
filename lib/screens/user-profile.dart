@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/user-panel.dart';
 import 'package:image_picker/image_picker.dart';
-import 'community-forum.dart';
+
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);

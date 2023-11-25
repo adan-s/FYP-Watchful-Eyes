@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'community-forum.dart';
 import 'map.dart';
@@ -324,6 +325,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
+        _buildNavBarItem("Crime Registeration", Icons.report, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
+          );
+        }),
         _buildIconButton(
           icon: Icons.person,
           onPressed: () {
@@ -355,6 +362,37 @@ class ResponsiveAppBarActions extends StatelessWidget {
     );
   }
 }
+class ResponsiveRow extends StatelessWidget {
+  final List<Widget> children;
+
+  ResponsiveRow({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (MediaQuery.of(context).size.width > 600)
+          ...children.map((child) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: child,
+          )),
+        if (MediaQuery.of(context).size.width <= 600)
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return children
+                  .map((child) => PopupMenuItem(
+                child: child,
+              ))
+                  .toList();
+            },
+            icon: Icon(Icons.more_vert, color: Colors.white),
+            color: Colors.black,
+          ),
+      ],
+    );
+  }
+}
+
 Widget _buildBenefitItem(String title, String iconName) {
   return Expanded(
     child: Column(
@@ -427,33 +465,4 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
 
 
 
-class ResponsiveRow extends StatelessWidget {
-  final List<Widget> children;
 
-  ResponsiveRow({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (MediaQuery.of(context).size.width > 600)
-          ...children.map((child) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: child,
-          )),
-        if (MediaQuery.of(context).size.width <= 600)
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return children
-                  .map((child) => PopupMenuItem(
-                child: child,
-              ))
-                  .toList();
-            },
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            color: Colors.black,
-          ),
-      ],
-    );
-  }
-}
