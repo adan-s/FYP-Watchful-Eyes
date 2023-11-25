@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
     authDomain: 'watchfuleyes-c2a9d.firebaseapp.com',
+    databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
     measurementId: 'G-8F4BLRK2W6',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:321253756082:android:5aa51edcfa0d845e788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
+    databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:321253756082:ios:dcf4347adc7df4f9788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
+    databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
     iosBundleId: 'com.example.watchfuleyes',
   );
@@ -75,6 +78,7 @@ class DefaultFirebaseOptions {
     appId: '1:321253756082:ios:d27d7785aa3413af788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
+    databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
     iosBundleId: 'com.example.watchfuleyes.RunnerTests',
   );
