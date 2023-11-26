@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
  class CrimeRegistrationForm extends StatefulWidget {
+  const CrimeRegistrationForm({super.key});
+
   @override
   _CrimeRegistrationFormState createState() => _CrimeRegistrationFormState();
 }

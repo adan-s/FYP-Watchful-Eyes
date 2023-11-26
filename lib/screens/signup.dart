@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import '../authentication/controllers/signup_controller.dart';
 import '../authentication/models/user_model.dart';
 
-
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
 
@@ -32,13 +31,15 @@ class _SignupState extends State<Signup> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.person),
+        prefixIcon: Icon(Icons.person, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "User-Name",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
 
     final firstNameField = TextFormField(
@@ -52,13 +53,15 @@ class _SignupState extends State<Signup> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.account_circle),
+        prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
 
     final lastNameField = TextFormField(
@@ -72,13 +75,15 @@ class _SignupState extends State<Signup> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.account_circle),
+        prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
 
     final emailField = TextFormField(
@@ -92,13 +97,15 @@ class _SignupState extends State<Signup> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.mail),
+        prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
 
     final contactNoField = TextFormField(
@@ -115,18 +122,19 @@ class _SignupState extends State<Signup> {
         if (value == null || value.isEmpty || value.length != 11) {
           return 'Incorrect Contact number ';
         }
-        return null; // Return null if the input is valid
+        return null;
       },
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.phone),
+        prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Contact No e.g (03215722553)",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
-
 
     final dobField = TextFormField(
       autofocus: false,
@@ -150,54 +158,16 @@ class _SignupState extends State<Signup> {
         return null;
       },
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.calendar_today),
+        prefixIcon: Icon(Icons.calendar_today, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Date of Birth",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      style: TextStyle(color: Colors.white),
     );
-
-
-    /*final cnicField = TextFormField(
-        autofocus: false,
-        controller: controller.cnic,
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(13),
-    CnicFormatter(), // Custom formatter for CNIC
-    ],
-    onSaved: (value) {
-    if (value != null) {
-    controller.cnic.text = value;
-    }
-    },
-    validator: (value) {
-    if (value == null || value.isEmpty) {
-    return 'CNIC is required';
-    }
-
-    final RegExp cnicRegExp = RegExp(r'^\d{5}-\d{7}-\d{1}$');
-    if (!cnicRegExp.hasMatch(value)) {
-    return 'Enter a valid CNIC format (e.g., 12345-1234567-0)';
-    }
-
-    return null;
-
-      },
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.credit_card),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "CNIC",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );*/
-
 
     final passwordField = TextFormField(
       autofocus: false,
@@ -208,11 +178,12 @@ class _SignupState extends State<Signup> {
         }
       },
       textInputAction: TextInputAction.next,
-      obscureText: true, // This makes the input hidden for passwords
+      obscureText: true,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.key),
+        prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Password",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -225,8 +196,8 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
+      style: TextStyle(color: Colors.white),
     );
-
 
     final confirmPasswordField = TextFormField(
       autofocus: false,
@@ -237,11 +208,12 @@ class _SignupState extends State<Signup> {
         }
       },
       textInputAction: TextInputAction.done,
-      obscureText: true, // This makes the input hidden for passwords
+      obscureText: true,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.key),
+        prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Confirm Password",
+        hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -254,88 +226,134 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
+      style: TextStyle(color: Colors.white),
     );
 
-
-    final signupButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(30),
+    final signupButton = Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF000104),
+            Color(0xFF18293F),
+            Color(0xFF141E2C),
+            Color(0xFF18293F),
+            Color(0xFF000104),
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(30),
+      ),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             Signupcontroller.instance.RegisterUser(
               controller.email.text.trim(),
               controller.password.text.trim(),
-              
             );
-            final user=usermodel(
-                username: controller.username.text.trim(),
-                firstName:controller.firstName.text.trim(),
-                lastName: controller.lastName.text.trim(),
-                email: controller.email.text.trim(),
-                contactNo: controller.contactNo.text.trim(),
-                dob: controller.dob.text.trim(),
-                cnic: controller.cnic.text.trim(),
-                gender: controller.gender.text.trim(),
-                password: controller.password.text.trim(),
-                confirmPassword: controller.confirmPassword.text.trim());
+            final user = usermodel(
+              username: controller.username.text.trim(),
+              firstName: controller.firstName.text.trim(),
+              lastName: controller.lastName.text.trim(),
+              email: controller.email.text.trim(),
+              contactNo: controller.contactNo.text.trim(),
+              dob: controller.dob.text.trim(),
+              cnic: controller.cnic.text.trim(),
+              gender: controller.gender.text.trim(),
+              password: controller.password.text.trim(),
+              confirmPassword: controller.confirmPassword.text.trim(),
+            );
             Signupcontroller.instance.createUser(user);
           }
         },
-        child: Text(
-          "Sign-Up",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.person_add, color: Colors.white),
+            SizedBox(width: 10),
+            Text(
+              "Sign-Up",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            color: Colors.white,
+            color: Colors.black,
             child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 200,
-                      child: Image.asset("assets/images.png", fit: BoxFit.contain),
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8, // 80% of the screen width
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF000104),
+                        Color(0xFF18293F),
+                        Color(0xFF141E2C),
+                        Color(0xFF18293F),
+                        Color(0xFF000104),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    SizedBox(height: 45),
-                    usernameField,
-                    SizedBox(height: 20),
-                    firstNameField,
-                    SizedBox(height: 20),
-                    lastNameField,
-                    SizedBox(height: 20),
-                    emailField,
-                    SizedBox(height: 20),
-                    contactNoField,
-                    SizedBox(height: 20),
-                    dobField,
-                    /*SizedBox(height: 20),
-                    cnicField,*/
-                    SizedBox(height: 20),
-                    passwordField,
-                    SizedBox(height: 20),
-                    confirmPasswordField,
-                    SizedBox(height: 25),
-                    signupButton,
-                    SizedBox(height: 20),
-                  ],
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 300,
+                            child: Image.asset(
+                              "logo.png",
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          usernameField,
+                          SizedBox(height: 20),
+                          firstNameField,
+                          SizedBox(height: 20),
+                          lastNameField,
+                          SizedBox(height: 20),
+                          emailField,
+                          SizedBox(height: 20),
+                          contactNoField,
+                          SizedBox(height: 20),
+                          dobField,
+                          SizedBox(height: 20),
+                          passwordField,
+                          SizedBox(height: 20),
+                          confirmPasswordField,
+                          SizedBox(height: 25),
+                          signupButton,
+                          SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -345,28 +363,3 @@ class _SignupState extends State<Signup> {
     );
   }
 }
-
-/*class CnicFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
-    final text = newValue.text;
-
-    if (text.length <= 5) {
-      // Format the first five digits with no hyphen
-      return newValue.copyWith(text: text);
-    } else if (text.length <= 12) {
-      // Format the next seven digits with a hyphen after the fifth digit
-      return newValue.copyWith(
-        text: '${text.substring(0, 5)}-${text.substring(5)}',
-      );
-    } else {
-      // Format the last digit with a hyphen after the twelfth digit
-      return newValue.copyWith(
-        text: '${text.substring(0, 12)}-${text.substring(12)}',
-      );
-    }
-  }
-}*/

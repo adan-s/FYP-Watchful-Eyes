@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fyp/user-panel.dart';
-import 'package:fyp/user-profile.dart';
-import 'community-forum.dart';
-import 'map.dart';
+import 'package:fyp/screens/community-forum.dart';
+import 'package:fyp/screens/map.dart';
+import 'package:fyp/screens/user-panel.dart';
+import 'package:fyp/screens/user-profile.dart';
+
 
 class SafetyDirectory extends StatefulWidget {
   const SafetyDirectory({Key? key}) : super(key: key);
