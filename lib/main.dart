@@ -1,6 +1,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'firebase_options.dart';
 void main() async {
