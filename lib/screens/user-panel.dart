@@ -278,9 +278,10 @@ class UserPanel extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildBenefitItem('Enhanced Community Safety', '/public-safety.png'),
-                        _buildBenefitItem('Innovative Crime Reporting System', 'record.png'),
-                        _buildBenefitItem("Dedicated Resources for Women's Safety", 'safe.png'),
+                        _buildBenefitItem('Enhanced Community Safety', 'assets/public-safety.png'),
+                        _buildBenefitItem('Innovative Crime Reporting System', 'assets/record.png'),
+                        _buildBenefitItem("Dedicated Resources for Women's Safety", 'assets/safe.png'),
+
                       ],
                     ),
                   ],

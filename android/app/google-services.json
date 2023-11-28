@@ -8,6 +8,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:321253756082:android:685c64fe972ec26c788dab",
+        "android_client_info": {
+          "package_name": "com.example.fyp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDex47P0QzSiSZyTW9IJgp-bKxlXnqdLEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:321253756082:android:5aa51edcfa0d845e788dab",
         "android_client_info": {
           "package_name": "com.example.watchfuleyes"

@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/signup.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import '../authentication/controllers/login_controller.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -100,14 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () async {
-                                  // Close the bottom sheet
+
                                   Navigator.pop(context);
 
-                                  // Show dialog or navigate to a screen to input email
-                                  // and initiate the password reset via email
-                                  // Use FirebaseAuth for password reset
                                   String? email =
-                                      await forgetpasswordd(context);
+                                  await forgetpasswordd(context);
                                   if (email != null) {
                                     try {
                                       await FirebaseAuth.instance
@@ -136,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
@@ -175,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Contact No",
@@ -242,6 +240,9 @@ class _LoginScreenState extends State<LoginScreen> {
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           // Handle login logic using the LoginController
+          controller.setOnLoginSuccess(() {
+            Get.offAll(() => AdminDashboard());
+          });
           controller.login();
 
           // Clear text fields after clicking on login
@@ -271,37 +272,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final errorText = Obx(() => Text(
-          controller.errorMessage.value,
-          style: TextStyle(color: Colors.red),
-        ));
+      controller.errorMessage.value,
+      style: TextStyle(color: Colors.red),
+    ));
 
     return Scaffold(
       body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: LinearGradient(
-        //     colors: [
-        //       Color(0xFF000104),
-        //       Color(0xFF0E121B),
-        //       Color(0xFF141E2C),
-        //       Color(0xFF18293F),
-        //       Color(0xFF193552),
-        //     ],
-        //     begin: Alignment.topCenter,
-        //     end: Alignment.bottomCenter,
-        //   ),
-        // ),
-        color:Colors.black,
+        color: Colors.black,
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal:
-                    screenWidth > 600 ? screenWidth * 0.2 : screenWidth * 0.02,
+                screenWidth > 600 ? screenWidth * 0.2 : screenWidth * 0.02,
               ),
               child: Card(
                 elevation: 10,
                 color: Colors.transparent,
-                // Set the card background color to transparent
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
@@ -331,7 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 300,
                             child: Image.asset(
-                              "logo.png",
+                              ('assets/logo.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -342,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: 35),
                           loginButton,
                           SizedBox(height: 15),
-                          errorText, // Display error message
+                          errorText,
                           SizedBox(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -403,9 +390,7 @@ Future<String?> forgetpasswordd(BuildContext context) async {
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email, color: Colors.black),
-                // Add email icon
                 hintText: "Enter  Email",
-                // Add a placeholder
                 hintStyle: TextStyle(color: Colors.black),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),

@@ -16,7 +16,8 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
 
   Future<void> _pickImage() async {
     final XFile? pickedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery);
+      source: ImageSource.gallery,
+    );
     if (pickedImage != null) {
       setState(() {
         _selectedImages.add(pickedImage);
@@ -28,8 +29,14 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post a New Item'),
+        title: const Text(
+          'Post a New Item',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent, // Make app bar transparent
+        elevation: 0, // Remove app bar shadow
+        iconTheme: IconThemeData(color: Colors.white), // Set back button color
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
