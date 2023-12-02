@@ -98,7 +98,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
         _buildNavBarItem("Community Forum", Icons.group, () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CommunityFormPage()),
+            MaterialPageRoute(builder: (context) => const CommunityForumPage()),
           );
         }),
         _buildNavBarItem("Map", Icons.map, () {

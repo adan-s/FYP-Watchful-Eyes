@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../authentication/controllers/post_controller.dart';
+import '../authentication/models/post_model.dart';
+
 class PostNewItemPage extends StatefulWidget {
   const PostNewItemPage({Key? key}) : super(key: key);
 
@@ -16,11 +19,68 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
 
   Future<void> _pickImage() async {
     final XFile? pickedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery);
+      source: ImageSource.gallery,
+    );
     if (pickedImage != null) {
       setState(() {
         _selectedImages.add(pickedImage);
       });
+    }
+  }
+
+  Future<void> _submitPost() async {
+    if (_descriptionController.text.isNotEmpty) {
+      // Create a PostModel instance
+      PostModel newPost = PostModel(
+        id: DateTime.now().toString(), // You may use a unique identifier
+        username: 'User123', // Replace with actual user data
+        description: _descriptionController.text,
+        imageUrl: _selectedImages.isNotEmpty
+            ? _selectedImages[0].path
+            : '', // Assuming only one image is selected
+      );
+
+      // Submit the post request using the controller
+      await PostController().submitPostRequest(newPost);
+
+      // Show a confirmation message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Post Submitted'),
+            content: const Text('Your post has been submitted successfully!'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pop(context); // Go back to the previous screen
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Show an error message if the description is empty
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('Please enter a description for your post.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -70,11 +130,7 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               _buildDescriptionInput(),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  // Add functionality to post the item
-                  // You can access the selected images using _selectedImages
-                  // and the description using _descriptionController.text
-                },
+                onPressed: _submitPost,
                 child: const Text('Post Item'),
               ),
             ],
