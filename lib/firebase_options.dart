@@ -56,7 +56,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDex47P0QzSiSZyTW9IJgp-bKxlXnqdLEk',
-    appId: '1:321253756082:android:5aa51edcfa0d845e788dab',
+    appId: '1:321253756082:android:685c64fe972ec26c788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
     databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
@@ -65,21 +65,21 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBoqE8UMt0Posl06A4yZvCMI9uD_6SuZV8',
-    appId: '1:321253756082:ios:dcf4347adc7df4f9788dab',
+    appId: '1:321253756082:ios:c248b2bfd9519d0e788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
     databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
-    iosBundleId: 'com.example.watchfuleyes',
+    iosBundleId: 'com.example.fyp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBoqE8UMt0Posl06A4yZvCMI9uD_6SuZV8',
-    appId: '1:321253756082:ios:d27d7785aa3413af788dab',
+    appId: '1:321253756082:ios:b8a069d1d37f18f1788dab',
     messagingSenderId: '321253756082',
     projectId: 'watchfuleyes-c2a9d',
     databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
     storageBucket: 'watchfuleyes-c2a9d.appspot.com',
-    iosBundleId: 'com.example.watchfuleyes.RunnerTests',
+    iosBundleId: 'com.example.fyp.RunnerTests',
   );
 }

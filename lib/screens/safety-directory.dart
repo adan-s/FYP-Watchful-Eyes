@@ -37,7 +37,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
             ),
           ),
           title: const Text(
-            'Community Forum',
+            'Safety Directory',
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
