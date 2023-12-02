@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:fyp/screens/user-panel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
@@ -13,80 +11,72 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  // Dummy data
-  int numberOfCrimesRegistered = 5;
-  int numberOfPostsShared = 10;
-  String username = 'John Doe';
-  String profileImageUrl = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+  late User? _user;
+  Map<String, dynamic> _userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _user = FirebaseAuth.instance.currentUser;
+    if (_user != null) {
+      _fetchUserData();
+    }
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userData =
+      await FirebaseFirestore.instance.collection('Users').doc(_user?.uid).get();
+
+      if (userData.exists) {
+        setState(() {
+          _userData = userData.data()!;
+        });
+      } else {
+        print('User data not found');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
-              ],
-            ),
-          ),
-        ),
-        title: const Text(
-          'User Profile',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        actions: [
-          ResponsiveAppBarActions(),
-        ],
+        title: const Text('User Profile'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(profileImageUrl),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  username,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Crimes Registered: $numberOfCrimesRegistered',
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Posts Shared: $numberOfPostsShared',
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                ),
-                const SizedBox(height: 32),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: NetworkImage(_userData['profileImageUrl'] ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _userData['username'] ?? 'UserName',
+
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Email: ${_user?.email ?? 'No email'}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Crimes Registered: ${_userData['numberOfCrimesRegistered'] ?? 'N/A'}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Posts Shared: ${_userData['numberOfPostsShared'] ?? 'N/A'}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 _showEditProfileDialog(context);
@@ -99,7 +89,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF000104)],
+                    colors: [
+                      Color(0xFF000104),
+                      Color(0xFF0E121B),
+                      Color(0xFF141E2C),
+                      Color(0xFF18293F),
+                      Color(0xFF000104),
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -119,10 +115,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   ],
                 ),
               ),
-          ),
-              ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -178,11 +172,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                // Add logic to update the name
                 String newName = nameController.text;
-                // Update the user's name and close the dialog
                 setState(() {
-                  username = newName;
+                  _userData['username'] = newName;
                 });
                 Navigator.of(context).pop();
               },
@@ -205,44 +197,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
     XFile? imageFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (imageFile != null) {
-      // Add logic to update the profile image
-      // You can upload the image to a server or use it locally
       setState(() {
-        profileImageUrl = imageFile.path;
+        _userData['profileImageUrl'] = imageFile.path;
       });
     }
 
     Navigator.of(context).pop();
-  }
-}
-
-class ResponsiveRow extends StatelessWidget {
-  final List<Widget> children;
-
-  ResponsiveRow({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (MediaQuery.of(context).size.width > 600)
-          ...children.map((child) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: child,
-          )),
-        if (MediaQuery.of(context).size.width <= 600)
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return children
-                  .map((child) => PopupMenuItem(
-                child: child,
-              ))
-                  .toList();
-            },
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            color: Colors.black,
-          ),
-      ],
-    );
   }
 }

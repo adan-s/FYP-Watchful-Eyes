@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/signup.dart';
+import 'package:fyp/screens/user-profile.dart';
 import 'package:get/get.dart';
 import '../authentication/controllers/login_controller.dart';
 
@@ -15,6 +17,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final LoginController controller = LoginController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> fetchAndNavigateToUserProfile() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: controller.email.text.trim(),
+        password: controller.password.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        // You can fetch user data here if needed
+        // For example, fetch data from a database using the user's UID
+
+        // Now navigate to the user profile page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserProfilePage(),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Login error: $e');
+      // Handle login errors here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: 10),
         GestureDetector(
           onTap: () async {
-            // Show the password recovery options
             await showModalBottomSheet(
               context: context,
               shape: RoundedRectangleBorder(
@@ -77,11 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
               builder: (context) => Material(
                 color: Colors.transparent,
                 child: Container(
-                  width: 400, // Take full width
+                  width: 400,
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
-                    // Add white border
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
@@ -90,9 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         "Select One!",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline6, // Adjust the font size
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                       const SizedBox(height: 20.0),
                       Expanded(
@@ -101,22 +125,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () async {
-
                                   Navigator.pop(context);
-
-                                  String? email =
-                                  await forgetpasswordd(context);
+                                  String? email = await forgetPassword(context);
                                   if (email != null) {
                                     try {
                                       await FirebaseAuth.instance
                                           .sendPasswordResetEmail(
                                         email: email,
                                       );
-                                      print(
-                                          "Password reset email sent to $email");
+                                      print("Password reset email sent to $email");
                                     } catch (e) {
-                                      print(
-                                          "Error sending password reset email: $e");
+                                      print("Error sending password reset email: $e");
                                     }
                                   }
                                 },
@@ -133,8 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           size: 40.0, color: Colors.black),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
@@ -172,8 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           size: 40.0, color: Colors.black),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Contact No",
@@ -239,13 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
-          // Handle login logic using the LoginController
-          controller.setOnLoginSuccess(() {
-            Get.offAll(() => AdminDashboard());
+          controller.setOnLoginSuccess(() async {
+           // await fetchAndNavigateToDashboard();
           });
           controller.login();
-
-          // Clear text fields after clicking on login
           controller.email.clear();
           controller.password.clear();
         },
@@ -318,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 300,
                             child: Image.asset(
-                              ('assets/logo.png'),
+                              'assets/logo.png',
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -342,11 +356,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  // Navigate to the signup screen
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Signup()),
+                                    MaterialPageRoute(builder: (context) => Signup()),
                                   );
                                 },
                                 child: Text(
@@ -372,50 +384,50 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
 
-Future<String?> forgetpasswordd(BuildContext context) async {
-  TextEditingController emailController = TextEditingController();
+  Future<String?> forgetPassword(BuildContext context) async {
+    TextEditingController emailController = TextEditingController();
 
-  return showDialog<String>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Enter your email"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email, color: Colors.black),
-                hintText: "Enter  Email",
-                hintStyle: TextStyle(color: Colors.black),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Enter your email"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email, color: Colors.black),
+                  hintText: "Enter Email",
+                  hintStyle: TextStyle(color: Colors.black),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: EdgeInsets.all(12),
                 ),
-                contentPadding: EdgeInsets.all(12),
               ),
+              SizedBox(height: 10),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, null);
+              },
+              child: Text('Cancel'),
             ),
-            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, emailController.text.trim());
+              },
+              child: Text('OK'),
+            ),
           ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, null);
-            },
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, emailController.text.trim());
-            },
-            child: Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }

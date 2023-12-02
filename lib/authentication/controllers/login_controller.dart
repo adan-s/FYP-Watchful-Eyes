@@ -36,8 +36,9 @@ class LoginController extends GetxController {
         );
 
         // Check if the user is a regular user (you can replace this condition with your user identification logic)
-        if (userCredential.user?.uid != null && userCredential.user?.uid != 'admin_uid') {
+        if (userCredential.user?.uid != null) {
           // Regular user login successful
+          onLoginSuccess(); // Call the callback
           Get.offAll(() => UserPanel());
           Get.snackbar(
             'Login Successful',
