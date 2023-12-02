@@ -88,7 +88,7 @@ class AdminDashboard extends StatelessWidget {
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CommunityFormPage()),
+              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
             );
           }),
           SizedBox(width: 8), // Add spacing

@@ -1,10 +1,9 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../authentication/controllers/post_controller.dart';
-import '../authentication/models/post_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class PostNewItemPage extends StatefulWidget {
   const PostNewItemPage({Key? key}) : super(key: key);
@@ -16,73 +15,47 @@ class PostNewItemPage extends StatefulWidget {
 class _PostNewItemPageState extends State<PostNewItemPage> {
   List<XFile> _selectedImages = [];
   TextEditingController _descriptionController = TextEditingController();
+  Future<String?> _uploadImage(XFile image) async {
+    String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDireImages = referenceRoot.child('images');
+    Reference referenceImageaToUpload = referenceDireImages.child(fileName);
 
-  Future<void> _pickImage() async {
-    final XFile? pickedImage = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedImage != null) {
-      setState(() {
-        _selectedImages.add(pickedImage);
-      });
+    try {
+      await referenceImageaToUpload.putFile(File(image.path));
+      return await referenceImageaToUpload.getDownloadURL();
+    } catch (error) {
+      print("Error uploading image: $error");
+      return null;
     }
   }
 
-  Future<void> _submitPost() async {
-    if (_descriptionController.text.isNotEmpty) {
-      // Create a PostModel instance
-      PostModel newPost = PostModel(
-        id: DateTime.now().toString(), // You may use a unique identifier
-        username: 'User123', // Replace with actual user data
-        description: _descriptionController.text,
-        imageUrl: _selectedImages.isNotEmpty
-            ? _selectedImages[0].path
-            : '', // Assuming only one image is selected
-      );
+  String imageUrl = '';
 
-      // Submit the post request using the controller
-      await PostController().submitPostRequest(newPost);
 
-      // Show a confirmation message
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Post Submitted'),
-            content: const Text('Your post has been submitted successfully!'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pop(context); // Go back to the previous screen
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // Show an error message if the description is empty
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Please enter a description for your post.'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+  Future<void> _postNewItem() async {
+    String description = _descriptionController.text;
+
+    // Upload the first selected image and get its URL
+    String? imageUrl;
+    if (_selectedImages.isNotEmpty) {
+      imageUrl = await _uploadImage(_selectedImages.first);
     }
+
+    Map<String, dynamic> newItem = {
+      'description': description,
+      'imageUrl': imageUrl,
+    };
+
+    // Add the new item to the 'items' collection in Firestore
+    await FirebaseFirestore.instance.collection('items').add(newItem);
+
+    _descriptionController.clear();
+    setState(() {
+      _selectedImages.clear();
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +66,6 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.transparent, // Make app bar transparent
-        elevation: 0, // Remove app bar shadow
-        iconTheme: IconThemeData(color: Colors.white), // Set back button color
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -136,8 +106,8 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               _buildDescriptionInput(),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _submitPost,
-                child: const Text('Post Item'),
+                onPressed: _postNewItem,
+                child: const Text('Post'),
               ),
             ],
           ),
@@ -159,23 +129,49 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.file(
-                    _selectedImages[index].path as File,
-                    height: 80,
-                    width: 80,
-                    fit: BoxFit.cover,
-                  ),
+                  child: _buildImageWidget(_selectedImages[index].path),
                 );
               },
             ),
           ),
         ElevatedButton(
-          onPressed: _pickImage,
+          onPressed: () async {
+            final XFile? pickedImage = await ImagePicker().pickImage(
+              source: ImageSource.gallery,
+            );
+            if (pickedImage != null) {
+              setState(() {
+                _selectedImages.add(pickedImage);
+              });
+            }
+          },
           child: const Text('Pick Images'),
         ),
       ],
     );
   }
+
+
+  Widget _buildImageWidget(String path) {
+    if (kIsWeb) {
+      // For web, use Image.network directly with the path
+      return Image.network(
+        path,
+        height: 80,
+        width: 80,
+        fit: BoxFit.cover,
+      );
+    } else {
+      // For other platforms, use Image.file
+      return Image.file(
+        File(path),
+        height: 80,
+        width: 80,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
 
   Widget _buildDescriptionInput() {
     return TextField(
