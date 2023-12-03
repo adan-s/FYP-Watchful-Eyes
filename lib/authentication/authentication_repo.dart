@@ -1,11 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../screens/login_screen.dart';
+import '../screens/user-panel.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
 
+  late final Rx<User?> firebaseUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void onInit() {
+    super.onInit();
+    firebaseUser = Rx<User?>(_auth.currentUser);
+    firebaseUser.bindStream(_auth.userChanges());
+
+  }
+
   Future<void> registerUser(String email, String password, String username) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -13,16 +26,13 @@ class AuthenticationRepository extends GetxController {
         password: password,
       );
 
-      // Store additional user data in Firestore
-      await FirebaseFirestore.instance.collection('users').doc(email).set({
+      await FirebaseFirestore.instance.collection('Users').doc(email).set({
         'username': username,
         'email': email,
-        // Add more fields as needed
       });
     } catch (e) {
-      // Handle registration errors
       print('Registration error: $e');
-      rethrow; // Re-throw the exception for handling in the calling code
+      rethrow;
     }
   }
 
@@ -33,10 +43,7 @@ class AuthenticationRepository extends GetxController {
         password: password,
       );
 
-      // Retrieve additional user data from Firestore
-      final userData = await FirebaseFirestore.instance.collection('users').doc(email).get();
-
-      // Use the userData as needed
+      final userData = await FirebaseFirestore.instance.collection('Users').doc(email).get();
 
       return result.user;
     } catch (e) {
