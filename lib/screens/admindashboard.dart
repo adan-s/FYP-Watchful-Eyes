@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp/screens/safety-directory.dart';
-import 'package:fyp/screens/user-panel.dart';
-import 'package:fyp/screens/user-profile.dart';
-
-import 'community-forum.dart';
-import 'crime-registeration-form.dart';
-import 'map.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminDashboard extends StatelessWidget {
   @override
@@ -77,49 +71,30 @@ class AdminDashboard extends StatelessWidget {
           ),
         ),
         actions: [
-          // Add your navigation bar items here
           _buildNavBarItem("Home", Icons.home, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const UserPanel()),
-            );
+            // ... (Navigate to Home page)
           }),
-          SizedBox(width: 8), // Add spacing
+          SizedBox(width: 8),
           _buildNavBarItem("Community Forum", Icons.group, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
-            );
+            // ... (Navigate to Community Forum page)
           }),
-          SizedBox(width: 8), // Add spacing
+          SizedBox(width: 8),
           _buildNavBarItem("Map", Icons.map, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MapPage()),
-            );
+            // ... (Navigate to Map page)
           }),
-          SizedBox(width: 8), // Add spacing
+          SizedBox(width: 8),
           _buildNavBarItem("Safety Directory", Icons.book, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SafetyDirectory()),
-            );
+            // ... (Navigate to Safety Directory page)
           }),
-          SizedBox(width: 8), // Add spacing
+          SizedBox(width: 8),
           _buildNavBarItem("Crime Registration", Icons.report, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
-            );
+            // ... (Navigate to Crime Registration page)
           }),
-          SizedBox(width: 8), // Add spacing
+          SizedBox(width: 8),
           _buildIconButton(
             icon: Icons.person,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UserProfilePage()),
-              );
+              // ... (Navigate to User Profile page)
             },
           ),
         ],
@@ -206,6 +181,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ... (Handle User Management action)
                   Navigator.pop(context);
                 },
               ),
@@ -218,6 +194,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ... (Handle Analytics and Reports action)
                   Navigator.pop(context);
                 },
               ),
@@ -233,6 +210,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ... (Handle Post Approval action)
                   Navigator.pop(context);
                 },
               ),
@@ -245,6 +223,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ... (Handle Registered Complaints action)
                   Navigator.pop(context);
                 },
               ),
@@ -260,6 +239,7 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // ... (Handle Logout action)
                   Navigator.pop(context);
                 },
               ),
@@ -337,7 +317,7 @@ class AdminDashboard extends StatelessWidget {
                 Expanded(
                   child: Card(
                     elevation: 5.0,
-                    color: Colors.transparent, // Use transparent color for gradient effect
+                    color: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -366,72 +346,98 @@ class AdminDashboard extends StatelessWidget {
                               fontSize: 18,
                             ),
                           ),
-                          Text(
-                            '500',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          // Fetch and display the total number of users
+                          StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance.collection('Users').snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
+
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                return Text('0',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ));
+                              }
+
+                              int totalUsers = snapshot.data!.docs.length;
+                              return Text(
+                                '$totalUsers',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                // Total Number of Registered Complaints Card
-                Expanded(
-                  child: Card(
-                    elevation: 5.0,
-                    color: Colors.transparent, // Use transparent color for gradient effect
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF000104),
-                            Color(0xFF0E121B),
-                            Color(0xFF141E2C),
-                            Color(0xFF18293F),
-                            Color(0xFF193552),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Total Number of Registered Complaints',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Text(
-                            '50',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // ... (existing code)
               ],
+            ),
+            // Fetch and Display User Data
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('Users').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Text('No users found.');
+                  }
+
+                  List<DocumentSnapshot> users = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      var user = users[index].data() as Map<String, dynamic>;
+                      return ListTile(
+                        title: Text(
+                          'Name: ${user['FirstName']} ${user['LastName']}',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Email: ${user['Email']}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              'Contact No: ${user['ContactNo']}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
     return IconButton(
       icon: Icon(icon, color: Colors.white),
@@ -439,6 +445,7 @@ class AdminDashboard extends StatelessWidget {
       tooltip: title,
     );
   }
+
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
@@ -449,6 +456,3 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 }
-
-
-

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +23,7 @@ class LoginController extends GetxController {
       if (kIsWeb && email.text.trim() == 'admin123@gmail.com' && password.text.trim() == 'admin123') {
         // Admin login successful on the web
         onLoginSuccess(); // Call the callback
+        Get.offAll(() => AdminDashboard());
         Get.snackbar(
           'Login Successful',
           'Welcome, Admin!',
