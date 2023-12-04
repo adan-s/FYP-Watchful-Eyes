@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fyp/screens/otp_screen.dart';
 import 'package:get/get.dart';
 
+import '../authentication/authentication_repo.dart';
 import '../authentication/controllers/signup_controller.dart';
 import '../authentication/models/user_model.dart';
 
@@ -19,6 +21,7 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(Signupcontroller());
+    final authenticationRepository = Get.put(AuthenticationRepository());
 
     final usernameField = TextFormField(
       autofocus: false,
@@ -114,20 +117,15 @@ class _SignupState extends State<Signup> {
       keyboardType: TextInputType.phone,
       onSaved: (value) {
         if (value != null) {
-          controller.contactNo.text = value;
+          // Format the phone number to comply with E.164 standards
+          final formattedPhoneNumber = '+92$value'; // Assuming the country code for Pakistan is +92
+          controller.contactNo.text = formattedPhoneNumber;
         }
       },
-      textInputAction: TextInputAction.next,
-      validator: (value) {
-        if (value == null || value.isEmpty || value.length != 11) {
-          return 'Incorrect Contact number ';
-        }
-        return null;
-      },
+
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Contact No e.g (03215722553)",
         hintStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -135,6 +133,7 @@ class _SignupState extends State<Signup> {
       ),
       style: TextStyle(color: Colors.white),
     );
+
 
     final dobField = TextFormField(
       autofocus: false,
@@ -251,8 +250,9 @@ class _SignupState extends State<Signup> {
           if (_formKey.currentState!.validate()) {
             Signupcontroller.instance.RegisterUser(
               controller.email.text.trim(),
-              controller.password.text.trim(),
-            );
+              controller.password.text.trim());
+              /*Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
+              Get.to(()=> const OTPSCREEN());*/
             final user = usermodel(
               username: controller.username.text.trim(),
               firstName: controller.firstName.text.trim(),

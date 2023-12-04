@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../user_repository.dart';
+import '../authentication_repo.dart';
 import '../models/user_model.dart';
 
 
@@ -42,4 +43,15 @@ class Signupcontroller extends GetxController {
   Future<void> createUser(usermodel user) async {
     await user_repositoryy.createUser(user);
   }
+  Future<void> PhoneAuthentication(String phoneNo) async {
+    try {
+      AuthenticationRepository.instance.phoneauthentication(phoneNo);
+    } catch (e) {
+      print('Phone authentication error: $e');
+      // Add additional error handling as needed
+    }
+  }
+
+
+
 }
