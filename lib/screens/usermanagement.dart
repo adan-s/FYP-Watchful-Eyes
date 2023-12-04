@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fyp/screens/usermanagement.dart';
 
-class AdminDashboard extends StatelessWidget {
+class UserManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Function to show the menu with profile/logout options
     void _showProfileMenu(BuildContext context, Offset tapPosition) async {
       await showMenu(
         context: context,
@@ -182,11 +180,8 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => UserManagement()),
-                  );
+                  // ... (Handle User Management action)
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -313,11 +308,9 @@ class AdminDashboard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            // Display Total Number of Users and Registered Complaints
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Total Number of Users Card
                 Expanded(
                   child: Card(
                     elevation: 5.0,
@@ -350,7 +343,6 @@ class AdminDashboard extends StatelessWidget {
                               fontSize: 18,
                             ),
                           ),
-                          // Fetch and display the total number of users
                           StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance.collection('Users').snapshots(),
                             builder: (context, snapshot) {
@@ -387,10 +379,79 @@ class AdminDashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // ... (existing code)
               ],
             ),
-            // ... (existing code)
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('Users').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Text('No users found.');
+                  }
+
+                  List<DocumentSnapshot> users = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      var user = users[index].data() as Map<String, dynamic>;
+
+                      return Card(
+                        elevation: 5.0,
+                        color: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        child: ListTile(
+                          title: Text(
+                            'Name: ${user['FirstName']} ${user['LastName']}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Email: ${user['Email']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                'Contact No: ${user['ContactNo']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () {
+                                  // Handle the edit action for the user
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  // Handle the delete action for the user
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
