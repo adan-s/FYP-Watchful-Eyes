@@ -439,8 +439,10 @@ class UserManagement extends StatelessWidget {
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
+                                onPressed: () async {
                                   // Handle the delete action for the user
+                                  String userId = users[index].id;
+                                  await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
                                 },
                               ),
                             ],
