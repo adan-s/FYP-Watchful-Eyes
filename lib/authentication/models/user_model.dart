@@ -25,6 +25,8 @@ class usermodel{
 
 
   });
+
+  get email => null;
   toJson(){
     return{
 
