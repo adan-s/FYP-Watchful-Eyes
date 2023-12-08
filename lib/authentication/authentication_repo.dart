@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
-  var verificationId = ''.obs;
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
+  }
+  final verificationId = ''.obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> registerUser(String email, String password, String username) async {
@@ -70,8 +73,18 @@ class AuthenticationRepository extends GetxController {
     );
 
   }
-  Future<bool> verifyotp(String otp) async{
-    var credentials = await _auth.signInWithCredential(PhoneAuthProvider.credential(verificationId: this.verificationId.value, smsCode: otp));
-    return credentials.user !=null ? true:false;
+  Future<bool> verifyOtp(String otp) async {
+    try {
+      var credentials = await _auth.signInWithCredential(
+        PhoneAuthProvider.credential(
+          verificationId: verificationId.value,
+          smsCode: otp,
+        ),
+      );
+      return credentials.user != null;
+    } catch (e) {
+      print('Error verifying OTP: $e');
+      return false;
+    }
   }
 }
