@@ -19,28 +19,49 @@ class _LoginScreenState extends State<LoginScreen> {
   final LoginController controller = LoginController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // Future<void> fetchAndNavigateToUserProfile() async {
+  //   try {
+  //     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+  //       email: controller.email.text.trim(),
+  //       password: controller.password.text.trim(),
+  //     );
+  //
+  //     if (userCredential.user != null) {
+  //       // You can fetch user data here if needed
+  //       // For example, fetch data from a database using the user's UID
+  //
+  //       // Now navigate to the user profile page
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => UserProfilePage(),
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Login error: $e');
+  //     // Handle login errors here
+  //   }
+  // }
+
   Future<void> fetchAndNavigateToUserProfile() async {
     try {
+      if (_auth.currentUser != null) {
+        Get.off(() => UserProfilePage());
+        return;
+      }
+
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: controller.email.text.trim(),
         password: controller.password.text.trim(),
       );
 
       if (userCredential.user != null) {
-        // You can fetch user data here if needed
-        // For example, fetch data from a database using the user's UID
-
-        // Now navigate to the user profile page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserProfilePage(),
-          ),
-        );
+        Get.off(() => UserProfilePage());
       }
     } catch (e) {
       print('Login error: $e');
-      // Handle login errors here
+
     }
   }
 
@@ -332,7 +353,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 300,
                             child: Image.asset(
-                              'assets/logo.png',
+                              '/logo.png',
                               fit: BoxFit.contain,
                             ),
                           ),
