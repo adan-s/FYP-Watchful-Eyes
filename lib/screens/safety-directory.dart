@@ -4,7 +4,7 @@ import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 class SafetyDirectory extends StatefulWidget {
   const SafetyDirectory({Key? key}) : super(key: key);
@@ -14,36 +14,24 @@ class SafetyDirectory extends StatefulWidget {
 }
 
 class _SafetyDirectoryState extends State<SafetyDirectory> {
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Number of tabs including the main content
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF000104),
-                  Color(0xFF0E121B),
-                  Color(0xFF141E2C),
-                  Color(0xFF18293F),
-                  Color(0xFF193552),
-                ],
+          backgroundColor: Colors.black,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Safety Directory',
+                style: TextStyle(color: Colors.white),
               ),
-            ),
-          ),
-          title: const Text(
-            'Safety Directory',
-            style: TextStyle(color: Colors.white),
+              ResponsiveAppBarActions(),
+            ],
           ),
           centerTitle: true,
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.warning, color: Colors.white)),
@@ -56,8 +44,8 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: [
                 Color(0xFF000104),
                 Color(0xFF0E121B),
@@ -83,6 +71,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
     );
   }
 }
+
 
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
@@ -481,6 +470,7 @@ class SelfDefenseProcedures extends StatelessWidget {
 
 }
 
+
 class SelfDefenseGadgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -492,28 +482,24 @@ class SelfDefenseGadgets extends StatelessWidget {
           children: [
             Text(
               'Self Defense Gadgets',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             SizedBox(height: 20),
             _buildGadgetsRow(context, [
               GadgetItem(
                 title: 'Pepper Spray',
                 buyLink: 'https://saamaan.pk/products/reusable-pepper-spray-with-keychain?_pos=1&_sid=6fb898c5c&_ss=r',
-                imagePath: '/pepper-spray.png', // Replace with the actual image asset path
+                imagePath: '/pepper-spray.png',
               ),
               GadgetItem(
                 title: 'Taser',
                 buyLink: 'https://defensivegadgets.com/product/008-type-knuckle-taser/',
-                imagePath: '/taser.png', // Replace with the actual image asset path
+                imagePath: '/taser.png',
               ),
               GadgetItem(
                 title: 'Paralyzer',
                 buyLink: 'https://tacticalgears.pk/products/paralyzer-high-voltage-pulse-batons-510-fz?_pos=5&_sid=2f7647d9a&_ss=r',
-                imagePath: '/stick.png', // Replace with the actual image asset path
+                imagePath: '/stick.png',
               ),
               // Add more gadgets as needed
             ]),
@@ -522,6 +508,7 @@ class SelfDefenseGadgets extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildGadgetsRow(BuildContext context, List<GadgetItem> gadgets) {
     if (MediaQuery.of(context).size.width > 600) {
@@ -578,6 +565,7 @@ class SelfDefenseGadgets extends StatelessWidget {
 
 
 
+
   void _showGadgetDetails(BuildContext context, String title, String buyLink) {
     showDialog(
       context: context,
@@ -594,9 +582,7 @@ class SelfDefenseGadgets extends StatelessWidget {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  // Open the provided link when the button is pressed
-                  // Replace with appropriate navigation code
-                  // You can use the url_launcher package to open links
+                  _launchURL(buyLink);
                 },
                 child: Text('Buy Now'),
               ),
@@ -605,6 +591,14 @@ class SelfDefenseGadgets extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
@@ -619,5 +613,4 @@ class GadgetItem {
     required this.imagePath,
   });
 }
-
 
