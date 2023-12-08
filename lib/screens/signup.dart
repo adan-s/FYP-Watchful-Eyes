@@ -248,22 +248,20 @@ class _SignupState extends State<Signup> {
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            /*Signupcontroller.instance.RegisterUser(
+            Signupcontroller.instance.RegisterUser(
               controller.email.text.trim(),
-              controller.password.text.trim())*/;
-              Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
-              Get.to(()=> const OTPSCREEN());
+              controller.password.text.trim());
+              /*Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
+              Get.to(()=> const OTPSCREEN());*/
             final user = usermodel(
               username: controller.username.text.trim(),
               firstName: controller.firstName.text.trim(),
               lastName: controller.lastName.text.trim(),
-              email: controller.email.text.trim(),
               contactNo: controller.contactNo.text.trim(),
               dob: controller.dob.text.trim(),
               cnic: controller.cnic.text.trim(),
               gender: controller.gender.text.trim(),
-              password: controller.password.text.trim(),
-              confirmPassword: controller.confirmPassword.text.trim(),
+
             );
             Signupcontroller.instance.createUser(user);
           }

@@ -83,10 +83,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 const SizedBox(height: 16),
-                Text(
+                /*Text(
                   'Email: ${user.email}',
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
+                ),*/
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () {
