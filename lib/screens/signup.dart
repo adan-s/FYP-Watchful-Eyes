@@ -258,9 +258,12 @@ class _SignupState extends State<Signup> {
               firstName: controller.firstName.text.trim(),
               lastName: controller.lastName.text.trim(),
               contactNo: controller.contactNo.text.trim(),
+              email: controller.email.text.trim(),
               dob: controller.dob.text.trim(),
               cnic: controller.cnic.text.trim(),
               gender: controller.gender.text.trim(),
+              password: controller.password.text.trim(),
+              confirmPassword: controller.confirmPassword.text.trim(),
 
             );
             Signupcontroller.instance.createUser(user);
