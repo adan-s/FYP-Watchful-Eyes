@@ -57,19 +57,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ],
           ),
         ),
-          child: FutureBuilder<usermodel?>(
-              future: controller.getUserData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return Text('User not found'); // Handle case where user is not logged in
-                } else {
-                  // Handle the case where user data is available
-                  usermodel userData = snapshot.data!;
-                }
+        child: FutureBuilder<usermodel>(
+          future: controller.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            } else if (!snapshot.hasData) {
+              return Center(child: Text('User data not found.'));
+            }
 
             final user = snapshot.data!;
 

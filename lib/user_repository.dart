@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'authentication/models/user_model.dart';
-class UserRepository extends GetxController {
-  static UserRepository get instance => Get.find();
-  final _database = FirebaseFirestore.instance;
 
+
+class UserRepository extends GetxController{
+  static UserRepository get instance => Get.find();
+
+  final _database=FirebaseFirestore.instance;
 
   createUser(usermodel user) async {
     await _database.collection("Users").add(user.toJson()).whenComplete(() =>
