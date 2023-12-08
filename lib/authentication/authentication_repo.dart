@@ -7,6 +7,7 @@ import '../screens/user-panel.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
+  var verificationId = ''.obs;
 
   late final Rx<User?> firebaseUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -52,4 +53,35 @@ class AuthenticationRepository extends GetxController {
       return null;
     }
   }
+  Future<void> phoneauthentication(String phone) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (e){
+        if (e.code == 'Invalid Contact-No'){
+          Get.snackbar('Error', 'Contact No is not Valid');
+        }else{
+          Get.snackbar('Error', 'Try Again');
+        }
+      },
+      codeSent: (verificationId, resendToken){
+        this.verificationId.value=verificationId;
+      },
+      codeAutoRetrievalTimeout: (verificationId){
+        this.verificationId.value=verificationId;
+      },
+
+    );
+
+  }
+
+  Future<bool> verifyotp(String otp) async{
+    var credentials = await _auth.signInWithCredential(PhoneAuthProvider.credential(verificationId: this.verificationId.value, smsCode: otp));
+    return credentials.user !=null ? true:false;
+  }
+
+
+
 }

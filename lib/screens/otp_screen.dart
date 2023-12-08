@@ -34,13 +34,13 @@ class OTPSCREEN extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             OtpTextField(
-              numberOfFields: 6,
-              fillColor: Colors.black,
-              filled: true,
-              onSubmit: (code){
-                OTP=code;
-                otpcontroller.instance.VerifyOTP(OTP);
-              }),
+                numberOfFields: 6,
+                fillColor: Colors.black,
+                filled: true,
+                onSubmit: (code){
+                  OTP=code;
+                  otpcontroller.instance.VerifyOTP(OTP);
+                }),
             const SizedBox(height: 20.0),
             SizedBox(
               width: double.infinity,

@@ -6,7 +6,7 @@ class otpcontroller extends GetxController{
   static otpcontroller get instance => Get.find();
 
   void VerifyOTP(String otp) async{
-   // var isVerified = await AuthenticationRepository.instance.verifyOtp(otp);
-   // isVerified ? Get.offAll(const LoginScreen()) : Get.back();
+    var isVerified = await AuthenticationRepository.instance.verifyotp(otp);
+    isVerified ? Get.offAll(const LoginScreen()) : Get.back();
   }
 }

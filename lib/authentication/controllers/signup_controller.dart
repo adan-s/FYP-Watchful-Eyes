@@ -45,7 +45,7 @@ class Signupcontroller extends GetxController {
   }
   Future<void> PhoneAuthentication(String phoneNo) async {
     try {
-    //  AuthenticationRepository.instance.phoneauthentication(phoneNo);
+     AuthenticationRepository.instance.phoneauthentication(phoneNo);
     } catch (e) {
       print('Phone authentication error: $e');
       // Add additional error handling as needed
