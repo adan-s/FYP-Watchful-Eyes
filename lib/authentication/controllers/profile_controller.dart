@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:fyp/user_repository.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,9 @@ class ProfileController extends GetxController {
   static ProfileController get instance => Get.find();
   final _authRepo = Get.put(AuthenticationRepository());
   final _userRepo = Get.put(UserRepository());
+
+  // Add this line to reference your Firestore instance
+  final FirebaseFirestore _database = FirebaseFirestore.instance;
 
   Future<usermodel> getUserData() async {
     final email = _authRepo.firebaseUser.value?.email;
@@ -22,8 +26,7 @@ class ProfileController extends GetxController {
   Future<bool> isUsernameUnique(String username) async {
     try {
       // Check if the username already exists in the database
-      final isUnique = await _userRepo.isUsernameUnique(username);
-      return isUnique;
+      return await _userRepo.isUsernameUnique(username);
     } catch (e) {
       print("Error checking username uniqueness: $e");
       return false;
@@ -33,8 +36,7 @@ class ProfileController extends GetxController {
   Future<bool> isContactNoUnique(String contactNo) async {
     try {
       // Check if the contact number already exists in the database
-      final isUnique = await _userRepo.isContactNoUnique(contactNo);
-      return isUnique;
+      return await _userRepo.isContactNoUnique(contactNo);
     } catch (e) {
       print("Error checking contact number uniqueness: $e");
       return false;
@@ -42,35 +44,39 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateUserData({
+    required String email,
     required String username,
     required String contactNo,
     // Add more fields as needed
   }) async {
     try {
-      // Check if the updated username is unique
-      final isUniqueUsername = await isUsernameUnique(username);
-      if (!isUniqueUsername) {
-        Get.snackbar("Error", "Username is already taken");
+      if (email.isEmpty) {
+        Get.snackbar("Error", "User email is empty");
         return;
       }
 
-      // Check if the updated contact number is unique
-      final isUniqueContactNo = await isContactNoUnique(contactNo);
-      if (!isUniqueContactNo) {
-        Get.snackbar("Error", "Contact number is already taken");
-        return;
-      }
-
-      // Update user data if both username and contact number are unique
-      await _userRepo.updateUserData(
-        username: username,
-        contactNo: contactNo,
+      // Try to update the document
+      await _database.collection('Users').doc(email).update({
+        'username': username,
+        'contactNo': contactNo,
         // Add more fields as needed
-      );
+      });
+
       Get.snackbar("Success", "Profile updated successfully");
     } catch (e) {
-      print("Error updating user data: $e");
-      Get.snackbar("Error", "Failed to update profile");
+      // If the document is not found, create it and then update
+      if (e is FirebaseException && e.code == 'not-found') {
+        await _database.collection('Users').doc(email).set({
+          'username': username,
+          'contactNo': contactNo,
+          // Add more fields as needed
+        });
+
+        Get.snackbar("Success", "Profile created and updated successfully");
+      } else {
+        print('Error updating user data: $e');
+        Get.snackbar("Error", "Failed to update profile");
+      }
     }
   }
 }

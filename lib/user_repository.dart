@@ -52,7 +52,6 @@ class UserRepository extends GetxController {
 
   Future<bool> isUsernameUnique(String username) async {
     try {
-      // Implement the logic to check if the username is unique in your database
       final snapshot = await _database
           .collection("Users")
           .where('username', isEqualTo: username)
@@ -67,7 +66,6 @@ class UserRepository extends GetxController {
 
   Future<bool> isContactNoUnique(String contactNo) async {
     try {
-      // Implement the logic to check if the contact number is unique in your database
       final snapshot = await _database
           .collection("Users")
           .where('contactNo', isEqualTo: contactNo)
@@ -81,17 +79,16 @@ class UserRepository extends GetxController {
   }
 
   Future<void> updateUserData({
+    required String email, // Add email parameter
     required String username,
     required String contactNo,
     // Add more fields as needed
   }) async {
     try {
-      // Implement logic to update user data in Firestore
-      // For example, you might use Firebase Firestore here
-      // Replace the following lines with your actual implementation
-
-      // You need to get the user's email from the authentication system
-      final email = ''; // Replace with actual email retrieval logic
+      if (email.isEmpty) {
+        Get.snackbar("Error", "User email is empty");
+        return;
+      }
 
       // Check if the updated username is unique
       final isUniqueUsername = await isUsernameUnique(username);
@@ -120,4 +117,5 @@ class UserRepository extends GetxController {
       Get.snackbar("Error", "Failed to update profile");
     }
   }
+
 }

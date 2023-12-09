@@ -166,9 +166,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-
-  Future<void> _handleUpdateProfile(String username,
-      String contactNo,) async {
+  Future<void> _handleUpdateProfile(String username, String contactNo) async {
     try {
       // Check if the new username and contactNo are unique in the database
       bool isUsernameUnique = await controller.isUsernameUnique(username);
@@ -188,12 +186,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       // Proceed with the update
       User? currentUser = FirebaseAuth.instance.currentUser;
-
-      // Update other user information (display name, etc.)
-      await currentUser?.updateDisplayName(username);
+      String userEmail = currentUser?.email ?? ''; // Get user's email
 
       // Update user information in Firestore
       await controller.updateUserData(
+        email: userEmail, // Pass user's email
         username: username,
         contactNo: contactNo,
       );

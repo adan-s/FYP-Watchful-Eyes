@@ -52,6 +52,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   url_launcher: ^6.2.1
+  flutter_gif: ^0.0.4
+  flutter_animate: ^4.3.0
+  flutter_animated_button: ^2.0.3
+  animated_text_kit: ^4.2.2
 
 assets:
   - assets/homepage.png
@@ -80,6 +84,13 @@ flutter:
     - family: Times
       fonts:
         - asset: assets/fonts/times/times.ttf
+    - family: outfit
+      fonts:
+        - asset: assets/fonts/outfit/Outfit-Regular.ttf
+    - family: silkscreen
+      fonts:
+        - asset: assets/fonts/silkscreen/Silkscreen-Bold.ttf
+        - asset: assets/fonts/silkscreen/Silkscreen-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   assets:
@@ -91,6 +102,7 @@ flutter:
     - assets/objective.png
     - assets/record.png
     - assets/safe.png
+    - assets/social_network.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

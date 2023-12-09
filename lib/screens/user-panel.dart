@@ -4,9 +4,36 @@ import 'package:fyp/screens/safety-directory.dart';
 import 'community-forum.dart';
 import 'map.dart';
 import 'user-profile.dart';
+import 'dart:ui' as ui;
+import 'package:flutter_animated_button/flutter_animated_button.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
-class UserPanel extends StatelessWidget {
-  const UserPanel({Key? key});
+
+class UserPanel extends StatefulWidget {
+  const UserPanel({Key? key}) : super(key: key);
+
+  @override
+  _UserPanelState createState() => _UserPanelState();
+}
+
+class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(_animationController);
+
+    _animationController.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,101 +60,83 @@ class UserPanel extends StatelessWidget {
               builder: (context, constraints) {
                 final screenWidth = MediaQuery.of(context).size.width;
 
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(40.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Safety at Your Service',
-                                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                                  ),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    "Welcome to 'Watchful Eyes' -"
-                                    "Step into a new era of community safety with 'Watchful Eyes,'"
-                                        " a groundbreaking crime reporting system designed to revolutionize "
-                                        "the way we address security concerns. In the face of the traditionally "
-                                        "challenging and disheartening process of reporting crimes—with its inherent "
-                                        "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change."
-                                        " Our system is committed to simplifying and streamlining crime reporting, fostering "
-                                        "enhanced police understanding, and, most importantly, elevating overall community safety. "
-                                        "Trust in law enforcement is paramount, and 'Watchful Eyes' addresses this by providing a "
-                                        "user-friendly platform, offering a seamless and efficient reporting experience." ,
-                                    style: TextStyle(fontSize: 20, color: Colors.white),
-                                  ),
-                                  SizedBox(height: 30),
-                                ],
-                              ),
-                            ),
-                            if (screenWidth > 600) // Include image only when screen width is greater than 600
-                              SizedBox(width: 66),
-                            if (screenWidth > 600)
+                    child: Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
                               Expanded(
-                                flex: 1,
-                                child: Image.asset(
-                                  '/homepage.png',
-                                  width: 100,
-                                  height: 350,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: 46),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF000104)],
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    FadeTransition(
+                                      opacity: _fadeAnimation,
 
-                                SizedBox(width: 8),
-                                Text(
-                                  "Let's Explore",
-                                  style: TextStyle(fontSize: 16, color: Colors.white),
+                                      child: Text(
+                                        'Safety at Your Service',
+                                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
+                                      ).animate().fade(duration: 2000.ms).slide(),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Container(
+                                      width: 300,
+                                      height: 100,
+                                      child: AnimatedTextKit(
+                                        animatedTexts: [
+                                          RotateAnimatedText("Report", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                                          RotateAnimatedText("Register", textStyle: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'silkscreen',shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                                          RotateAnimatedText("React", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                                        ],
+                                      ),
+                                    ),Text(
+                                      "Welcome to 'Watchful Eyes' - "
+                                          "Step into a new era of community safety with 'Watchful Eyes,'"
+                                          " a groundbreaking crime reporting system designed to revolutionize "
+                                          "the way we address security concerns. In the face of the traditionally "
+                                          "challenging and disheartening process of reporting crimes—with its inherent "
+                                          "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change."
+                                          " Our system is committed to simplifying and streamlining crime reporting, fostering "
+                                          "enhanced police understanding, and, most importantly, elevating overall community safety. "
+                                          "Trust in law enforcement is paramount, and 'Watchful Eyes' addresses this by providing a "
+                                          "user-friendly platform, offering a seamless and efficient reporting experience." ,
+                                      style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'outfit'),
+                                    ),
+                                    SizedBox(height: 30),
+                                  ],
                                 ),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
+                              ),
+                              if (screenWidth > 600)
+                                SizedBox(width: 66),
+                              if (screenWidth > 600)
+                                Expanded(
+                                  flex: 1,
+                                  child: Image.asset(
+                                    '/homepage.png',
+                                    width: 100,
+                                    height: 350,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 46),
+
+
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -159,7 +168,7 @@ class UserPanel extends StatelessWidget {
                         'Why Choose Us?',
                         style: TextStyle(
                           color: Colors.white,
-                          fontFamily: "Roboto-slab",
+                          fontFamily: 'outfit',
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -267,7 +276,7 @@ class UserPanel extends StatelessWidget {
                           'Some more Benefits',
                           style: TextStyle(
                             color: Colors.white,
-                            fontFamily: "Roboto-slab",
+                            fontFamily: 'outfit',
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),
@@ -462,6 +471,8 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
       ),
     ),
   );
+
+
 }
 
 
