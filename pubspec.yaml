@@ -56,6 +56,7 @@ dependencies:
   flutter_animate: ^4.3.0
   flutter_animated_button: ^2.0.3
   animated_text_kit: ^4.2.2
+  carousel_slider: ^4.2.1
 
 assets:
   - assets/homepage.png
@@ -102,7 +103,10 @@ flutter:
     - assets/objective.png
     - assets/record.png
     - assets/safe.png
-    - assets/social_network.gif
+    - assets/community.jpg
+    - assets/mapp.jpg
+    - assets/notify.png
+    - assets/panic.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -8,6 +8,8 @@ import 'dart:ui' as ui;
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
 
 
 class UserPanel extends StatefulWidget {
@@ -141,6 +143,47 @@ class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMix
                   ),
                 );
               },
+            ),
+            Container(
+              width: double.infinity,
+              height: 600,
+              color: Color(0xFF193552), // Set the background color to #134B5F
+              child: CarouselSlider(
+                items: [
+                  // Add your image paths here
+                  'assets/mapp.jpg',
+                  'assets/community.jpg',
+                  'assets/notify.png',
+                  'assets/panic.jpg'
+                  // Add more images as needed
+                ].map((item) {
+                  return Container(
+                    width: 600,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF193552), // Set the background color to #134B5F
+                      borderRadius: BorderRadius.circular(15), // Set the border radius
+                      image: DecorationImage(
+                        image: AssetImage(item),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                options: CarouselOptions(
+                  height: 600,
+                  enableInfiniteScroll: true,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  pauseAutoPlayOnTouch: true,
+                  aspectRatio: 2.0,
+                  onPageChanged: (index, reason) {
+                    // Handle page change if needed
+                  },
+                ),
+              ),
             ),
             // Why Choose Us Section
             Container(
