@@ -24,20 +24,20 @@ class _BlogPageState extends State<BlogPage> {
   List<VideoPlayerWidget> videos = [
     VideoPlayerWidget(
       videoPath:
-      'assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
+      '/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
       key: UniqueKey(),
       title: 'Choke Hold Defenses - Women MUST Know Self-Defense',
       imagePath: '/video1.PNG',
     ),
     VideoPlayerWidget(
       videoPath:
-      'assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
+      '/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
       key: UniqueKey(),
       title: '7 Self-Defense Techniques for Women from Professionals',
       imagePath: '/video2.PNG',
     ),
     VideoPlayerWidget(
-      videoPath: 'assets/Safety-Tips-for-Women.mp4',
+      videoPath: '/Safety-Tips-for-Women.mp4',
       key: UniqueKey(),
       title: 'Safety Tips for Women',
       imagePath: '/video3.PNG',
