@@ -127,22 +127,7 @@ class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMix
                           ),
                           SizedBox(height: 46),
                           // AnimatedButton
-                          AnimatedButton(
-                            height: 70,
-                            width: 200,
-                            text: 'SUBMIT',
-                            isReverse: true,
-                            selectedTextColor: Colors.black,
-                            transitionType: TransitionType.LEFT_TO_RIGHT,
-                            backgroundColor: Colors.black,
-                            borderColor: Colors.white,
-                            borderRadius: 50,
-                            borderWidth: 2,
-                            onPress: () {
-                              // Handle button press
-                            },
-                          ),
-
+                          
                         ],
                       ),
                     ),
@@ -482,17 +467,15 @@ Widget _buildBenefitItem(String title, String iconName) {
           title,
           style: TextStyle(
             color: Colors.white,
-            fontFamily: "Roboto-slab",
+            fontFamily: "outfit",
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 16,
           ),
         ),
       ],
     ),
   );
 }
-
-
 Widget _buildWhyChooseUsItem(String title, String description, String iconName) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 26.0),
@@ -501,8 +484,16 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20), // Make the boxes rounded
         color: Colors.black,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -516,7 +507,7 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
             title,
             style: TextStyle(
               color: Colors.white,
-              fontFamily: "Roboto-slab",
+              fontFamily: "outfit", // Change the font to "outfit"
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
@@ -526,7 +517,7 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
             description,
             style: TextStyle(
               color: Colors.white,
-              fontFamily: "Roboto-slab",
+              fontFamily: "outfit",
               fontSize: 14,
             ),
             textAlign: TextAlign.center,
@@ -535,6 +526,4 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
       ),
     ),
   );
-
-
 }
