@@ -9,7 +9,7 @@ import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:lottie/lottie.dart';
 
 
 class UserPanel extends StatefulWidget {
@@ -92,18 +92,8 @@ class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMix
                                         style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
                                       ).animate().fade(duration: 2000.ms).slide(),
                                     ),
-                                    SizedBox(height: 20),
-                                    Container(
-                                      width: 300,
-                                      height: 100,
-                                      child: AnimatedTextKit(
-                                        animatedTexts: [
-                                          RotateAnimatedText("Report", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
-                                          RotateAnimatedText("Register", textStyle: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'silkscreen',shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
-                                          RotateAnimatedText("React", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
-                                        ],
-                                      ),
-                                    ),Text(
+                                    SizedBox(height: 5),
+                                    Text(
                                       "Welcome to 'Watchful Eyes' - "
                                           "Step into a new era of community safety with 'Watchful Eyes,'"
                                           " a groundbreaking crime reporting system designed to revolutionize "
@@ -148,41 +138,56 @@ class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMix
               width: double.infinity,
               height: 600,
               color: Color(0xFF193552), // Set the background color to #134B5F
-              child: CarouselSlider(
-                items: [
-                  // Add your image paths here
-                  'assets/mapp.jpg',
-                  'assets/community.jpg',
-                  'assets/notify.png',
-                  'assets/panic.jpg'
-                  // Add more images as needed
-                ].map((item) {
-                  return Container(
-                    width: 600,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF193552), // Set the background color to #134B5F
-                      borderRadius: BorderRadius.circular(15), // Set the border radius
-                      image: DecorationImage(
-                        image: AssetImage(item),
-                        fit: BoxFit.cover,
+              child: Row(
+                children: [
+                  // Left side: Lottie animations
+                  Expanded(
+                    child: CarouselSlider(
+                      items: [
+                        'assets/mapup.json',
+                        'assets/reportup.json',
+                        'assets/alertup.json',
+                        'assets/communityup.json',
+                      ].map((item) {
+                        return Container(
+                          width: double.infinity,
+                          height: 600,
+                          child: Lottie.asset(item),
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 600,
+                        enableInfiniteScroll: true,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 5),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        pauseAutoPlayOnTouch: true,
+                        aspectRatio: 2.0,
+                        onPageChanged: (index, reason) {
+                          // Handle page change if needed
+                        },
                       ),
                     ),
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                  height: 600,
-                  enableInfiniteScroll: true,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 3),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  pauseAutoPlayOnTouch: true,
-                  aspectRatio: 2.0,
-                  onPageChanged: (index, reason) {
-                    // Handle page change if needed
-                  },
-                ),
+                  ),
+                  // Right side: Text container
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.25, // Adjust the width as needed
+                    height: 600,
+                    padding: EdgeInsets.all(20),
+                    color: Color(0xFF193552),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        RotateAnimatedText("NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                        RotateAnimatedText("REPORT IN A BLINK, SWIFTLY AND SURELY", textStyle: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'silkscreen',shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                        RotateAnimatedText("DIVE INTO SAFETY, ARM YOURSELF WITH TIPS", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                        RotateAnimatedText("SHARE YOUR SPOT, ENGAGE FOR SAFETY", textStyle: TextStyle(fontSize: 30, color: Colors.white,fontFamily: 'silkscreen', shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2)])),
+                      ],
+                      isRepeatingAnimation: true,
+                      pause: Duration(milliseconds: 1000),
+                    ),
+                  ),
+                ],
               ),
             ),
             // Why Choose Us Section
@@ -517,7 +522,3 @@ Widget _buildWhyChooseUsItem(String title, String description, String iconName) 
 
 
 }
-
-
-
-

@@ -58,6 +58,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   carousel_slider: ^4.2.1
   video_player: ^2.8.1
+  lottie: ^2.7.0
 
 assets:
   - assets/homepage.png
@@ -108,6 +109,13 @@ flutter:
     - assets/mapp.jpg
     - assets/notify.png
     - assets/panic.jpg
+    - assets/alertup.json
+    - assets/community.json
+    - assets/communityup.json
+    - assets/map.json
+    - assets/mapup.json
+    - assets/reportup.json
+    - assets/security.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
