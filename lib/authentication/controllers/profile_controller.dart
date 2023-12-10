@@ -10,7 +10,6 @@ class ProfileController extends GetxController {
   final _authRepo = Get.put(AuthenticationRepository());
   final _userRepo = Get.put(UserRepository());
 
-  // Add this line to reference your Firestore instance
   final FirebaseFirestore _database = FirebaseFirestore.instance;
 
   Future<usermodel> getUserData() async {
@@ -45,9 +44,9 @@ class ProfileController extends GetxController {
 
   Future<void> updateUserData({
     required String email,
-    required String username,
-    required String contactNo,
-    // Add more fields as needed
+    required String UserName,
+    required String ContactNo,
+
   }) async {
     try {
       if (email.isEmpty) {
@@ -55,28 +54,25 @@ class ProfileController extends GetxController {
         return;
       }
 
-      // Try to update the document
-      await _database.collection('Users').doc(email).update({
-        'username': username,
-        'contactNo': contactNo,
-        // Add more fields as needed
+      // Check if the document with the specified email exists
+      var userDoc = await _database.collection('Users').where('Email', isEqualTo: email).get();
+      if (userDoc.docs.isEmpty) {
+        Get.snackbar("Error", "User with email $email not found");
+        return;
+      }
+
+      // Update the document
+      await _database.collection('Users').doc(userDoc.docs.first.id).update({
+        'UserName': UserName,
+        'ContactNo': ContactNo,
+
       });
 
       Get.snackbar("Success", "Profile updated successfully");
     } catch (e) {
-      // If the document is not found, create it and then update
-      if (e is FirebaseException && e.code == 'not-found') {
-        await _database.collection('Users').doc(email).set({
-          'username': username,
-          'contactNo': contactNo,
-          // Add more fields as needed
-        });
-
-        Get.snackbar("Success", "Profile created and updated successfully");
-      } else {
-        print('Error updating user data: $e');
-        Get.snackbar("Error", "Failed to update profile");
-      }
+      print('Error updating user data: $e');
+      Get.snackbar("Error", "Failed to update profile");
     }
   }
+
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -109,7 +110,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       const SizedBox(height: 32),
                       ElevatedButton(
                         onPressed: () {
-                          _showEditProfileDialog(context, user.email);
+                          _showEditProfileDialog(context, user.email,snapshot);
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -166,33 +167,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-  Future<void> _handleUpdateProfile(String username, String contactNo) async {
+
+  Future<void> _handleUpdateProfile(String username, String contactNo, AsyncSnapshot<usermodel> snapshot) async {
     try {
-      // Check if the new username and contactNo are unique in the database
-      bool isUsernameUnique = await controller.isUsernameUnique(username);
-      bool isContactNoUnique = await controller.isContactNoUnique(contactNo);
-
-      if (!isUsernameUnique) {
-        // Handle the case where the username is not unique
-        print('Username is not unique. Please choose another one.');
+      if (snapshot.data==null) {
+        // Handle the case where user data is not available
+        print(snapshot.data);
+        print('User data not found. Cannot update profile.');
         return;
       }
 
-      if (!isContactNoUnique) {
-        // Handle the case where the contact number is not unique
-        print('Contact number is not unique. Please choose another one.');
-        return;
-      }
-
-      // Proceed with the update
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      String userEmail = currentUser?.email ?? ''; // Get user's email
+      final user = snapshot.data;
+      String userEmail = user?.email ?? '';
+      print(userEmail);
 
       // Update user information in Firestore
       await controller.updateUserData(
-        email: userEmail, // Pass user's email
-        username: username,
-        contactNo: contactNo,
+        email: userEmail,
+        UserName: username,
+        ContactNo: contactNo,
       );
 
       // Refresh user data
@@ -203,7 +196,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-  void _showEditProfileDialog(BuildContext context, String userEmail) {
+
+
+
+
+  void _showEditProfileDialog(BuildContext context, String userEmail,AsyncSnapshot<usermodel> snapshot) {
     TextEditingController nameController = TextEditingController();
     TextEditingController contactNoController = TextEditingController();
 
@@ -218,7 +215,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ElevatedButton(
                   onPressed: () {
                     _showEditNameDialog(
-                        context, nameController, contactNoController);
+                        context, nameController, contactNoController,snapshot);
                   },
                   child: const Text('Edit Name'),
                   style: ElevatedButton.styleFrom(
@@ -250,9 +247,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(BuildContext context,
-      TextEditingController nameController,
-      TextEditingController contactNoController) {
+  void _showEditNameDialog(BuildContext context, TextEditingController nameController, TextEditingController contactNoController, AsyncSnapshot<usermodel> snapshot) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -275,9 +270,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
+                // Use the TextEditingController values for updating
                 await _handleUpdateProfile(
                   nameController.text,
                   contactNoController.text,
+                  snapshot,
                 );
                 Navigator.of(context).pop();
               },
@@ -297,6 +294,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       },
     );
   }
+
 
   void _showEditProfileImageDialog(BuildContext context) {
     // Implement code to allow the user to choose a new profile image
