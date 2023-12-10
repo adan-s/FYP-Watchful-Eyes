@@ -98,7 +98,7 @@ class _BlogPageState extends State<BlogPage> {
               decoration: const BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                      color: Colors.white), // White divider on the right
+                      color: Colors.white),
                 ),
               ),
               child: Container(

@@ -98,30 +98,48 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images.png
-    - assets/logo.png
     - assets/admin.png
-    - assets/pic1.png
-    - assets/public-safety.png
-    - assets/objective.png
-    - assets/record.png
-    - assets/safe.png
-    - assets/community.jpg
-    - assets/mapp.jpg
-    - assets/notify.png
-    - assets/panic.jpg
-    - assets/homepage.png
-    - assets/alertup.json
-    - assets/community.json
-    - assets/communityup.json
+    - assets/blog3.jpg
     - assets/map.json
-    - assets/mapup.json
-    - assets/reportup.json
-    - assets/security.json
-    - assets/loading.json
+    - assets/mapp.jpg
+    - assets/safe.png
+    - assets/notify.png
+    - assets/community.jpg
+    - assets/video1.PNG
+    - assets/objective.png
     - assets/loginbg.png
-    - assets/loginloadingbar.json
+    - assets/user-friendly.png
+    - assets/reportup.json
+    - assets/community.json
+    - assets/blog2.jpg
     - assets/loginuser.json
+    - assets/blog1.jpg
+    - assets/communityup.json
+    - assets/pic1.png
+    - assets/social_network.gif
+    - assets/public-safety.png
+    - assets/key-features.png
+    - assets/taser.png
+    - assets/mapup.json
+    - assets/record.png
+    - assets/alertup.json
+    - assets/loginloadingbar.json
+    - assets/loading.json
+    - assets/procedure3.jpg
+    - assets/images.png
+    - assets/Safety-Tips-for-Women.mp4
+    - assets/pepper-spray.png
+    - assets/homepage.png
+    - assets/stick.png
+    - assets/panic.jpg
+    - assets/logo.png
+    - assets/procedure2.jpg
+    - assets/video2.PNG
+    - assets/video3.PNG
+    - assets/procedure1.jpg
+    - assets/security.json
+    - assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4
+    - assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
