@@ -64,10 +64,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            height: MediaQuery.of(context).size.height,
             child: Center(
               child: FutureBuilder<usermodel>(
                 future: controller.getUserData(),
@@ -81,13 +78,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   }
 
                   final user = snapshot.data!;
+                  String displayImageUrl =
+                      user.profileImage ?? profileImageUrl;
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(profileImageUrl),
+                        backgroundImage: NetworkImage(displayImageUrl),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -110,7 +109,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       const SizedBox(height: 32),
                       ElevatedButton(
                         onPressed: () {
-                          _showEditProfileDialog(context, user.email,snapshot);
+                          _showEditProfileDialog(context, user.email, snapshot);
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -168,6 +167,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+
   Future<void> _handleUpdateProfile(String username, String contactNo, AsyncSnapshot<usermodel> snapshot) async {
     try {
       if (snapshot.data==null) {
@@ -200,46 +200,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
 
 
-  void _showEditProfileDialog(BuildContext context, String userEmail,AsyncSnapshot<usermodel> snapshot) {
-    TextEditingController nameController = TextEditingController();
-    TextEditingController contactNoController = TextEditingController();
 
+  void _showEditProfileDialog(BuildContext context, String userEmail, AsyncSnapshot<usermodel> snapshot) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Profile'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _showEditNameDialog(
-                        context, nameController, contactNoController,snapshot);
-                  },
-                  child: const Text('Edit Name'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Choose your desired button color
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _showEditProfileImageDialog(context);
-                  },
-                  child: const Text('Edit Profile Image'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Choose your desired button color
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
+        return SimpleDialog(
+          title: const Text('Update Profile'),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                _showEditNameDialog(context, snapshot);
               },
-              child: const Text('Cancel'),
+              child: const Text('Update Name'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                _updateProfileImage(context,snapshot);
+              },
+              child: const Text('Update Profile Image'),
             ),
           ],
         );
@@ -247,7 +226,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(BuildContext context, TextEditingController nameController, TextEditingController contactNoController, AsyncSnapshot<usermodel> snapshot) {
+  void _showEditNameDialog(BuildContext context, AsyncSnapshot<usermodel> snapshot) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController contactNoController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -270,7 +252,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                // Use the TextEditingController values for updating
                 await _handleUpdateProfile(
                   nameController.text,
                   contactNoController.text,
@@ -296,10 +277,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
 
-  void _showEditProfileImageDialog(BuildContext context) {
-    // Implement code to allow the user to choose a new profile image
-    // You can use the image_picker package or any other image picking method here
-    print('Editing Profile Image...');
-    Navigator.of(context).pop(); // Close the dialog
+  void _updateProfileImage(BuildContext context,AsyncSnapshot<usermodel> snapshot) async {
+    final ImagePicker _picker = ImagePicker();
+    XFile? imageFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // Add logic to update the profile image
+      // You can upload the image to a server or use it locally
+      String imageUrl = imageFile.path;
+      final user = snapshot.data;
+      String userEmail = user?.email ?? '';
+      await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+
+      setState(() {
+        profileImageUrl = imageUrl;
+      });
+    }
+
+    Navigator.of(context).pop();
   }
 }

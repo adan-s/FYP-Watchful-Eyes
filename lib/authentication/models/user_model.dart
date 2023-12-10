@@ -12,6 +12,7 @@ class usermodel{
   final String gender;
   final String password;
   final String confirmPassword;
+  final String profileImage;
 
 
   const usermodel({
@@ -26,6 +27,7 @@ class usermodel{
     required this.gender,
     required this.password,
     required this.confirmPassword,
+    required this.profileImage,
 
 
   });
@@ -44,7 +46,7 @@ class usermodel{
       "Gender":gender,
       "Password":password,
       "ConfirmPassword":confirmPassword,
-
+      "ProfileImage":profileImage,
 
     };
   }
@@ -61,7 +63,8 @@ class usermodel{
         cnic: data["CNIC"],
         gender: data["Gender"],
         password: data["Password"],
-        confirmPassword: data["ConfirmPassword"]
+        confirmPassword: data["ConfirmPassword"],
+        profileImage: data["ProfileImage"]
 
     );
 

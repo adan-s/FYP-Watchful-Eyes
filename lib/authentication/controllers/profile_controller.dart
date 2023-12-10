@@ -75,4 +75,33 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> updateProfileImage({
+    required String email,
+    required String imageUrl,
+  }) async {
+    try {
+      if (email.isEmpty) {
+        Get.snackbar("Error", "User email is empty");
+        return;
+      }
+
+      // Check if the document with the specified email exists
+      var userDoc = await _database.collection('Users').where('Email', isEqualTo: email).get();
+      if (userDoc.docs.isEmpty) {
+        Get.snackbar("Error", "User with email $email not found");
+        return;
+      }
+
+      // Update the document with the new profile image URL
+      await _database.collection('Users').doc(userDoc.docs.first.id).update({
+        'ProfileImage': imageUrl,
+      });
+
+      Get.snackbar("Success", "Profile image updated successfully");
+    } catch (e) {
+      print('Error updating profile image: $e');
+      Get.snackbar("Error", "Failed to update profile image");
+    }
+  }
+
 }

@@ -264,6 +264,7 @@ class _SignupState extends State<Signup> {
               gender: controller.gender.text.trim(),
               password: controller.password.text.trim(),
               confirmPassword: controller.confirmPassword.text.trim(),
+              profileImage: " "
 
             );
             Signupcontroller.instance.createUser(user);
