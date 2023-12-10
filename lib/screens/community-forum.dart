@@ -13,7 +13,7 @@ class CommunityForumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Number of tabs including the main content
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           flexibleSpace: Container(
@@ -33,6 +33,7 @@ class CommunityForumPage extends StatelessWidget {
           actions: [
             ResponsiveAppBarActions(),
           ],
+
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.home, color: Colors.white)),

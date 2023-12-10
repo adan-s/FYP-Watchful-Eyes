@@ -20,18 +20,23 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Safety Directory',
-                style: TextStyle(color: Colors.white),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
               ),
-              ResponsiveAppBarActions(),
-            ],
+            ),
+          ),
+          title: const Text(
+            'Safety Directory',
+            style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
+          actions: [
+            ResponsiveAppBarActions(),
+          ],
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.warning, color: Colors.white)),
