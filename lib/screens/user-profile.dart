@@ -1,10 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'dart:html' as html;
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fyp/authentication/controllers/profile_controller.dart';
 import 'package:fyp/authentication/models/user_model.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:image_picker_web/image_picker_web.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+
+
+
+
 
 import 'community-forum.dart';
 
@@ -276,24 +287,71 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+  Future<void> _updateProfileImage(BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
+    try {
+      dynamic imageFile;
 
-  void _updateProfileImage(BuildContext context,AsyncSnapshot<usermodel> snapshot) async {
-    final ImagePicker _picker = ImagePicker();
-    XFile? imageFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (kIsWeb) {
+        // Use ImagePickerWeb to get image as File
+        //imageFile = await ImagePickerWeb.getImage(outputType: ImageType.file) as html.File?;
+      } else {
+        final ImagePicker _picker = ImagePicker();
+        imageFile = await _picker.pickImage(source: ImageSource.gallery);
+      }
 
-    if (imageFile != null) {
-      // Add logic to update the profile image
-      // You can upload the image to a server or use it locally
-      String imageUrl = imageFile.path;
-      final user = snapshot.data;
-      String userEmail = user?.email ?? '';
-      await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+      if (imageFile != null) {
+        String imageUrl = '';
+        Uint8List data;
 
-      setState(() {
-        profileImageUrl = imageUrl;
-      });
+        if (imageFile is File) {
+          data = await imageFile.readAsBytes();
+        } else if (imageFile is XFile) {
+          data = await imageFile.readAsBytes();
+        } else {
+          throw Exception("Unsupported image file type");
+        }
+
+        final user = snapshot.data;
+        String userEmail = user?.email ?? '';
+        final metadata = SettableMetadata(contentType: 'image/jpeg');
+        final storageRef = FirebaseStorage.instance.ref();
+
+        firebase_storage.UploadTask? uploadTask;
+
+        uploadTask = storageRef.child("uploadImage/$userEmail.jpg").putData(data, metadata);
+
+        await uploadTask!.whenComplete(() async {
+          imageUrl = await storageRef.child("uploadImage/$userEmail.jpg").getDownloadURL();
+          await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+          setState(() {
+            profileImageUrl = imageUrl;
+          });
+        });
+      }
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      print('Error updating profile image: $e');
+      // Handle the error as needed
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to update profile image. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
-
-    Navigator.of(context).pop();
   }
+
+
 }

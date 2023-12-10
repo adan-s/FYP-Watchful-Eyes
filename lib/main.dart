@@ -1,20 +1,28 @@
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/home.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/user-profile.dart';
 import 'package:get/get.dart';
-void main() async {
+
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: "AIzaSyDex47P0QzSiSZyTW9IJgp-bKxlXnqdLEk",
-      projectId: "watchfuleyes-c2a9d",
-      messagingSenderId: "321253756082",
-      appId: "1:321253756082:android:5aa51edcfa0d845e788dab",
+      apiKey: 'AIzaSyBhcF3CgybYcpRRAk3TE-ZvgFlkJRagmgU',
+      appId: '1:321253756082:web:9843f6a0837010ea788dab',
+      messagingSenderId: '321253756082',
+      projectId: 'watchfuleyes-c2a9d',
+      authDomain: 'watchfuleyes-c2a9d.firebaseapp.com',
+      databaseURL: 'https://watchfuleyes-c2a9d-default-rtdb.firebaseio.com',
+      storageBucket: 'gs://watchfuleyes-c2a9d.appspot.com',
     ),
   );
-  runApp(MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Homescreen(),
+      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

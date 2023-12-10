@@ -58,13 +58,12 @@ dependencies:
   animated_text_kit: ^4.2.2
   carousel_slider: ^4.2.1
   video_player: ^2.8.1
-
-assets:
-  - assets/homepage.png
+  image_picker_web: ^3.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  webdev: ^3.0.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -108,6 +107,8 @@ flutter:
     - assets/mapp.jpg
     - assets/notify.png
     - assets/panic.jpg
+    - assets/homepage.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
