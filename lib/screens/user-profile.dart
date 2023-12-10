@@ -11,13 +11,9 @@ import 'package:fyp/authentication/controllers/profile_controller.dart';
 import 'package:fyp/authentication/models/user_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker_web/image_picker_web.dart';
-import 'package:image_picker_web/image_picker_web.dart';
 
+import 'community-forum.dart'; // Removed redundant import
 
-
-
-
-import 'community-forum.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
@@ -75,7 +71,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
             child: Center(
               child: FutureBuilder<usermodel>(
                 future: controller.getUserData(),
@@ -179,9 +178,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
 
-  Future<void> _handleUpdateProfile(String username, String contactNo, AsyncSnapshot<usermodel> snapshot) async {
+  Future<void> _handleUpdateProfile(String username, String contactNo,
+      AsyncSnapshot<usermodel> snapshot) async {
     try {
-      if (snapshot.data==null) {
+      if (snapshot.data == null) {
         // Handle the case where user data is not available
         print(snapshot.data);
         print('User data not found. Cannot update profile.');
@@ -208,11 +208,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
 
-
-
-
-
-  void _showEditProfileDialog(BuildContext context, String userEmail, AsyncSnapshot<usermodel> snapshot) {
+  void _showEditProfileDialog(BuildContext context, String userEmail,
+      AsyncSnapshot<usermodel> snapshot) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -227,7 +224,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             SimpleDialogOption(
               onPressed: () {
-                _updateProfileImage(context,snapshot);
+                _updateProfileImage(context, snapshot);
               },
               child: const Text('Update Profile Image'),
             ),
@@ -237,7 +234,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(BuildContext context, AsyncSnapshot<usermodel> snapshot) {
+  void _showEditNameDialog(BuildContext context,
+      AsyncSnapshot<usermodel> snapshot) {
     TextEditingController nameController = TextEditingController();
     TextEditingController contactNoController = TextEditingController();
 
@@ -293,7 +291,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       if (kIsWeb) {
         // Use ImagePickerWeb to get image as File
-        //imageFile = await ImagePickerWeb.getImage(outputType: ImageType.file) as html.File?;
+        imageFile = await ImagePickerWeb.getImageAsFile();
       } else {
         final ImagePicker _picker = ImagePicker();
         imageFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -312,33 +310,36 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
 
         final user = snapshot.data;
-        String userEmail = user?.email ?? '';
-        final metadata = SettableMetadata(contentType: 'image/jpeg');
-        final storageRef = FirebaseStorage.instance.ref();
 
-        firebase_storage.UploadTask? uploadTask;
+        if (user != null) {
+          String userEmail = user.email ?? '';
+          final metadata = SettableMetadata(contentType: 'image/*');
+          final storageRef = FirebaseStorage.instance.ref();
 
-        uploadTask = storageRef.child("uploadImage/$userEmail.jpg").putData(data, metadata);
+          firebase_storage.UploadTask? uploadTask;
 
-        await uploadTask!.whenComplete(() async {
-          imageUrl = await storageRef.child("uploadImage/$userEmail.jpg").getDownloadURL();
-          await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
-          setState(() {
-            profileImageUrl = imageUrl;
+          uploadTask = storageRef.child("uploadImage/$userEmail.jpeg").putData(data, metadata);
+
+          await uploadTask!.whenComplete(() async {
+            imageUrl = await storageRef.child("uploadImage/$userEmail.jpeg").getDownloadURL();
+            await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+            setState(() {
+              profileImageUrl = imageUrl;
+            });
           });
-        });
+        } else {
+          print('User data is null. Cannot upload image.');
+        }
       }
-
-      Navigator.of(context).pop();
     } catch (e) {
-      print('Error updating profile image: $e');
+      print('Error uploading image: $e');
       // Handle the error as needed
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text('Failed to update profile image. Please try again.'),
+            content: Text('Failed to upload profile image. Please try again.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -352,6 +353,4 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
     }
   }
-
-
 }

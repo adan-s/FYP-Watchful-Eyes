@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 
 class PostNewItemPage extends StatefulWidget {
   const PostNewItemPage({Key? key}) : super(key: key);
@@ -13,12 +14,13 @@ class PostNewItemPage extends StatefulWidget {
 }
 
 class _PostNewItemPageState extends State<PostNewItemPage> {
-  List<XFile> _selectedImages = [];
+  PickedFile? _selectedImage;
   TextEditingController _descriptionController = TextEditingController();
-  Future<String?> _uploadImage(XFile image) async {
+
+  Future<String?> _uploadImage(PickedFile image) async {
     String fileName = DateTime.now().microsecondsSinceEpoch.toString();
     Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDireImages = referenceRoot.child('images');
+    Reference referenceDireImages = referenceRoot.child('image/');
     Reference referenceImageaToUpload = referenceDireImages.child(fileName);
 
     try {
@@ -36,25 +38,30 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
   Future<void> _postNewItem() async {
     String description = _descriptionController.text;
 
-    // Upload the first selected image and get its URL
     String? imageUrl;
-    if (_selectedImages.isNotEmpty) {
-      imageUrl = await _uploadImage(_selectedImages.first);
+    if (_selectedImage != null) {
+      imageUrl = await _uploadImage(_selectedImage!);
     }
 
     Map<String, dynamic> newItem = {
       'description': description,
-      'imageUrl': imageUrl,
     };
 
-    // Add the new item to the 'items' collection in Firestore
-    await FirebaseFirestore.instance.collection('items').add(newItem);
+    if (imageUrl != null) {
+      newItem['imageUrl'] = imageUrl;
+    }
 
-    _descriptionController.clear();
-    setState(() {
-      _selectedImages.clear();
-    });
+    try {
+      // Add the new item to the 'items' collection in Firestore
+      await FirebaseFirestore.instance.collection('items').add(newItem);
+
+      _descriptionController.clear();
+    } catch (e) {
+      print("Error posting a new item: $e");
+      // Handle the error as needed
+    }
   }
+
 
 
   @override
@@ -120,32 +127,29 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (_selectedImages.isNotEmpty)
-          Container(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _selectedImages.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _buildImageWidget(_selectedImages[index].path),
-                );
-              },
-            ),
+        if (_selectedImage != null)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _buildImageWidget(_selectedImage!.path),
           ),
         ElevatedButton(
           onPressed: () async {
-            final XFile? pickedImage = await ImagePicker().pickImage(
-              source: ImageSource.gallery,
-            );
-            if (pickedImage != null) {
+            PickedFile? imageFile;
+
+            if (kIsWeb) {
+              imageFile = (await ImagePickerWeb.getImageAsFile()) as PickedFile?;
+            } else {
+              final ImagePicker _picker = ImagePicker();
+              imageFile = await _picker.pickImage(source: ImageSource.gallery) as PickedFile?;
+            }
+
+            if (imageFile != null) {
               setState(() {
-                _selectedImages.add(pickedImage);
+                _selectedImage = imageFile;
               });
             }
           },
-          child: const Text('Pick Images'),
+          child: const Text('Pick Image'),
         ),
       ],
     );
@@ -171,6 +175,7 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
       );
     }
   }
+
 
 
   Widget _buildDescriptionInput() {

@@ -77,18 +77,24 @@ class ProfileController extends GetxController {
 
   Future<void> updateProfileImage({required String email, required String imageUrl}) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          doc.reference.update({'profileImage': imageUrl});
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('Email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        querySnapshot.docs.forEach((doc) async {
+          await doc.reference.update({'profileImage': imageUrl});
         });
-      });
+
+        print('Profile image updated successfully');
+      } else {
+        print('User with email $email not found');
+      }
     } catch (e) {
       print('Error updating profile image: $e');
       // Handle the error as needed
     }
   }
+
 }
