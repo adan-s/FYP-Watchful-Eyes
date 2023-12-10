@@ -25,9 +25,9 @@ class CommunityForumPage extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
+          title: Text(
             'Community Forum',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
           ),
           centerTitle: true,
           actions: [
