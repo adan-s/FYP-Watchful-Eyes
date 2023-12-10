@@ -10,6 +10,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 
 
 class UserPanel extends StatefulWidget {
@@ -125,7 +126,22 @@ class _UserPanelState extends State<UserPanel> with SingleTickerProviderStateMix
                             ],
                           ),
                           SizedBox(height: 46),
-
+                          // AnimatedButton
+                          AnimatedButton(
+                            height: 70,
+                            width: 200,
+                            text: 'SUBMIT',
+                            isReverse: true,
+                            selectedTextColor: Colors.black,
+                            transitionType: TransitionType.LEFT_TO_RIGHT,
+                            backgroundColor: Colors.black,
+                            borderColor: Colors.white,
+                            borderRadius: 50,
+                            borderWidth: 2,
+                            onPress: () {
+                              // Handle button press
+                            },
+                          ),
 
                         ],
                       ),
