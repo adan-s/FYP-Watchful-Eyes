@@ -24,14 +24,13 @@ class _BlogPageState extends State<BlogPage> {
   List<VideoPlayerWidget> videos = [
     VideoPlayerWidget(
       videoPath:
-      '/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
+          '/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
       key: UniqueKey(),
       title: 'Choke Hold Defenses - Women MUST Know Self-Defense',
       imagePath: '/video1.PNG',
     ),
     VideoPlayerWidget(
-      videoPath:
-      '/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
+      videoPath: '/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
       key: UniqueKey(),
       title: '7 Self-Defense Techniques for Women from Professionals',
       imagePath: '/video2.PNG',
@@ -187,7 +186,7 @@ class _BlogPageState extends State<BlogPage> {
                             leading: CircleAvatar(
                               backgroundColor: Colors.white,
                               backgroundImage: AssetImage(
-                                videos[index].imagePath, // Use the image path from your Video model
+                                videos[index].imagePath,
                               ),
                             ),
                             title: Text(
@@ -204,7 +203,6 @@ class _BlogPageState extends State<BlogPage> {
                         },
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -249,7 +247,7 @@ class _BlogPageState extends State<BlogPage> {
                               ),
                             if (selectedBlogIndex == 0)
                               Container(
-                                height: 550, // Adjust the height as needed
+                                height: MediaQuery.of(context).size.width * 0.5,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -438,21 +436,20 @@ class _BlogPageState extends State<BlogPage> {
                       if (selectedBlogIndex == 1)
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child:
-                          Center(
+                          child: Center(
                             child: Text(
-                            'Do you know what to do if an adult is at risk of harm and abuse?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              'Do you know what to do if an adult is at risk of harm and abuse?',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                        ),
                       if (selectedBlogIndex == 1)
                         Container(
-                          height: 550, // Adjust the height as needed
+                          height: MediaQuery.of(context).size.width * 0.5,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             image: DecorationImage(
@@ -545,18 +542,20 @@ class _BlogPageState extends State<BlogPage> {
                       if (selectedBlogIndex == 2)
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            '“Where’s Dave?” 6 tips for a silly but safe night out',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          child: Center(
+                            child: Text(
+                              '“Where’s Dave?” 6 tips for a silly but safe night out',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       if (selectedBlogIndex == 2)
                         Container(
-                          height: 550, // Adjust the height as needed
+                          height: MediaQuery.of(context).size.width * 0.5,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             image: DecorationImage(
