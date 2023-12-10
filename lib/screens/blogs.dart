@@ -239,7 +239,7 @@ class _BlogPageState extends State<BlogPage> {
                                 child: Text(
                                   'We’re in this together: tackling anti-social behaviour as a community',
                                   style: TextStyle(
-                                    fontSize: 24,
+                                    fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -440,7 +440,7 @@ class _BlogPageState extends State<BlogPage> {
                             child: Text(
                               'Do you know what to do if an adult is at risk of harm and abuse?',
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -546,7 +546,7 @@ class _BlogPageState extends State<BlogPage> {
                             child: Text(
                               '“Where’s Dave?” 6 tips for a silly but safe night out',
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -802,7 +802,7 @@ class _BlogPageState extends State<BlogPage> {
                               ? videos[selectedVideoIndex].title
                               : "",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
