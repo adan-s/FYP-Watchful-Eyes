@@ -43,12 +43,13 @@ android {
         }
     }
 
-    // Move the dependencies block to the correct location
-    dependencies {
-        implementation 'com.android.support:multidex:1.0.3'
-    }
+
 }
 
 flutter {
     source '../..'
+}
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
 }
