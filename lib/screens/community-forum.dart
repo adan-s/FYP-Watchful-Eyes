@@ -101,6 +101,7 @@ class HomeTab extends StatelessWidget {
         List<Post> posts = snapshot.data!.docs.map((doc) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Post(
+            postId: data['id'] ?? '', // Make sure to set the postId
             username: data['username'] ?? 'Unknown User',
             description: data['description'] ?? '',
             imageUrl: data['imageUrl'] ?? '',
@@ -108,6 +109,7 @@ class HomeTab extends StatelessWidget {
             comments: data['comments'] ?? 0,
           );
         }).toList();
+
 
         return ListView.builder(
           itemCount: posts.length,
@@ -122,13 +124,15 @@ class HomeTab extends StatelessWidget {
 
 
 class Post {
+  final String postId;
   final String username;
   final String description;
   final String imageUrl;
-  final int likes;
+  int likes;
   final int comments;
 
   Post({
+    required this.postId,
     required this.username,
     required this.description,
     required this.imageUrl,
@@ -138,10 +142,17 @@ class Post {
 }
 
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   final Post post;
 
   const PostCard({Key? key, required this.post}) : super(key: key);
+
+  @override
+  _PostCardState createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  bool isLiked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -160,8 +171,8 @@ class PostCard extends StatelessWidget {
                   'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
                 ),
               ),
-              title: Text(post.username),
-              subtitle: Text(post.description),
+              title: Text(widget.post.username),
+              subtitle: Text(widget.post.description),
             ),
             LayoutBuilder(
               builder: (context, constraints) {
@@ -173,7 +184,7 @@ class PostCard extends StatelessWidget {
                 return Container(
                   width: postWidth,
                   child: Image.network(
-                    post.imageUrl,
+                    widget.post.imageUrl,
                     fit: BoxFit.cover,
                     height: MediaQuery.of(context).size.height * 0.4,
                   ),
@@ -188,14 +199,16 @@ class PostCard extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.thumb_up),
+                        icon: Icon(
+                          isLiked ? Icons.thumb_up_alt : Icons.thumb_up,
+                          color: isLiked ? Colors.blue : null,
+                        ),
                         onPressed: () {
                           // Handle like button press
-                          // For now, let's print a message to the console
-                          print('Liked!');
+                          handleLikeButton();
                         },
                       ),
-                      Text('${post.likes} Likes'), // Display fetched likes count
+                      Text('${widget.post.likes} Likes'), // Display fetched likes count
                     ],
                   ),
                   Row(
@@ -206,7 +219,7 @@ class PostCard extends StatelessWidget {
                           showCommentsDialog(context);
                         },
                       ),
-                      Text('${post.comments} Comments'),
+                      Text('${widget.post.comments} Comments'),
                     ],
                   ),
                 ],
@@ -217,6 +230,47 @@ class PostCard extends StatelessWidget {
       ),
     );
   }
+
+  void handleLikeButton() {
+    String postId = widget.post.postId;
+    print('Post ID: $postId');
+
+    if (isLiked) {
+      // User has already liked the post, remove like
+      setState(() {
+        isLiked = false;
+        widget.post.likes--;
+      });
+      removeLike(postId);
+    } else {
+      // User hasn't liked the post, add like
+      setState(() {
+        isLiked = true;
+        widget.post.likes++;
+      });
+      addLike(postId);
+    }
+  }
+
+  void addLike(String postId) {
+    FirebaseFirestore.instance.collection('items').where('id', isEqualTo: postId).get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.update({'likes': FieldValue.increment(1)});
+      });
+    });
+  }
+
+  void removeLike(String postId) {
+    FirebaseFirestore.instance.collection('items').where('id', isEqualTo: postId).get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.update({'likes': FieldValue.increment(-1)});
+      });
+    });
+  }
+
+
+
+
 
   // Function to show comments in a dialog with a text field for adding a comment
   void showCommentsDialog(BuildContext context) {

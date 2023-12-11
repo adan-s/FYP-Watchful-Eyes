@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/user_repository.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,16 +19,17 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
   PickedFile? _selectedImage;
   TextEditingController _descriptionController = TextEditingController();
   String checkImageUrl = '';
+  late Map<String, dynamic> newItem;
 
   Future<String?> _uploadImage(PickedFile image) async {
     String fileName = DateTime.now().microsecondsSinceEpoch.toString();
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDireImages = referenceRoot.child('image/');
-    Reference referenceImageaToUpload = referenceDireImages.child(fileName);
+    Reference referenceImageToUpload = referenceDireImages.child(fileName);
 
     try {
-      await referenceImageaToUpload.putFile(File(image.path));
-      checkImageUrl = await referenceImageaToUpload.getDownloadURL();
+      await referenceImageToUpload.putFile(File(image.path));
+      checkImageUrl = await referenceImageToUpload.getDownloadURL();
       print('${checkImageUrl}');
       return checkImageUrl;
     } catch (error) {
@@ -47,7 +47,7 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
     String description = _descriptionController.text;
 
     if (_selectedImage != null) {
-      imageUrl = (await _uploadImage(_selectedImage!))!;
+      checkImageUrl = (await _uploadImage(_selectedImage!)) ?? '';
     }
 
     try {
@@ -59,19 +59,16 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
         // Fetch the username from the user data
         String username = user.username ?? 'DefaultUsername';
 
-        Map<String, dynamic> newItem = {
+        String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+        String uniqueID = '$fileName-${DateTime.now().microsecondsSinceEpoch}';
+
+        newItem = {
+          'id': uniqueID,
           'description': description,
           'username': username,
           'likes': 0,
           'comments': 0,
         };
-
-        if (checkImageUrl != null) {
-          newItem['imageUrl'] = checkImageUrl;
-        }
-
-        // Add the new item to the 'items' collection in Firestore
-        await FirebaseFirestore.instance.collection('items').add(newItem);
 
         _descriptionController.clear();
       } else {
@@ -82,8 +79,6 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
       // Handle the error as needed
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,6 +163,11 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               checkImageUrl =await referenceImageaToUpload.getDownloadURL();
               print('${checkImageUrl}');
               print('check hy');
+              print('${checkImageUrl}');
+              newItem['imageUrl'] = checkImageUrl;
+              // Add the new item to the 'items' collection in Firestore
+              await FirebaseFirestore.instance.collection('items').add(newItem);
+
             }catch(error)
             {
 
