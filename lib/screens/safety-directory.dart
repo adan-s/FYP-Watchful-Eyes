@@ -6,6 +6,8 @@ import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'blogs.dart';
+
 class SafetyDirectory extends StatefulWidget {
   const SafetyDirectory({Key? key}) : super(key: key);
 
@@ -111,6 +113,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
+          );
+        }),
+        _buildNavBarItem("Blogs", Icons.newspaper, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
         _buildIconButton(

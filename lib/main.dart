@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/blogs.dart';
 import 'package:fyp/screens/home.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/post-new-item.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PostNewItemPage(),
+      home: BlogPage(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/safety-directory.dart';
+import 'blogs.dart';
 import 'community-forum.dart';
 import 'map.dart';
 import 'user-profile.dart';
@@ -388,6 +389,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
+          );
+        }),
+        _buildNavBarItem("Blogs", Icons.newspaper, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
         _buildIconButton(

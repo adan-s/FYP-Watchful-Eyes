@@ -7,6 +7,8 @@ import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'blogs.dart';
+
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -261,6 +263,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
+          );
+        }),
+        _buildNavBarItem("Blogs", Icons.newspaper, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
         _buildIconButton(
