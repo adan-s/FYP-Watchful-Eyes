@@ -125,7 +125,7 @@ flutter:
     - assets/loading.json
     - assets/procedure3.jpg
     - assets/images.png
-    - assets/Safety-Tips-for-Women.mp4
+
     - assets/pepper-spray.png
     - assets/homepage.png
     - assets/stick.png
@@ -136,8 +136,7 @@ flutter:
     - assets/video3.PNG
     - assets/procedure1.jpg
     - assets/security.json
-    - assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4
-    - assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4
+
     - assets/loginbgg.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

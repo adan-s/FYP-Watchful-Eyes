@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fyp/screens/community-forum.dart';
+import 'package:fyp/screens/crime-registeration-form.dart';
+import 'package:fyp/screens/home.dart';
+import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/usermanagement.dart';
 
-class AdminDashboard extends StatelessWidget {
+class AdminDashboard extends StatefulWidget {
+  @override
+  _AdminDashboardState createState() => _AdminDashboardState();
+}
+class _AdminDashboardState extends State<AdminDashboard> {
+  TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -21,7 +30,7 @@ class AdminDashboard extends StatelessWidget {
           PopupMenuItem(
             child: ListTile(
               leading: Icon(Icons.person, color: Colors.white),
-              title: Text('Profile', style: TextStyle(fontFamily: 'outfit', color: Colors.white)),
+              title: Text('Profile', style: TextStyle(color: Colors.white)),
               onTap: () {
                 // Handle the Profile option
                 Navigator.pop(context); // Close the menu
@@ -31,7 +40,7 @@ class AdminDashboard extends StatelessWidget {
           PopupMenuItem(
             child: ListTile(
               leading: Icon(Icons.exit_to_app, color: Colors.white),
-              title: Text('Logout', style: TextStyle(fontFamily: 'outfit', color: Colors.white)),
+              title: Text('Logout', style: TextStyle(color: Colors.white)),
               onTap: () {
                 // Handle the Logout option
                 Navigator.pop(context); // Close the menu
@@ -51,7 +60,7 @@ class AdminDashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Admin Dashboard',
-          style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -77,27 +86,33 @@ class AdminDashboard extends StatelessWidget {
           }),
           SizedBox(width: 8),
           _buildNavBarItem("Community Forum", Icons.group, () {
-            // ... (Navigate to Community Forum page)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CommunityForumPage()),
+            );
           }),
           SizedBox(width: 8),
           _buildNavBarItem("Map", Icons.map, () {
-            // ... (Navigate to Map page)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Homescreen()),
+            );
           }),
           SizedBox(width: 8),
           _buildNavBarItem("Safety Directory", Icons.book, () {
-            // ... (Navigate to Safety Directory page)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SafetyDirectory()),
+            );
           }),
           SizedBox(width: 8),
           _buildNavBarItem("Crime Registration", Icons.report, () {
-            // ... (Navigate to Crime Registration page)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CrimeRegistrationForm()),
+            );
           }),
-          SizedBox(width: 8),
-          _buildIconButton(
-            icon: Icons.person,
-            onPressed: () {
-              // ... (Navigate to User Profile page)
-            },
-          ),
+
         ],
       ),
       drawer: Drawer(
@@ -157,7 +172,6 @@ class AdminDashboard extends StatelessWidget {
                         Text(
                           'Watchful Eyes',
                           style: TextStyle(
-                            fontFamily: 'outfit',
                             color: Colors.white,
                             fontSize: 24,
                           ),
@@ -165,7 +179,6 @@ class AdminDashboard extends StatelessWidget {
                         Text(
                           'Admin Dashboard',
                           style: TextStyle(
-                            fontFamily: 'outfit',
                             color: Colors.white,
                             fontSize: 16,
                           ),
@@ -180,7 +193,6 @@ class AdminDashboard extends StatelessWidget {
                 title: Text(
                   'User Management',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -197,7 +209,6 @@ class AdminDashboard extends StatelessWidget {
                 title: Text(
                   'Analytics and Reports',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -214,7 +225,6 @@ class AdminDashboard extends StatelessWidget {
                 title: Text(
                   'Post Approval',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -228,7 +238,6 @@ class AdminDashboard extends StatelessWidget {
                 title: Text(
                   'Registered Complaints',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -245,7 +254,6 @@ class AdminDashboard extends StatelessWidget {
                 title: Text(
                   'Logout',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -283,36 +291,104 @@ class AdminDashboard extends StatelessWidget {
                     child: Container(
                       width: screenWidth < 600 ? screenWidth - 32 : 250,
                       child: TextField(
-                        style: TextStyle(color: Colors.black),
+                        controller: _searchController,
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: '  Search...',
-                          hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.grey),
-                          suffixIcon: Icon(Icons.search, color: Colors.black),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          prefixIconConstraints: BoxConstraints(
-                            maxHeight: 24,
-                            maxWidth: 24,
+                          hintStyle: TextStyle(color: Colors.white),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.search, color: Colors.white),
+                            onPressed: () async {
+                              final email = _searchController.text.trim();
+
+                              if (email.isNotEmpty) {
+                                try {
+                                  final userSnapshot = await getUserByUsername(email);
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        child: Container(
+                                          width: 300, // Set your desired width
+                                          height: 400, // Set your desired height
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xFF000104),
+                                                Color(0xFF0E121B),
+                                                Color(0xFF141E2C),
+                                                Color(0xFF18293F),
+                                                Color(0xFF193552),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                            borderRadius: BorderRadius.circular(12.0),
+                                          ),
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '           User Data Found',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white, // Add text color as needed
+                                                ),
+                                              ),
+                                              SizedBox(height: 16),
+                                              UserDataDisplay(userSnapshot: userSnapshot),
+                                              SizedBox(height: 16),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text('Close', style: TextStyle(color: Colors.white)), // Add text color as needed
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+
+
+
+
+                                } catch (error) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('User Not Found'),
+                                        content: Text('The user with the given email does not exist.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Close'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              }
+                            },
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    padding: EdgeInsets.only(top: 10, right: 10),
-                    child: GestureDetector(
-                      onTapDown: (details) {
-                        _showProfileMenu(context, details.globalPosition);
-                      },
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage("assets/admin.png"),
                       ),
                     ),
                   ),
@@ -353,7 +429,6 @@ class AdminDashboard extends StatelessWidget {
                           Text(
                             'Total Number of Users',
                             style: TextStyle(
-                              fontFamily: 'outfit',
                               color: Colors.white,
                               fontSize: 18,
                             ),
@@ -371,20 +446,20 @@ class AdminDashboard extends StatelessWidget {
                               }
 
                               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                return Text('0',
-                                    style: TextStyle(
-                                      fontFamily: 'outfit',
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ));
+                                return Text(
+                                  '0',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
                               }
 
                               int totalUsers = snapshot.data!.docs.length;
                               return Text(
                                 '$totalUsers',
                                 style: TextStyle(
-                                  fontFamily: 'outfit',
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -397,7 +472,77 @@ class AdminDashboard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // ... (existing code)
+                // Total Registered Cases Card
+                Expanded(
+                  child: Card(
+                    elevation: 5.0,
+                    color: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF000104),
+                            Color(0xFF0E121B),
+                            Color(0xFF141E2C),
+                            Color(0xFF18293F),
+                            Color(0xFF193552),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Total Registered Cases',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          // Fetch and display the total number of registered cases
+                          StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance.collection('Complaints').snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
+
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                return Text(
+                                  '0',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }
+                              int totalRegisteredCases = snapshot.data!.docs.length;
+                              return Text(
+                                '$totalRegisteredCases',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             // ... (existing code)
@@ -405,7 +550,91 @@ class AdminDashboard extends StatelessWidget {
         ),
       ),
     );
+
   }
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserByUsername(String email) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('Email', isEqualTo: email)
+        .get();
+
+    if (userQuery.docs.isNotEmpty) {
+      return userQuery.docs.first;
+    } else {
+      return Future.error('User not found');
+    }
+  }
+  Widget UserDataDisplay({required DocumentSnapshot<Map<String, dynamic>> userSnapshot}) {
+    final userData = userSnapshot.data();
+
+    return userData != null
+        ? Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Email: ${userData['Email']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'First Name: ${userData['FirstName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Last Name: ${userData['LastName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'UserName: ${userData['UserName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Contact No: ${userData['ContactNo']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Dob: ${userData['DOB']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    )
+        : Text('User data not available');
+  }
+
+
+
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
     return IconButton(

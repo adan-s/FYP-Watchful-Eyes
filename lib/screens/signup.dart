@@ -20,7 +20,7 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
-
+  bool isEmailAuthentication = true;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(Signupcontroller());
@@ -68,6 +68,16 @@ class _SignupState extends State<Signup> {
         ),
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'First Name is required';
+        }
+        // Check if the input contains only alphabetical characters
+        if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+          return 'Enter a valid First Name (letters only)';
+        }
+        return null;
+      },
     );
 
     final lastNameField = TextFormField(
@@ -90,18 +100,44 @@ class _SignupState extends State<Signup> {
         ),
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Last Name is required';
+        }
+        // Check if the input contains only alphabetical characters
+        if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+          return 'Enter a valid Last Name (letters only)';
+        }
+        return null;
+      },
     );
+
 
     final emailField = TextFormField(
       autofocus: false,
       controller: controller.email,
       keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        if (controller.contactNo.text.isEmpty && (value == null || value.isEmpty)) {
+          return 'Email is required';
+        }
+
+        if (controller.contactNo.text.isNotEmpty && value != null && value.isNotEmpty) {
+          return 'Email should be empty';
+        }
+
+        if (value != null && value.isNotEmpty) {
+          if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b').hasMatch(value)) {
+            return 'Enter a valid email address';
+          }
+        }
+        return null;
+      },
       onSaved: (value) {
-        if (value != null) {
+        if (value != null && value.isNotEmpty) {
           controller.email.text = value;
         }
       },
-      textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -114,21 +150,44 @@ class _SignupState extends State<Signup> {
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
+
+
     final contactNoField = TextFormField(
       autofocus: false,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
-      onSaved: (value) {
-        if (value != null) {
+      validator: (value) {
+        if (controller.email.text.isEmpty && (value == null || value.isEmpty)) {
+          // If signing up with phone number and contact number is empty
+          return 'Contact number is required';
+        }
+
+        if (controller.email.text.isNotEmpty && value != null && value.isNotEmpty) {
+          // If signing up with email and contact number is not empty
+          return 'Contact number should be empty';
+        }
+
+        if (value != null && value.isNotEmpty) {
           // Format the phone number to comply with E.164 standards
-          final formattedPhoneNumber =
-              '+92$value'; // Assuming the country code for Pakistan is +92
+          final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
+          if (cleanedPhoneNumber.length == 13) {
+            return 'Enter a valid phone number with country code';
+          }
+        }
+
+        return null; // Validation passed
+      },
+      onSaved: (value) {
+        if (value != null && value.isNotEmpty) {
+          final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
+          final formattedPhoneNumber = '+92$cleanedPhoneNumber';
           controller.contactNo.text = formattedPhoneNumber;
         }
       },
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Contact No",
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -137,16 +196,25 @@ class _SignupState extends State<Signup> {
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
+
     final dobField = TextFormField(
       autofocus: false,
       controller: controller.dob,
       keyboardType: TextInputType.datetime,
-      onSaved: (value) {
-        if (value != null) {
-          controller.dob.text = value;
+      onTap: () async {
+
+        DateTime? selectedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+
+        // Update the controller with the selected date
+        if (selectedDate != null) {
+          controller.dob.text = "${selectedDate.month}/${selectedDate.day}/${selectedDate.year}";
         }
       },
-      textInputAction: TextInputAction.next,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Date of Birth is required';
@@ -169,6 +237,7 @@ class _SignupState extends State<Signup> {
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
+
 
     final passwordField = TextFormField(
       autofocus: false,
@@ -261,11 +330,23 @@ class _SignupState extends State<Signup> {
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            Signupcontroller.instance.RegisterUser(
-                controller.email.text.trim(), controller.password.text.trim());
-            /*Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
-              Get.to(()=> const OTPSCREEN());*/
-            final user = usermodel(
+            if (controller.email.text.isNotEmpty) {
+              // User is signing up with email
+              Signupcontroller.instance.RegisterUser(
+                controller.email.text.trim(),
+                controller.password.text.trim(),
+              );
+            } else if (controller.contactNo.text.isNotEmpty) {
+              // User is signing up with phone number
+              Signupcontroller.instance.PhoneAuthentication(
+                controller.contactNo.text.trim(),
+              );
+
+            }
+
+            // Additional code for creating the user and clearing fields
+            if (controller.email.text.isNotEmpty || controller.contactNo.text.isNotEmpty) {
+              final user = usermodel(
                 username: controller.username.text.trim(),
                 firstName: controller.firstName.text.trim(),
                 lastName: controller.lastName.text.trim(),
@@ -276,8 +357,19 @@ class _SignupState extends State<Signup> {
                 gender: controller.gender.text.trim(),
                 password: controller.password.text.trim(),
                 confirmPassword: controller.confirmPassword.text.trim(),
-                profileImage: " ");
-            Signupcontroller.instance.createUser(user);
+                profileImage: " ",
+              );
+              Signupcontroller.instance.createUser(user);
+              controller.username.clear();
+              controller.firstName.clear();
+              controller.lastName.clear();
+              controller.email.clear();
+              controller.contactNo.clear();
+              controller.dob.clear();
+              controller.password.clear();
+              controller.confirmPassword.clear();
+
+            }
           }
         },
         child: Row(
@@ -299,6 +391,7 @@ class _SignupState extends State<Signup> {
         ),
       ),
     );
+
 
     return Scaffold(
       body: Container(

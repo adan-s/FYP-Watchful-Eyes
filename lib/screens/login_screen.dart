@@ -44,17 +44,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    final lottieAnimation = kIsWeb
-        ? Expanded(
+    final lottieAnimation = LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 700) {
+          return Expanded(
             child: Container(
-              width: screenWidth * 0.5,
-              height: screenWidth * 0.5, // Set an appropriate height
+              width: constraints.maxWidth * 0.5,
+              height: constraints.maxWidth * 0.5, // Set an appropriate height
               child: Lottie.asset('assets/loginuser.json'),
             ),
-          )
-        : SizedBox.shrink();
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
 
     final emailField = TextFormField(
       autofocus: false,
@@ -249,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
-
+    final screenWidth = MediaQuery.of(context).size.width;
     final loginButton = Container(
       width:screenWidth * 0.5,
 
@@ -345,8 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Row(
           children: [
-            if (kIsWeb && screenWidth>700) lottieAnimation,
-
+            lottieAnimation,
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -355,14 +358,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: kIsWeb
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          height:kIsWeb
-                              ? 300
-                              : 470,
+                          height: 300,
                           child: Image.asset(
                             'assets/logo.png',
                             fit: BoxFit.contain,
@@ -421,7 +420,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
+  }
+
 
 Future<String?> forgetPassword(BuildContext context) async {
   TextEditingController emailController = TextEditingController();
