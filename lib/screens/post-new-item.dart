@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/user_repository.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../authentication/authentication_repo.dart';
 
 class PostNewItemPage extends StatefulWidget {
   const PostNewItemPage({Key? key}) : super(key: key);
@@ -15,7 +19,7 @@ class PostNewItemPage extends StatefulWidget {
 class _PostNewItemPageState extends State<PostNewItemPage> {
   PickedFile? _selectedImage;
   TextEditingController _descriptionController = TextEditingController();
-  String checkImageUrl='';
+  String checkImageUrl = '';
 
   Future<String?> _uploadImage(PickedFile image) async {
     String fileName = DateTime.now().microsecondsSinceEpoch.toString();
@@ -25,7 +29,7 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
 
     try {
       await referenceImageaToUpload.putFile(File(image.path));
-      checkImageUrl=await referenceImageaToUpload.getDownloadURL();
+      checkImageUrl = await referenceImageaToUpload.getDownloadURL();
       print('${checkImageUrl}');
       return checkImageUrl;
     } catch (error) {
@@ -36,34 +40,48 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
 
   String imageUrl = '';
 
+  final _userRepo = Get.put(UserRepository());
+  final _authRepo = Get.put(AuthenticationRepository());
 
   Future<void> _postNewItem() async {
     String description = _descriptionController.text;
 
-    String? imageUrl;
     if (_selectedImage != null) {
-      imageUrl = await _uploadImage(_selectedImage!);
-    }
-
-    Map<String, dynamic> newItem = {
-      'description': description,
-    };
-
-    if (imageUrl != null) {
-      newItem['imageUrl'] = imageUrl;
+      imageUrl = (await _uploadImage(_selectedImage!))!;
     }
 
     try {
-      // Add the new item to the 'items' collection in Firestore
-      await FirebaseFirestore.instance.collection('items').add(newItem);
+      // Retrieve user data using the repository
+      final email = _authRepo.firebaseUser.value?.email;
+      final user = await _userRepo.getUserDetails(email!);
 
-      _descriptionController.clear();
+      if (user != null) {
+        // Fetch the username from the user data
+        String username = user.username ?? 'DefaultUsername';
+
+        Map<String, dynamic> newItem = {
+          'description': description,
+          'username': username,
+          'likes': 0,
+          'comments': 0,
+        };
+
+        if (checkImageUrl != null) {
+          newItem['imageUrl'] = checkImageUrl;
+        }
+
+        // Add the new item to the 'items' collection in Firestore
+        await FirebaseFirestore.instance.collection('items').add(newItem);
+
+        _descriptionController.clear();
+      } else {
+        print('User not found in the database.');
+      }
     } catch (e) {
       print("Error posting a new item: $e");
       // Handle the error as needed
     }
   }
-
 
 
   @override
@@ -138,22 +156,22 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
           onPressed: () async {
             XFile? imageFile;
 
-              final ImagePicker _picker = ImagePicker();
-              String fileName = DateTime.now().microsecondsSinceEpoch.toString();
-              imageFile = await _picker.pickImage(source: ImageSource.gallery);
-              Reference referenceRoot = FirebaseStorage.instance.ref();
-              Reference referenceDireImages = referenceRoot.child('image/');
-              Reference referenceImageaToUpload = referenceDireImages.child(fileName);
-              try{
-                SettableMetadata metadata = SettableMetadata(contentType: 'image/jpeg');
-                await referenceImageaToUpload.putFile(File(imageFile!.path), metadata);
-                checkImageUrl =await referenceImageaToUpload.getDownloadURL();
-                print('${checkImageUrl}');
-                print('check hy');
-              }catch(error)
-              {
+            final ImagePicker _picker = ImagePicker();
+            String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+            imageFile = await _picker.pickImage(source: ImageSource.gallery);
+            Reference referenceRoot = FirebaseStorage.instance.ref();
+            Reference referenceDireImages = referenceRoot.child('image/');
+            Reference referenceImageaToUpload = referenceDireImages.child(fileName);
+            try{
+              SettableMetadata metadata = SettableMetadata(contentType: 'image/jpeg');
+              await referenceImageaToUpload.putFile(File(imageFile!.path), metadata);
+              checkImageUrl =await referenceImageaToUpload.getDownloadURL();
+              print('${checkImageUrl}');
+              print('check hy');
+            }catch(error)
+            {
 
-              }
+            }
 
             if (imageFile != null) {
               setState(() {
@@ -169,13 +187,13 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
 
 
   Widget _buildImageWidget(String path) {
-      // For other platforms, use Image.file
-      return Image.file(
-        File(path),
-        height: 80,
-        width: 80,
-        fit: BoxFit.cover,
-      );
+    // For other platforms, use Image.file
+    return Image.file(
+      File(path),
+      height: 80,
+      width: 80,
+      fit: BoxFit.cover,
+    );
   }
 
 
