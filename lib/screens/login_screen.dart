@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/signup.dart';
 import 'package:fyp/screens/user-panel.dart';
@@ -45,10 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final lottieAnimation = Container(
-      width: screenWidth * 0.5,
-      child: Lottie.asset('assets/loginuser.json'),
-    );
+    final lottieAnimation = kIsWeb
+        ? Expanded(
+            child: Container(
+              width: screenWidth * 0.5,
+              height: screenWidth * 0.5, // Set an appropriate height
+              child: Lottie.asset('assets/loginuser.json'),
+            ),
+          )
+        : SizedBox.shrink();
 
     final emailField = TextFormField(
       autofocus: false,
@@ -135,9 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .sendPasswordResetEmail(
                                         email: email,
                                       );
-                                      print("Password reset email sent to $email");
+                                      print(
+                                          "Password reset email sent to $email");
                                     } catch (e) {
-                                      print("Error sending password reset email: $e");
+                                      print(
+                                          "Error sending password reset email: $e");
                                     }
                                   }
                                 },
@@ -154,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           size: 40.0, color: Colors.black),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
@@ -192,7 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           size: 40.0, color: Colors.black),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Contact No",
@@ -241,7 +251,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final loginButton = Container(
-      width: screenWidth * 0.5,
+      width:screenWidth * 0.5,
+
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -269,7 +280,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 100,
                   width: 100,
                   child: Lottie.asset(
-                    'assets/loginloadingbar.json', // Replace with the correct path
+                    'assets/loginloadingbar.json',
+                    // Replace with the correct path
                     width: 300,
                     height: 300,
                   ),
@@ -280,7 +292,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
           try {
             controller.setOnLoginSuccess(() async {
-              await Future.delayed(Duration(seconds: 4)); // Simulating a 3-second delay
+              await Future.delayed(
+                  Duration(seconds: 4)); // Simulating a 3-second delay
               await fetchAndNavigateToUserProfile();
             });
             await controller.login();
@@ -317,11 +330,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-
     final errorText = Obx(() => Text(
-      controller.errorMessage.value,
-      style: TextStyle(color: Colors.red),
-    ));
+          controller.errorMessage.value,
+          style: TextStyle(color: Colors.red),
+        ));
 
     return Scaffold(
       body: Container(
@@ -333,9 +345,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Row(
           children: [
-            Expanded(
-              child: lottieAnimation,
-            ),
+            if (kIsWeb && screenWidth>700) lottieAnimation,
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -344,10 +355,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: kIsWeb
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height: 300,
+                          height:kIsWeb
+                              ? 300
+                              : 470,
                           child: Image.asset(
                             'assets/logo.png',
                             fit: BoxFit.contain,
@@ -358,7 +373,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 25),
                         passwordField,
                         SizedBox(height: 35),
-                        loginButton,
+                        Align(
+                          alignment: Alignment.center,
+                          child: loginButton,
+                        ),
                         SizedBox(height: 15),
                         errorText,
                         SizedBox(height: 15),
@@ -422,7 +440,7 @@ Future<String?> forgetPassword(BuildContext context) async {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email, color: Colors.black),
                 hintText: "Enter Email",
-                hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.black),
+                hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.black),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -450,4 +468,3 @@ Future<String?> forgetPassword(BuildContext context) async {
     },
   );
 }
-

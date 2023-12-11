@@ -7,8 +7,6 @@ import 'package:get/get.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Check if Firebase has not been initialized before
-  if (Firebase.apps.isEmpty) {
     try {
       // Initialize Firebase
       await Firebase.initializeApp(
@@ -26,8 +24,6 @@ void main() async {
       // Handle initialization errors
       print('Error initializing Firebase: $e');
     }
-  }
-
   runApp(const MyApp());
 }
 

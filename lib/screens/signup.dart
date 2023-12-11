@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/otp_screen.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../authentication/authentication_repo.dart';
 import '../authentication/controllers/signup_controller.dart';
@@ -37,12 +40,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.person, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "User-Name",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final firstNameField = TextFormField(
@@ -59,12 +62,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final lastNameField = TextFormField(
@@ -81,12 +84,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final emailField = TextFormField(
@@ -103,12 +106,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final contactNoField = TextFormField(
@@ -118,22 +121,21 @@ class _SignupState extends State<Signup> {
       onSaved: (value) {
         if (value != null) {
           // Format the phone number to comply with E.164 standards
-          final formattedPhoneNumber = '+92$value'; // Assuming the country code for Pakistan is +92
+          final formattedPhoneNumber =
+              '+92$value'; // Assuming the country code for Pakistan is +92
           controller.contactNo.text = formattedPhoneNumber;
         }
       },
-
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
-
 
     final dobField = TextFormField(
       autofocus: false,
@@ -160,12 +162,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.calendar_today, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Date of Birth",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final passwordField = TextFormField(
@@ -182,7 +184,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Password",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -195,7 +197,7 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
-      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
     final confirmPasswordField = TextFormField(
@@ -212,7 +214,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Confirm Password",
-        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -227,6 +229,17 @@ class _SignupState extends State<Signup> {
       },
       style: TextStyle(color: Colors.white),
     );
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final lottieAnimation = kIsWeb
+        ? Expanded(
+            child: Container(
+              width: screenWidth * 0.5,
+              height: screenWidth * 0.5, // Set an appropriate height
+              child: Lottie.asset('assets/loginuser.json'),
+            ),
+          )
+        : SizedBox.shrink();
 
     final signupButton = Container(
       width: double.infinity,
@@ -249,24 +262,21 @@ class _SignupState extends State<Signup> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             Signupcontroller.instance.RegisterUser(
-              controller.email.text.trim(),
-              controller.password.text.trim());
-              /*Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
+                controller.email.text.trim(), controller.password.text.trim());
+            /*Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
               Get.to(()=> const OTPSCREEN());*/
             final user = usermodel(
-              username: controller.username.text.trim(),
-              firstName: controller.firstName.text.trim(),
-              lastName: controller.lastName.text.trim(),
-              contactNo: controller.contactNo.text.trim(),
-              email: controller.email.text.trim(),
-              dob: controller.dob.text.trim(),
-              cnic: controller.cnic.text.trim(),
-              gender: controller.gender.text.trim(),
-              password: controller.password.text.trim(),
-              confirmPassword: controller.confirmPassword.text.trim(),
-              profileImage: " "
-
-            );
+                username: controller.username.text.trim(),
+                firstName: controller.firstName.text.trim(),
+                lastName: controller.lastName.text.trim(),
+                contactNo: controller.contactNo.text.trim(),
+                email: controller.email.text.trim(),
+                dob: controller.dob.text.trim(),
+                cnic: controller.cnic.text.trim(),
+                gender: controller.gender.text.trim(),
+                password: controller.password.text.trim(),
+                confirmPassword: controller.confirmPassword.text.trim(),
+                profileImage: " ");
             Signupcontroller.instance.createUser(user);
           }
         },
@@ -291,76 +301,88 @@ class _SignupState extends State<Signup> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.black,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8, // 80% of the screen width
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF000104),
-                        Color(0xFF18293F),
-                        Color(0xFF141E2C),
-                        Color(0xFF18293F),
-                        Color(0xFF000104),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/loginbgg.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 300,
+                        child: Image.asset(
+                          'assets/logo.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      usernameField,
+                      SizedBox(height: 20),
+                      firstNameField,
+                      SizedBox(height: 20),
+                      lastNameField,
+                      SizedBox(height: 20),
+                      emailField,
+                      SizedBox(height: 20),
+                      contactNoField,
+                      SizedBox(height: 20),
+                      dobField,
+                      SizedBox(height: 20),
+                      passwordField,
+                      SizedBox(height: 20),
+                      confirmPasswordField,
+                      SizedBox(height: 25),
+                      signupButton,
+                      SizedBox(height: 20),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            height: 300,
-                            child: Image.asset(
-                              "logo.png",
-                              fit: BoxFit.contain,
+                          Text(
+                            "Already have an account? ",
+                            style: TextStyle(
+                              fontFamily: 'outfit',
+                              color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 20),
-                          usernameField,
-                          SizedBox(height: 20),
-                          firstNameField,
-                          SizedBox(height: 20),
-                          lastNameField,
-                          SizedBox(height: 20),
-                          emailField,
-                          SizedBox(height: 20),
-                          contactNoField,
-                          SizedBox(height: 20),
-                          dobField,
-                          SizedBox(height: 20),
-                          passwordField,
-                          SizedBox(height: 20),
-                          confirmPasswordField,
-                          SizedBox(height: 25),
-                          signupButton,
-                          SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                              );
+                            },
+                            child: Text(
+                              "LogIn",
+                              style: TextStyle(
+                                fontFamily: 'outfit',
+                                color: Colors.lightBlue,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
+            if (kIsWeb && screenWidth>700) lottieAnimation,
+
+          ],
         ),
       ),
     );
