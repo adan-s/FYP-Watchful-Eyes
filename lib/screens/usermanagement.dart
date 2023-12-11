@@ -19,7 +19,7 @@ class UserManagement extends StatelessWidget {
           PopupMenuItem(
             child: ListTile(
               leading: Icon(Icons.person, color: Colors.white),
-              title: Text('Profile', style: TextStyle(color: Colors.white)),
+              title: Text('Profile', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
               onTap: () {
                 // Handle the Profile option
                 Navigator.pop(context); // Close the menu
@@ -29,7 +29,7 @@ class UserManagement extends StatelessWidget {
           PopupMenuItem(
             child: ListTile(
               leading: Icon(Icons.exit_to_app, color: Colors.white),
-              title: Text('Logout', style: TextStyle(color: Colors.white)),
+              title: Text('Logout', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
               onTap: () {
                 // Handle the Logout option
                 Navigator.pop(context); // Close the menu
@@ -49,7 +49,7 @@ class UserManagement extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Admin Dashboard',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -155,6 +155,7 @@ class UserManagement extends StatelessWidget {
                         Text(
                           'Watchful Eyes',
                           style: TextStyle(
+                            fontFamily: 'outfit',
                             color: Colors.white,
                             fontSize: 24,
                           ),
@@ -162,6 +163,7 @@ class UserManagement extends StatelessWidget {
                         Text(
                           'Admin Dashboard',
                           style: TextStyle(
+                            fontFamily: 'outfit',
                             color: Colors.white,
                             fontSize: 16,
                           ),
@@ -176,6 +178,7 @@ class UserManagement extends StatelessWidget {
                 title: Text(
                   'User Management',
                   style: TextStyle(
+                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -189,6 +192,7 @@ class UserManagement extends StatelessWidget {
                 title: Text(
                   'Analytics and Reports',
                   style: TextStyle(
+                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -205,6 +209,7 @@ class UserManagement extends StatelessWidget {
                 title: Text(
                   'Post Approval',
                   style: TextStyle(
+                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -218,6 +223,7 @@ class UserManagement extends StatelessWidget {
                 title: Text(
                   'Registered Complaints',
                   style: TextStyle(
+                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -234,6 +240,7 @@ class UserManagement extends StatelessWidget {
                 title: Text(
                   'Logout',
                   style: TextStyle(
+                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
@@ -274,7 +281,7 @@ class UserManagement extends StatelessWidget {
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                           hintText: '  Search...',
-                          hintStyle: TextStyle(color: Colors.grey),
+                          hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.grey),
                           suffixIcon: Icon(Icons.search, color: Colors.black),
                           filled: true,
                           fillColor: Colors.white,
@@ -339,6 +346,7 @@ class UserManagement extends StatelessWidget {
                           Text(
                             'Total Number of Users',
                             style: TextStyle(
+                              fontFamily: 'outfit',
                               color: Colors.white,
                               fontSize: 18,
                             ),
@@ -367,6 +375,7 @@ class UserManagement extends StatelessWidget {
                               return Text(
                                 '$totalUsers',
                                 style: TextStyle(
+                                  fontFamily: 'outfit',
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -413,18 +422,18 @@ class UserManagement extends StatelessWidget {
                         child: ListTile(
                           title: Text(
                             'Name: ${user['FirstName']} ${user['LastName']}',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(fontFamily: 'outfit',color: Colors.white),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Email: ${user['Email']}',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(fontFamily: 'outfit',color: Colors.white),
                               ),
                               Text(
                                 'Contact No: ${user['ContactNo']}',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(fontFamily: 'outfit',color: Colors.white),
                               ),
                             ],
                           ),

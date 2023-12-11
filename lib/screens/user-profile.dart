@@ -99,6 +99,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       Text(
                         'Username: ${user.username}',
                         style: const TextStyle(
+                          fontFamily: 'outfit',
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -108,6 +109,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       Text(
                         'Email: ${user.email}',
                         style: const TextStyle(
+                          fontFamily: 'outfit',
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -151,6 +153,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               Text(
                                 "Edit Profile",
                                 style: TextStyle(
+                                  fontFamily: 'outfit',
                                   fontSize: 16,
                                   color: Colors.white,
                                 ),

@@ -37,12 +37,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.person, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "User-Name",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final firstNameField = TextFormField(
@@ -59,12 +59,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final lastNameField = TextFormField(
@@ -81,12 +81,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final emailField = TextFormField(
@@ -103,12 +103,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final contactNoField = TextFormField(
@@ -126,12 +126,12 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
 
@@ -160,12 +160,12 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.calendar_today, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Date of Birth",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final passwordField = TextFormField(
@@ -182,7 +182,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Password",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -195,7 +195,7 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(fontFamily: 'outfit',color: Colors.white),
     );
 
     final confirmPasswordField = TextFormField(
@@ -212,7 +212,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.key, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Confirm Password",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -279,6 +279,7 @@ class _SignupState extends State<Signup> {
               "Sign-Up",
               textAlign: TextAlign.center,
               style: TextStyle(
+                fontFamily: 'outfit',
                 fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
