@@ -6,10 +6,7 @@ import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // Check if Firebase has not been initialized before
-  if (Firebase.apps.isEmpty) {
-    try {
       // Initialize Firebase
       await Firebase.initializeApp(
         options: FirebaseOptions(
@@ -22,11 +19,6 @@ void main() async {
           storageBucket: 'gs://watchfuleyes-c2a9d.appspot.com',
         ),
       );
-    } catch (e) {
-      // Handle initialization errors
-      print('Error initializing Firebase: $e');
-    }
-  }
 
   runApp(const MyApp());
 }
