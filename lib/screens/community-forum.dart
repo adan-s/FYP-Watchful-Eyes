@@ -101,7 +101,7 @@ class HomeTab extends StatelessWidget {
         List<Post> posts = snapshot.data!.docs.map((doc) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           return Post(
-            postId: data['id'] ?? '', // Make sure to set the postId
+            postId: data['id'] ?? '', 
             username: data['username'] ?? 'Unknown User',
             description: data['description'] ?? '',
             imageUrl: data['imageUrl'] ?? '',

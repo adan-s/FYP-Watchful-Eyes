@@ -91,6 +91,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(displayImageUrl),
