@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
         prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
             prefixIcon: Icon(Icons.key, color: Colors.white),
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Password",
-            hintStyle: TextStyle(color: Colors.white),
+            hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -229,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Text(
               "Forgot Password?",
               style: TextStyle(
+                fontFamily: 'outfit',
                 color: Colors.blue,
                 fontWeight: FontWeight.w400,
                 fontSize: 15,
@@ -301,6 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "Login",
               textAlign: TextAlign.center,
               style: TextStyle(
+                fontFamily: 'outfit',
                 fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -325,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/loginbg.png'),
+            image: AssetImage('assets/loginbgg.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -366,6 +368,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text(
                               "Don't have an account? ",
                               style: TextStyle(
+                                fontFamily: 'outfit',
                                 color: Colors.white,
                               ),
                             ),
@@ -380,6 +383,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 "SignUp",
                                 style: TextStyle(
+                                  fontFamily: 'outfit',
                                   color: Colors.lightBlue,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 15,
@@ -418,7 +422,7 @@ Future<String?> forgetPassword(BuildContext context) async {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email, color: Colors.black),
                 hintText: "Enter Email",
-                hintStyle: TextStyle(color: Colors.black),
+                hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.black),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

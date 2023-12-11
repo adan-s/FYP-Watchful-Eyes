@@ -56,7 +56,7 @@ class _BlogPageState extends State<BlogPage> {
         child: AppBar(
           title: const Text(
             'Blog Screen',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(fontFamily: 'outfit',color: Colors.white),
           ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -118,6 +118,7 @@ class _BlogPageState extends State<BlogPage> {
                         child: Text(
                           'Blogs',
                           style: TextStyle(
+                            fontFamily: 'outfit',
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.white, // Text color
@@ -156,6 +157,7 @@ class _BlogPageState extends State<BlogPage> {
                         child: Text(
                           'Videos',
                           style: TextStyle(
+                            fontFamily: 'outfit',
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.white, // Text color
@@ -181,7 +183,7 @@ class _BlogPageState extends State<BlogPage> {
                               ),
                               title: Text(
                                 'Video $videoIndex',
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(fontFamily: 'outfit',color: Colors.white),
                               ),
                               onTap: () {
                                 setState(() {
@@ -227,6 +229,7 @@ class _BlogPageState extends State<BlogPage> {
                                     child: Text(
                                       'We’re in this together: tackling anti-social behaviour as a community',
                                       style: TextStyle(
+                                        fontFamily: 'outfit',
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
@@ -258,6 +261,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Anti-social behaviour (ASB) covers a wide range of unacceptable activity that causes harm to communities, the environment, and individuals.',
                                             style: TextStyle(
+                                                fontFamily: 'outfit',
                                                 fontSize: 16,
                                                 color: Colors.white),
                                           ),
@@ -265,6 +269,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Broadly speaking, examples of ASB include:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -280,6 +285,7 @@ class _BlogPageState extends State<BlogPage> {
                                                 '- Misuse of fireworks\n'
                                                 '- Inappropriate use of vehicles',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -288,6 +294,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Before dealing with ASB yourself:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -297,6 +304,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Anti-social behaviour may tempt you to take matters into your own hands, but acting on impulse might result in an escalation of the issue.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -305,6 +313,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Before diving in or calling on your neighbors to help, there are three things you need to consider:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -315,6 +324,7 @@ class _BlogPageState extends State<BlogPage> {
                                                 '2. Do you feel able to approach the person or group calmly and explain the problems you’re experiencing?\n'
                                                 '3. Does the situation suggest your personal safety would be at risk if you approached those involved?',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -323,6 +333,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Your answers to the above should dictate whether or not it’s safe to intervene.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -331,6 +342,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'If you’re happy you can do so calmly and that the situation is serious yet safe enough to justify an approach, there are two things you can try:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -339,6 +351,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             '1. Approach ASB as a group',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -348,6 +361,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'The Neighbourhood Watch scheme is a fantastic way for communities to work together when it comes to tackling ASB. However, even if you don’t have a Neighbourhood Watch scheme in place, you can still operate as a group.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -356,6 +370,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'For instance, if the issue relates to noise, your neighbors are probably just as annoyed about it as you are. Talk to each other and discuss whether or not it would be sensible to approach the issue yourselves and without intervention from the authorities.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -364,6 +379,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Early intervention is key, and if you can work as a team to approach the people committing the anti-social behaviour and address your concerns as soon as possible, there will be far less chance of it getting worse.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -372,6 +388,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             '2. Mediation',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -381,6 +398,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Sometimes, both parties feel they’re in the right.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -389,6 +407,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'For example, if a particular household is rather fond of late night parties in their front garden, they may argue it’s their right to do so and point to the fact that no one is being physically harmed.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -397,6 +416,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Clearly, you (and your neighbors) have a point too, and when such disputes take place, mediation is a great option to explore.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -405,6 +425,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'The idea is to bring both parties together in the presence of an independent mediator who can listen to both sides of the argument and work towards a peaceful resolution that satisfies everyone.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -413,6 +434,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'If this sounds like an option you’d like to explore, we advise contacting your local council to ask what mediation services are available in your area (some are offered for free), but to also consider restorative justice, which is an effective way of settling disputes.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -430,6 +452,7 @@ class _BlogPageState extends State<BlogPage> {
                                 child: Text(
                                   'Do you know what to do if an adult is at risk of harm and abuse?',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -457,6 +480,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'We should all know how to spot signs of abuse and the actions that should be taken if we have a concern. Statistics show that:',
                                   style: TextStyle(
+                                      fontFamily: 'outfit',
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(height: 16),
@@ -466,6 +490,7 @@ class _BlogPageState extends State<BlogPage> {
                                       '- 51% of abuse was due to neglect\n'
                                       '- 30% occurred in the person’s home\n',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -474,6 +499,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'To help raise awareness, the Northamptonshire Safeguarding Adults Board has launched an online survey to find out people’s understanding of safeguarding and if they know how to raise a concern if someone they know is at risk of harm and abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -483,6 +509,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Tim Bishop, Independent Chair of the Safeguarding Adults Board, said: “This is an important opportunity to find out how people in Northamptonshire and our colleagues recognise'
                                       ' how to report a safeguarding concern and what they need to do to report harm and abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -492,6 +519,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' “All Northamptonshire residents, whatever their background, are encouraged to complete the survey even if they have not witnessed, or been the victim of abuse.  The information that is gathered from'
                                       'the survey will provide much needed feedback to help NSAB to raise more awareness across the county.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -502,6 +530,7 @@ class _BlogPageState extends State<BlogPage> {
                                       ' Board and the range of useful resources that are available on the NSAB website'
                                       ' www.northamptonshiresab.org.uk.”',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -512,6 +541,7 @@ class _BlogPageState extends State<BlogPage> {
                                       ' likely to become victims of abuse and neglect. '
                                       'They may be seen as easy targets and may be less likely to identify abuse themselves or to report it.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -523,6 +553,7 @@ class _BlogPageState extends State<BlogPage> {
                                       ' this is especially likely if they have a cognitive impairment.'
                                       ' Abusers may try to prevent others from helping the person they abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -536,6 +567,7 @@ class _BlogPageState extends State<BlogPage> {
                                 child: Text(
                                   '“Where’s Dave?” 6 tips for a silly but safe night out',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -565,6 +597,7 @@ class _BlogPageState extends State<BlogPage> {
                                       ' long sunset walk along the beachfront, '
                                       'us Brits certainly know how to make the most of the warmer months.',
                                   style: TextStyle(
+                                      fontFamily: 'outfit',
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(height: 16),
@@ -572,6 +605,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'However – and without wanting to rain on your summer parade '
                                       '– staying safe while out and about late at night should still be high on your agenda.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -582,6 +616,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'So, to avoid your perfect summer’s evening being wrecked by the '
                                       'actions of someone else, we’ve got six tips for staying safe:',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -590,6 +625,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '1. Keep your valuables hidden',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -601,6 +637,7 @@ class _BlogPageState extends State<BlogPage> {
                                       'From smartphones to smartwatches and pricey,'
                                       ' eye-catching headphones, personal possessions remain an easy target for thieves.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -611,6 +648,7 @@ class _BlogPageState extends State<BlogPage> {
                                       'even easier target for the nefarious in society. Do all you can to keep your valuables hidden; '
                                       'keep that stuff safely locked away in your bag, purse or zipped pocket.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -619,6 +657,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '2. Stick to well-lit areas',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -629,6 +668,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'If you’re out walking at night after sunset, make sure you keep to well-lit areas.'
                                       ' The more you shroud yourself in darkness, the more you risk your personal safety.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -637,6 +677,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'Avoid dark passageways and instead stick to routes that feature adequate street lighting – even if it means taking the long way home',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -645,6 +686,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '3. Identify when you’ve had enough',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -656,6 +698,7 @@ class _BlogPageState extends State<BlogPage> {
                                       ' If truth be told, we all know when that point arrives; it’s when you know '
                                       '(and even say to yourself) that ‘just one more’ will be one more too many.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -664,6 +707,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'When you reach that point – stop.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -671,7 +715,7 @@ class _BlogPageState extends State<BlogPage> {
                                 SizedBox(height: 16),
                                 Text(
                                   'Know your limits; you’ll get home safely and feel far fresher in the morning, to boot.',
-                                  style: TextStyle(
+                                  style: TextStyle( fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -680,6 +724,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '4. Book a taxi whenever possible',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -690,6 +735,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'We’ve talked about walking home above, but the safest route'
                                       ' back is always via a licensed taxi or lift from someone you know and trust.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -699,6 +745,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Avoid unlicensed cabs, even if they promise a quicker and cheaper route home. Also, if a member of the group wants'
                                       ' to leave early, make sure a member of the team (that’s what you are!) accompanies them home.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -707,6 +754,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '5. Stay together',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -718,6 +766,7 @@ class _BlogPageState extends State<BlogPage> {
                                       'from the main group? Similarly, how often has '
                                       'the phrase “has anyone seen Dave since he went to the bar?” been uttered during one of your outings?',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -727,6 +776,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Don’t be that person; stick together. '
                                       'The term ‘safety in numbers’ is particularly relevant when it comes to nights out.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -735,6 +785,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '6. Stay away from hostile situations',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -744,6 +795,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'If you find yourself within the vicinity of a fight or serious disagreement, don’t get involved.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -753,6 +805,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'No one wants you to be the hero on a night out, so if you happen to encounter a hostile situation,'
                                       ' leave it to the bouncers and police to resolve. You’re out to have a good time, remember.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -761,6 +814,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'Final thought',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -772,6 +826,7 @@ class _BlogPageState extends State<BlogPage> {
                                       'In doing so, you’ll remain in '
                                       'control of your own destiny and greatly reduce your chances of ending up in harmful situations.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -780,6 +835,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'The summer is a wonderful time of year. Go out and enjoy yourself – just stay safe!',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -792,6 +848,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ? videos[selectedVideoIndex].title
                                   : "",
                               style: TextStyle(
+                                fontFamily: 'outfit',
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -838,7 +895,7 @@ class _BlogPageState extends State<BlogPage> {
 
                         child: Text(
                           blog.title,
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
                         ),
 
                     );
@@ -850,7 +907,7 @@ class _BlogPageState extends State<BlogPage> {
                       selectedVideoIndex = -1;
                     });
                   },
-                  style: TextStyle(color: Colors.black), // Dropdown button text color
+                  style: TextStyle(fontFamily: 'outfit',color: Colors.black), // Dropdown button text color
                   dropdownColor: Colors.black, // Dropdown menu background color
                 ),
                 // Dropdown button for Videos
@@ -862,7 +919,7 @@ class _BlogPageState extends State<BlogPage> {
                     return DropdownMenuItem<String>(
                       value: video.title,
                       child: Text(video.title,
-                        style: TextStyle(color: Colors.white),),
+                        style: TextStyle(fontFamily: 'outfit',color: Colors.white),),
 
                     );
                   }).toList(),
@@ -873,7 +930,7 @@ class _BlogPageState extends State<BlogPage> {
                       selectedBlogIndex = -1;
                     });
                   },
-                  style: TextStyle(color: Colors.black), // Dropdown button text color
+                  style: TextStyle(fontFamily: 'outfit',color: Colors.black), // Dropdown button text color
                   dropdownColor: Colors.black, // Dropdown menu background color
                 ),
                 Expanded(
@@ -906,6 +963,7 @@ class _BlogPageState extends State<BlogPage> {
                                     child: Text(
                                       'We’re in this together: tackling anti-social behaviour as a community',
                                       style: TextStyle(
+                                        fontFamily: 'outfit',
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
@@ -937,6 +995,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Anti-social behaviour (ASB) covers a wide range of unacceptable activity that causes harm to communities, the environment, and individuals.',
                                             style: TextStyle(
+                                                fontFamily: 'outfit',
                                                 fontSize: 16,
                                                 color: Colors.white),
                                           ),
@@ -944,6 +1003,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Broadly speaking, examples of ASB include:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -959,6 +1019,7 @@ class _BlogPageState extends State<BlogPage> {
                                             '- Misuse of fireworks\n'
                                             '- Inappropriate use of vehicles',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -967,6 +1028,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Before dealing with ASB yourself:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -976,6 +1038,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Anti-social behaviour may tempt you to take matters into your own hands, but acting on impulse might result in an escalation of the issue.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -984,6 +1047,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Before diving in or calling on your neighbors to help, there are three things you need to consider:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -994,6 +1058,7 @@ class _BlogPageState extends State<BlogPage> {
                                             '2. Do you feel able to approach the person or group calmly and explain the problems you’re experiencing?\n'
                                             '3. Does the situation suggest your personal safety would be at risk if you approached those involved?',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1002,6 +1067,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Your answers to the above should dictate whether or not it’s safe to intervene.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1010,6 +1076,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'If you’re happy you can do so calmly and that the situation is serious yet safe enough to justify an approach, there are two things you can try:',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1018,6 +1085,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             '1. Approach ASB as a group',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -1027,6 +1095,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'The Neighbourhood Watch scheme is a fantastic way for communities to work together when it comes to tackling ASB. However, even if you don’t have a Neighbourhood Watch scheme in place, you can still operate as a group.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1035,6 +1104,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'For instance, if the issue relates to noise, your neighbors are probably just as annoyed about it as you are. Talk to each other and discuss whether or not it would be sensible to approach the issue yourselves and without intervention from the authorities.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1043,6 +1113,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Early intervention is key, and if you can work as a team to approach the people committing the anti-social behaviour and address your concerns as soon as possible, there will be far less chance of it getting worse.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1051,6 +1122,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             '2. Mediation',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
@@ -1060,6 +1132,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Sometimes, both parties feel they’re in the right.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1068,6 +1141,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'For example, if a particular household is rather fond of late night parties in their front garden, they may argue it’s their right to do so and point to the fact that no one is being physically harmed.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1076,6 +1150,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'Clearly, you (and your neighbors) have a point too, and when such disputes take place, mediation is a great option to explore.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1084,6 +1159,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'The idea is to bring both parties together in the presence of an independent mediator who can listen to both sides of the argument and work towards a peaceful resolution that satisfies everyone.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1092,6 +1168,7 @@ class _BlogPageState extends State<BlogPage> {
                                           Text(
                                             'If this sounds like an option you’d like to explore, we advise contacting your local council to ask what mediation services are available in your area (some are offered for free), but to also consider restorative justice, which is an effective way of settling disputes.',
                                             style: TextStyle(
+                                              fontFamily: 'outfit',
                                               fontSize: 16,
                                               color: Colors.white,
                                             ),
@@ -1109,6 +1186,7 @@ class _BlogPageState extends State<BlogPage> {
                                 child: Text(
                                   'Do you know what to do if an adult is at risk of harm and abuse?',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1136,6 +1214,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'We should all know how to spot signs of abuse and the actions that should be taken if we have a concern. Statistics show that:',
                                   style: TextStyle(
+                                      fontFamily: 'outfit',
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(height: 16),
@@ -1145,6 +1224,7 @@ class _BlogPageState extends State<BlogPage> {
                                   '- 51% of abuse was due to neglect\n'
                                   '- 30% occurred in the person’s home\n',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1153,6 +1233,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'To help raise awareness, the Northamptonshire Safeguarding Adults Board has launched an online survey to find out people’s understanding of safeguarding and if they know how to raise a concern if someone they know is at risk of harm and abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1162,6 +1243,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Tim Bishop, Independent Chair of the Safeguarding Adults Board, said: “This is an important opportunity to find out how people in Northamptonshire and our colleagues recognise'
                                   ' how to report a safeguarding concern and what they need to do to report harm and abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1171,6 +1253,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' “All Northamptonshire residents, whatever their background, are encouraged to complete the survey even if they have not witnessed, or been the victim of abuse.  The information that is gathered from'
                                   'the survey will provide much needed feedback to help NSAB to raise more awareness across the county.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1181,6 +1264,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' Board and the range of useful resources that are available on the NSAB website'
                                   ' www.northamptonshiresab.org.uk.”',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1191,6 +1275,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' likely to become victims of abuse and neglect. '
                                   'They may be seen as easy targets and may be less likely to identify abuse themselves or to report it.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1202,6 +1287,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' this is especially likely if they have a cognitive impairment.'
                                   ' Abusers may try to prevent others from helping the person they abuse.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1215,6 +1301,7 @@ class _BlogPageState extends State<BlogPage> {
                                 child: Text(
                                   '“Where’s Dave?” 6 tips for a silly but safe night out',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1244,6 +1331,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' long sunset walk along the beachfront, '
                                   'us Brits certainly know how to make the most of the warmer months.',
                                   style: TextStyle(
+                                      fontFamily: 'outfit',
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(height: 16),
@@ -1251,6 +1339,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'However – and without wanting to rain on your summer parade '
                                   '– staying safe while out and about late at night should still be high on your agenda.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1261,6 +1350,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'So, to avoid your perfect summer’s evening being wrecked by the '
                                   'actions of someone else, we’ve got six tips for staying safe:',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1269,6 +1359,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '1. Keep your valuables hidden',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1280,6 +1371,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'From smartphones to smartwatches and pricey,'
                                   ' eye-catching headphones, personal possessions remain an easy target for thieves.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1290,6 +1382,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'even easier target for the nefarious in society. Do all you can to keep your valuables hidden; '
                                   'keep that stuff safely locked away in your bag, purse or zipped pocket.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1298,6 +1391,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '2. Stick to well-lit areas',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -1308,6 +1402,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'If you’re out walking at night after sunset, make sure you keep to well-lit areas.'
                                   ' The more you shroud yourself in darkness, the more you risk your personal safety.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1316,6 +1411,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'Avoid dark passageways and instead stick to routes that feature adequate street lighting – even if it means taking the long way home',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1324,6 +1420,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '3. Identify when you’ve had enough',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1335,6 +1432,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ' If truth be told, we all know when that point arrives; it’s when you know '
                                   '(and even say to yourself) that ‘just one more’ will be one more too many.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1343,6 +1441,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'When you reach that point – stop.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1351,6 +1450,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'Know your limits; you’ll get home safely and feel far fresher in the morning, to boot.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1359,6 +1459,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '4. Book a taxi whenever possible',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1369,6 +1470,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'We’ve talked about walking home above, but the safest route'
                                   ' back is always via a licensed taxi or lift from someone you know and trust.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1378,6 +1480,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Avoid unlicensed cabs, even if they promise a quicker and cheaper route home. Also, if a member of the group wants'
                                   ' to leave early, make sure a member of the team (that’s what you are!) accompanies them home.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1386,6 +1489,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '5. Stay together',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -1397,6 +1501,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'from the main group? Similarly, how often has '
                                   'the phrase “has anyone seen Dave since he went to the bar?” been uttered during one of your outings?',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1406,6 +1511,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'Don’t be that person; stick together. '
                                   'The term ‘safety in numbers’ is particularly relevant when it comes to nights out.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1414,6 +1520,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   '6. Stay away from hostile situations',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -1423,6 +1530,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'If you find yourself within the vicinity of a fight or serious disagreement, don’t get involved.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1432,6 +1540,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'No one wants you to be the hero on a night out, so if you happen to encounter a hostile situation,'
                                   ' leave it to the bouncers and police to resolve. You’re out to have a good time, remember.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1440,6 +1549,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'Final thought',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 20,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -1451,6 +1561,7 @@ class _BlogPageState extends State<BlogPage> {
                                   'In doing so, you’ll remain in '
                                   'control of your own destiny and greatly reduce your chances of ending up in harmful situations.',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1459,6 +1570,7 @@ class _BlogPageState extends State<BlogPage> {
                                 Text(
                                   'The summer is a wonderful time of year. Go out and enjoy yourself – just stay safe!',
                                   style: TextStyle(
+                                    fontFamily: 'outfit',
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -1471,6 +1583,7 @@ class _BlogPageState extends State<BlogPage> {
                                   ? videos[selectedVideoIndex].title
                                   : "",
                               style: TextStyle(
+                                fontFamily: 'outfit',
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

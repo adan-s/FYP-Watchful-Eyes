@@ -42,7 +42,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         ),
         title: const Text(
           'Crime Registeration',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
         ),
         centerTitle: true,
         actions: [
@@ -91,6 +91,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       Text(
                         'We are here to help :)',
                         style: TextStyle(
+                          fontFamily: 'outfit',
                           color: Colors.white,
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -103,7 +104,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Full Name',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.person, color: Colors.white),
                     ),
                   ),
@@ -112,7 +113,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.phone, color: Colors.white),
                     ),
                   ),
@@ -123,7 +124,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Date',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.date_range, color: Colors.white),
                       suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.white),
                     ),
@@ -135,7 +136,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Time',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.access_time, color: Colors.white),
                       suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.white),
                     ),
@@ -146,7 +147,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         .map((String crimeType) {
                       return DropdownMenuItem<String>(
                         value: crimeType,
-                        child: Text(crimeType, style: TextStyle(color: Colors.black)),
+                        child: Text(crimeType, style: TextStyle(fontFamily: 'outfit',color: Colors.black)),
                       );
                     }).toList(),
                     onChanged: (String? value) {
@@ -154,7 +155,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     },
                     decoration: InputDecoration(
                       labelText: 'Crime Type',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.category, color: Colors.white),
                     ),
                   ),
@@ -163,7 +164,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Attachment',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.attach_file, color: Colors.white),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.attach_file, color: Colors.white),
@@ -178,7 +179,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Description',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                       prefixIcon: Icon(Icons.description, color: Colors.white),
                     ),
                     maxLines: 3,
@@ -194,7 +195,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           });
                         },
                       ),
-                      Text('Submit Anonymously', style: TextStyle(color: Colors.white)),
+                      Text('Submit Anonymously', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
                     ],
                   ),
                   SizedBox(height: 32.0),
@@ -226,7 +227,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             SizedBox(width: 8),
                             Text(
                               "Submit",
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.white),
                             ),
                             Icon(
                               Icons.send, // You can use a different icon if needed

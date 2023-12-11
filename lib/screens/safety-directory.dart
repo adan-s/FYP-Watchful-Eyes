@@ -33,7 +33,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
           ),
           title: const Text(
             'Safety Directory',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white, fontFamily: 'outfit'),
           ),
           centerTitle: true,
           actions: [
@@ -198,6 +198,8 @@ class EmergencyPersonalThreatProcedure extends StatelessWidget {
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
+                fontFamily: 'outfit',
+
               ),
             ),
             SizedBox(height: 10),
@@ -226,10 +228,12 @@ class EmergencyPersonalThreatProcedure extends StatelessWidget {
               Icons.directions_car,
             ),
             buildSubtitle('Telephone:'),
-            buildInstructionTile('- Dial 9385 6666 and state “PERSONAL THREAT”.', Icons.phone),
+            buildInstructionTile('- Dial 15 and state the threat.', Icons.phone),
+            buildInstructionTile('- Lahore Police Complaint 8300, UAN: 0304-1110911', Icons.phone),
+            buildInstructionTile('- Mayo Hospital	042-99211100', Icons.phone),
             buildInstructionTile('- Stay on the line and keep the line of communication open.', Icons.call),
             buildInstructionTile(
-              '- Give your name, room number, building, and request urgent attendance.',
+              '- Give your location and request urgent attendance.',
               Icons.assignment_turned_in,
             ),
             buildInstructionTile('- Most importantly – Remain CALM.', Icons.sentiment_neutral),
@@ -245,6 +249,7 @@ class EmergencyPersonalThreatProcedure extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
+          fontFamily: 'outfit',
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -276,6 +281,7 @@ class SelfDefenseProcedures extends StatelessWidget {
             Text(
               'Self Defense Procedures',
               style: TextStyle(
+                fontFamily: 'outfit',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -405,7 +411,7 @@ class SelfDefenseProcedures extends StatelessWidget {
             SizedBox(height: 14),
             Text(
               title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
             ),
           ],
         ),
@@ -429,6 +435,7 @@ class SelfDefenseProcedures extends StatelessWidget {
               title: Text(
                 title,
                 style: TextStyle(
+                  fontFamily: 'outfit',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -495,7 +502,7 @@ class SelfDefenseGadgets extends StatelessWidget {
           children: [
             Text(
               'Self Defense Gadgets',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontFamily: 'outfit', fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             SizedBox(height: 20),
             _buildGadgetsRow(context, [
@@ -506,7 +513,7 @@ class SelfDefenseGadgets extends StatelessWidget {
               ),
               GadgetItem(
                 title: 'Taser',
-                buyLink: 'https://defensivegadgets.com/product/008-type-knuckle-taser/',
+                buyLink: 'https://www.survivalgear.pk/shop/dz-x10-taser-pakistan/',
                 imagePath: '/taser.png',
               ),
               GadgetItem(
@@ -590,7 +597,7 @@ class SelfDefenseGadgets extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'outfit', fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
               ElevatedButton(
@@ -626,4 +633,3 @@ class GadgetItem {
     required this.imagePath,
   });
 }
-

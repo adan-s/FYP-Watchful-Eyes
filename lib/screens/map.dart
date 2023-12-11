@@ -107,7 +107,7 @@ class _MapPageState extends State<MapPage> {
           children: [
             Text(
               'Map',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(fontFamily: 'outfit',color: Colors.white),
             ),
           ],
         ),
@@ -140,7 +140,7 @@ class _MapPageState extends State<MapPage> {
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Current Location',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(fontFamily: 'outfit',fontSize:24,color: Colors.white),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
                   ),
@@ -153,10 +153,10 @@ class _MapPageState extends State<MapPage> {
               const SizedBox(height: 16),
               TextField(
                 controller: _destinationController,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(fontFamily: 'outfit',color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Destination',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
                   ),
@@ -196,7 +196,7 @@ class _MapPageState extends State<MapPage> {
                       SizedBox(width: 8),
                       Text(
                         "Show Map",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.white),
                       ),
                       Icon(
                         Icons.arrow_forward,
