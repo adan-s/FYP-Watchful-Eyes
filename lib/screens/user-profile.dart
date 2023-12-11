@@ -289,13 +289,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     try {
       dynamic imageFile;
 
-      if (kIsWeb) {
-        // Use ImagePickerWeb to get image as File
-        imageFile = await ImagePickerWeb.getImageAsFile();
-      } else {
-        final ImagePicker _picker = ImagePicker();
-        imageFile = await _picker.pickImage(source: ImageSource.gallery);
-      }
+      final ImagePicker _picker = ImagePicker();
+      imageFile = await _picker.pickImage(source: ImageSource.gallery);
 
       if (imageFile != null) {
         String imageUrl = '';
