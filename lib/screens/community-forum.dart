@@ -81,10 +81,56 @@ class CommunityForumPage extends StatelessWidget {
 
 
 class HomeTab extends StatelessWidget {
+
+  Future<List<Post>> fetchPosts() async {
+    List<Post> posts = [];
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
+
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      List<Comment> comments = await fetchComments(data['id'] ?? ''); // Use post ID
+
+      posts.add(
+        Post(
+          postId: data['id'] ?? '',
+          username: data['username'] ?? 'Unknown User',
+          description: data['description'] ?? '',
+          imageUrl: data['imageUrl'] ?? '',
+          likes: data['likes'] ?? 0,
+          comments: comments,
+        ),
+      );
+    }
+
+    return posts;
+  }
+
+  Future<List<Comment>> fetchComments(String postId) async {
+    print("Fetching comments for post with ID: $postId");
+    QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+        .collection('items')
+        .doc(postId)
+        .collection('comments')
+        .get();
+
+    print("Fetched ${commentSnapshot.docs.length} comments");
+
+    return commentSnapshot.docs.map((commentDoc) {
+      Map<String, dynamic> commentData = commentDoc.data() as Map<String, dynamic>;
+      return Comment(
+        username: commentData['username'] ?? '',
+        text: commentData['text'] ?? '',
+      );
+    }).toList();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('items').snapshots(),
+    return FutureBuilder<List<Post>>(
+      future: fetchPosts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -98,18 +144,7 @@ class HomeTab extends StatelessWidget {
           );
         }
 
-        List<Post> posts = snapshot.data!.docs.map((doc) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          return Post(
-            postId: data['id'] ?? '', 
-            username: data['username'] ?? 'Unknown User',
-            description: data['description'] ?? '',
-            imageUrl: data['imageUrl'] ?? '',
-            likes: data['likes'] ?? 0,
-            comments: data['comments'] ?? 0,
-          );
-        }).toList();
-
+        List<Post> posts = snapshot.data ?? [];
 
         return ListView.builder(
           itemCount: posts.length,
@@ -123,13 +158,14 @@ class HomeTab extends StatelessWidget {
 }
 
 
+
 class Post {
   final String postId;
   final String username;
   final String description;
   final String imageUrl;
   int likes;
-  final int comments;
+  final List<Comment> comments;
 
   Post({
     required this.postId,
@@ -140,6 +176,17 @@ class Post {
     required this.comments,
   });
 }
+
+class Comment {
+  final String username;
+  final String text;
+
+  Comment({
+    required this.username,
+    required this.text,
+  });
+}
+
 
 
 class PostCard extends StatefulWidget {
@@ -153,6 +200,7 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLiked = false;
+  TextEditingController commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -214,12 +262,15 @@ class _PostCardState extends State<PostCard> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.comment),
+                        icon: Icon(
+                          Icons.comment,
+                          color: Colors.blue,
+                        ),
                         onPressed: () {
                           showCommentsDialog(context);
                         },
                       ),
-                      Text('${widget.post.comments} Comments'),
+                      Text('${widget.post.comments.length} Comments'),
                     ],
                   ),
                 ],
@@ -274,8 +325,6 @@ class _PostCardState extends State<PostCard> {
 
   // Function to show comments in a dialog with a text field for adding a comment
   void showCommentsDialog(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -283,7 +332,7 @@ class _PostCardState extends State<PostCard> {
           title: Text('Comments'),
           content: Column(
             children: [
-              CommentSection(),
+              CommentSection(comments: widget.post.comments),
               SizedBox(height: 16),
               TextField(
                 controller: commentController,
@@ -296,18 +345,23 @@ class _PostCardState extends State<PostCard> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                // Close the dialog
                 Navigator.of(context).pop();
               },
               child: Text('Close'),
             ),
             ElevatedButton(
               onPressed: () {
-                // Add new comment logic here
-                String newComment = commentController.text;
-                if (newComment.isNotEmpty) {
-                  // Add the new comment to the list or perform the desired action
-                  print('Adding a new comment: $newComment');
+                String newCommentText = commentController.text;
+                if (newCommentText.isNotEmpty) {
+                  Comment newComment = Comment(
+                    username: widget.post.username,
+                    text: newCommentText,
+                  );
+                  setState(() {
+                    widget.post.comments.add(newComment);
+                  });
+                  // Save the new comment to the database
+                  saveComment(widget.post.postId, newComment);
                   commentController.clear();
                 }
               },
@@ -318,11 +372,27 @@ class _PostCardState extends State<PostCard> {
       },
     );
   }
+
+  void saveComment(String postId, Comment comment) {
+    FirebaseFirestore.instance
+        .collection('items')
+        .doc(postId)
+        .collection('comments')
+        .add({
+      'username': comment.username,
+      'text': comment.text,
+    });
+  }
 }
+
 
 
 // CommentSection widget to display comments
 class CommentSection extends StatelessWidget {
+  final List<Comment> comments;
+
+  CommentSection({required this.comments});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -333,13 +403,13 @@ class CommentSection extends StatelessWidget {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Divider(),
-        CommentTile(username: 'User4', comment: 'Amazing!'),
-        CommentTile(username: 'User5', comment: 'I love it!'),
-        CommentTile(username: 'User6', comment: 'Awesome work!'),
+        for (var comment in comments)
+          CommentTile(username: comment.username, comment: comment.text),
       ],
     );
   }
 }
+
 
 // CommentTile widget to display a single comment
 class CommentTile extends StatelessWidget {
