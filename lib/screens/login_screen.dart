@@ -44,21 +44,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lottieAnimation = LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 700) {
-          return Expanded(
-            child: Container(
-              width: constraints.maxWidth * 0.5,
-              height: constraints.maxWidth * 0.5, // Set an appropriate height
-              child: Lottie.asset('assets/loginuser.json'),
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
-      },
-    );
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final lottieAnimation = kIsWeb
+        ? Expanded(
+      child: Container(
+        width: screenWidth * 0.5,
+        height: screenWidth * 0.5, // Set an appropriate height
+        child: Lottie.asset('assets/loginuser.json'),
+      ),
+    )
+        : SizedBox.shrink();
 
     final emailField = TextFormField(
       autofocus: false,
@@ -167,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
@@ -206,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Contact No",
@@ -253,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
-    final screenWidth = MediaQuery.of(context).size.width;
+
     final loginButton = Container(
       width:screenWidth * 0.5,
 
@@ -335,9 +331,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final errorText = Obx(() => Text(
-          controller.errorMessage.value,
-          style: TextStyle(color: Colors.red),
-        ));
+      controller.errorMessage.value,
+      style: TextStyle(color: Colors.red),
+    ));
 
     return Scaffold(
       body: Container(
@@ -349,7 +345,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Row(
           children: [
-            lottieAnimation,
+            if (kIsWeb && screenWidth>700) lottieAnimation,
+
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -358,10 +355,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: kIsWeb
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height: 300,
+                          height:kIsWeb
+                              ? 300
+                              : 470,
                           child: Image.asset(
                             'assets/logo.png',
                             fit: BoxFit.contain,
@@ -420,8 +421,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  }
-
+}
 
 Future<String?> forgetPassword(BuildContext context) async {
   TextEditingController emailController = TextEditingController();
