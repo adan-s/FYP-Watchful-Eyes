@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/authentication/controllers/profile_controller.dart';
+import 'package:fyp/authentication/models/user_model.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/post-new-item.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import 'blogs.dart';
 import 'map.dart';
@@ -183,11 +187,6 @@ class _PostCardState extends State<PostCard> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-                ),
-              ),
               title: Text(widget.post.username),
               subtitle: Text(widget.post.description),
             ),
@@ -315,6 +314,7 @@ class _PostCardState extends State<PostCard> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                setState(() {});
               },
               child: Text('Close'),
             ),
@@ -329,10 +329,12 @@ class _PostCardState extends State<PostCard> {
                   setState(() {
                     widget.post.comments.add(newComment);
                   });
-                  // Save the new comment to the database
-                  saveComment(widget.post.postId, newComment);
+
+                  final ProfileController userController = Get.put(ProfileController());
+                  saveComment(widget.post.postId, newComment, userController);
                   commentController.clear();
                 }
+                setState(() {});
               },
               child: Text('Add Comment'),
             ),
@@ -342,16 +344,23 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void saveComment(String postId, Comment comment) {
-    FirebaseFirestore.instance
-        .collection('items')
-        .doc(postId)
-        .collection('comments')
-        .add({
-      'username': comment.username,
-      'text': comment.text,
-    });
+  void saveComment(String postId, Comment comment, ProfileController userController) async {
+    try {
+      usermodel currentUser = await userController.getUserData();
+      FirebaseFirestore.instance
+          .collection('items')
+          .doc(postId)
+          .collection('comments')
+          .add({
+        'username': currentUser.username,
+        'text': comment.text,
+      });
+    } catch (error) {
+      print('Error saving comment: $error');
+    }
   }
+
+
 }
 class CommentSection extends StatelessWidget {
   final List<Comment> comments;
