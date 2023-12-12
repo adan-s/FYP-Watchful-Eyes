@@ -48,12 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final lottieAnimation = kIsWeb
         ? Expanded(
-      child: Container(
-        width: screenWidth * 0.5,
-        height: screenWidth * 0.5, // Set an appropriate height
-        child: Lottie.asset('assets/loginuser.json'),
-      ),
-    )
+            child: Container(
+              width: screenWidth * 0.5,
+              height: screenWidth * 0.5,
+              child: Lottie.asset('assets/loginuser.json'),
+            ),
+          )
         : SizedBox.shrink();
 
     final emailField = TextFormField(
@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
@@ -202,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Contact No",
@@ -251,8 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final loginButton = Container(
-      width:screenWidth * 0.5,
-
+      width: 400,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -289,25 +288,21 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           );
 
+          // Set the callback for successful login
+          controller.setOnLoginSuccess(() async {
+            // Simulating a 3-second delay
+            await Future.delayed(Duration(seconds: 0));
+            // After the delay, navigate to UserPanel
+            Get.offAll(() => UserPanel());
+          });
 
-            // Set the callback for successful login
-            controller.setOnLoginSuccess(() async {
-              // Simulating a 3-second delay
-              await Future.delayed(Duration(seconds: 0));
-              // After the delay, navigate to UserPanel
-              Get.offAll(() => UserPanel());
-            });
+          // Call the login method
+          await controller.login();
 
-            // Call the login method
-            await controller.login();
-
-            // Clear email and password fields after login attempt
-            controller.email.clear();
-            controller.password.clear();
-          },
-
-
-
+          // Clear email and password fields after login attempt
+          controller.email.clear();
+          controller.password.clear();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -332,22 +327,28 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final errorText = Obx(() => Text(
-      controller.errorMessage.value,
-      style: TextStyle(color: Colors.red), // Customize the color as needed
-    ));
+          controller.errorMessage.value,
+          style: TextStyle(color: Colors.red), // Customize the color as needed
+        ));
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/loginbgg.png'),
-            fit: BoxFit.cover,
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF000104),
+              Color(0xFF18293F),
+              Color(0xFF141E2C),
+              Color(0xFF18293F),
+              Color(0xFF000104),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Row(
           children: [
-            if (kIsWeb && screenWidth>700) lottieAnimation,
-
+            if (kIsWeb && screenWidth > 700) lottieAnimation,
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -361,19 +362,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           : CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          height:kIsWeb
-                              ? 300
-                              : 470,
+                          height: kIsWeb ? 350 : 480,
                           child: Image.asset(
                             'assets/logo.png',
                             fit: BoxFit.contain,
                           ),
                         ),
                         SizedBox(height: 20),
-                        emailField,
-                        SizedBox(height: 25),
-                        passwordField,
-                        SizedBox(height: 35),
+                        Container(
+                          width: kIsWeb ? 400 : null, // Set the desired width
+                          child: emailField,
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          width: kIsWeb ? 400 : null, // Set the desired width
+                          child: passwordField,
+                        ),
+                        SizedBox(height: 30),
                         Align(
                           alignment: Alignment.center,
                           child: loginButton,

@@ -373,12 +373,20 @@ class _SignupState extends State<Signup> {
     );
 
 
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/loginbgg.png'),
-            fit: BoxFit.cover,
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF000104),
+              Color(0xFF18293F),
+              Color(0xFF141E2C),
+              Color(0xFF18293F),
+              Color(0xFF000104),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Row(
