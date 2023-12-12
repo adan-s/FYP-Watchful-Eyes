@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
@@ -91,12 +92,13 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        _buildNavBarItem("Community Forum", Icons.group, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CommunityForumPage()),
-          );
-        }),
+        if (!kIsWeb) // Check if the app is not running on the web
+          _buildNavBarItem("Community Forum", Icons.group, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
+            );
+          }),
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
