@@ -281,7 +281,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 100,
                   child: Lottie.asset(
                     'assets/loginloadingbar.json',
-                    // Replace with the correct path
                     width: 300,
                     height: 300,
                   ),
@@ -290,23 +289,25 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           );
 
-          try {
+
+            // Set the callback for successful login
             controller.setOnLoginSuccess(() async {
-              await Future.delayed(
-                  Duration(seconds: 4)); // Simulating a 3-second delay
-              await fetchAndNavigateToUserProfile();
+              // Simulating a 3-second delay
+              await Future.delayed(Duration(seconds: 0));
+              // After the delay, navigate to UserPanel
+              Get.offAll(() => UserPanel());
             });
+
+            // Call the login method
             await controller.login();
+
+            // Clear email and password fields after login attempt
             controller.email.clear();
             controller.password.clear();
-          } finally {
-            // Close the loading animation dialog
-            Navigator.of(context).pop();
+          },
 
-            // Now navigate to UserPanel
-            Get.to(UserPanel());
-          }
-        },
+
+
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -332,7 +333,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final errorText = Obx(() => Text(
       controller.errorMessage.value,
-      style: TextStyle(color: Colors.red),
+      style: TextStyle(color: Colors.grey),
     ));
 
     return Scaffold(

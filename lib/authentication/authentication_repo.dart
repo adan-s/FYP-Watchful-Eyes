@@ -27,6 +27,12 @@ class AuthenticationRepository extends GetxController {
         password: password,
       );
 
+      // After creating the user, get the current user
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      // Send email verification to the user
+      await currentUser?.sendEmailVerification();
+
       await FirebaseFirestore.instance.collection('Users').doc(email).set({
         'username': username,
         'email': email,
@@ -77,7 +83,7 @@ class AuthenticationRepository extends GetxController {
 
   }
 
-  Future<bool> verifyotp(String otp) async{
+  Future<bool> VerifyOTP(String otp) async{
     var credentials = await _auth.signInWithCredential(PhoneAuthProvider.credential(verificationId: this.verificationId.value, smsCode: otp));
     return credentials.user !=null ? true:false;
   }

@@ -336,12 +336,11 @@ class _SignupState extends State<Signup> {
                 controller.email.text.trim(),
                 controller.password.text.trim(),
               );
-            } else if (controller.contactNo.text.isNotEmpty) {
+            } else if (controller.contactNo.text.isNotEmpty)
+            {
               // User is signing up with phone number
-              Signupcontroller.instance.PhoneAuthentication(
-                controller.contactNo.text.trim(),
-              );
-
+              Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
+              Get.to(() => const OTPSCREEN());
             }
 
             // Additional code for creating the user and clearing fields

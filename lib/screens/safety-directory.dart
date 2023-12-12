@@ -296,17 +296,17 @@ class SelfDefenseProcedures extends StatelessWidget {
                 _buildImageBox(
                   context,
                   'Weak Points',
-                  '/procedure1.jpg',
+                  'assets/procedure1.jpg',
                 ),
                 _buildImageBox(
                   context,
                   'Self Defense Move',
-                  '/procedure2.jpg',
+                  'assets/procedure2.jpg',
                 ),
                 _buildImageBox(
                   context,
                   'Emergency Information',
-                  '/procedure3.jpg',
+                  'assets/procedure3.jpg',
                 ),
               ],
             )
@@ -315,19 +315,19 @@ class SelfDefenseProcedures extends StatelessWidget {
                 _buildImageBox(
                   context,
                   'Weak Points',
-                  '/procedure1.jpg',
+                  'assets/procedure1.jpg',
                 ),
                 SizedBox(height: 44),
                 _buildImageBox(
                   context,
                   'Self Defense Move',
-                  '/procedure2.jpg',
+                  'assets/procedure2.jpg',
                 ),
                 SizedBox(height: 44),
                 _buildImageBox(
                   context,
                   'Emergency Information',
-                  '/procedure3.jpg',
+                  'assets/procedure3.jpg',
                 ),
               ],
             ),
@@ -509,17 +509,17 @@ class SelfDefenseGadgets extends StatelessWidget {
               GadgetItem(
                 title: 'Pepper Spray',
                 buyLink: 'https://saamaan.pk/products/reusable-pepper-spray-with-keychain?_pos=1&_sid=6fb898c5c&_ss=r',
-                imagePath: '/pepper-spray.png',
+                imagePath: 'assets/pepper-spray.png',
               ),
               GadgetItem(
                 title: 'Taser',
                 buyLink: 'https://www.survivalgear.pk/shop/dz-x10-taser-pakistan/',
-                imagePath: '/taser.png',
+                imagePath: 'assets/taser.png',
               ),
               GadgetItem(
                 title: 'Paralyzer',
                 buyLink: 'https://tacticalgears.pk/products/paralyzer-high-voltage-pulse-batons-510-fz?_pos=5&_sid=2f7647d9a&_ss=r',
-                imagePath: '/stick.png',
+                imagePath: 'assets/stick.png',
               ),
               // Add more gadgets as needed
             ]),

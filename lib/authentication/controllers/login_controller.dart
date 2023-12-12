@@ -40,14 +40,27 @@ class LoginController extends GetxController {
         // Check if the user is a regular user (you can replace this condition with your user identification logic)
         if (userCredential.user?.uid != null) {
           // Regular user login successful
-          onLoginSuccess(); // Call the callback
-          Get.offAll(() => UserPanel());
-          Get.snackbar(
-            'Login Successful',
-            'Welcome, User!',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.grey,
-          );
+
+          // Check if the email is verified
+          if (userCredential.user?.emailVerified == true) {
+            // Email is verified, proceed with login
+            onLoginSuccess(); // Call the callback
+            Get.offAll(() => UserPanel());
+            Get.snackbar(
+              'Login Successful',
+              'Welcome, User!',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.grey,
+            );
+          } else {
+            // Email is not verified, show a message or take appropriate action
+            Get.snackbar(
+              'Email Not Verified',
+              'Please verify your email before logging in.',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+            );
+          }
         } else {
           // Handle other cases if needed
         }

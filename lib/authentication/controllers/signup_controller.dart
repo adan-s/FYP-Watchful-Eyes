@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -32,14 +33,20 @@ class Signupcontroller extends GetxController {
         email: email,
         password: password,
       );
-
-
+      User? user = FirebaseAuth.instance.currentUser;
+      await user?.sendEmailVerification();
+      Get.snackbar(
+        'Registration Successful',
+        'Verification email sent. Please verify your email before logging in.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+      );
     } catch (e) {
-
       print('Registration error: $e');
       rethrow;
     }
   }
+
   Future<void> createUser(usermodel user) async {
     await user_repositoryy.createUser(user);
   }
@@ -48,7 +55,7 @@ class Signupcontroller extends GetxController {
      AuthenticationRepository.instance.phoneauthentication(phoneNo);
     } catch (e) {
       print('Phone authentication error: $e');
-      // Add additional error handling as needed
+
     }
   }
 

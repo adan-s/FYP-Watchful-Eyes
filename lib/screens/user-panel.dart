@@ -428,7 +428,7 @@ class _UserPanelState extends State<UserPanel>
                                     '"Watchful Eyes" also focuses on enhancing '
                                     "women's safety, "
                                     'providing a dedicated resource section with safety tips and guidelines for various situations.',
-                                'key-features',
+                                '/key-features',
                               ),
                             ),
                           if (screenWidth > 600)
@@ -440,7 +440,8 @@ class _UserPanelState extends State<UserPanel>
                                     ' user privileges. "Watchful Eyes" collaborates with law enforcement, sharing data with local '
                                     'governments and offering special features to users, '
                                     'presenting a unique business opportunity that aligns with our commitment to community safety.',
-                                '/assets/objective',
+                                '/objective'
+
                               ),
                             ),
                           if (screenWidth <= 600)
@@ -451,7 +452,7 @@ class _UserPanelState extends State<UserPanel>
                                   'Our system offers a user-friendly solution to streamline crime reporting, '
                                       'enhance police comprehension, and ultimately improve community safety. '
                                       'We understand the difficulties people face when reporting crimes – ',
-                                  '/user-friendly',
+                                  'assets/user-friendly',
                                 ),
                                 _buildWhyChooseUsItem(
                                   'Key Features',
@@ -459,14 +460,14 @@ class _UserPanelState extends State<UserPanel>
                                       'transparent, and secure. Users can report crimes in real-time through a simple app or website, choosing'
                                       ' to keep their identity private if desired. The system organizes crime information neatly, ',
 
-                                  'key-features',
+                                  'assets/key-features',
                                 ),
                                 _buildWhyChooseUsItem(
                                   'Objectives',
                                   'Our objectives include developing a web-based application accessible on multiple platforms, '
                                       'crime data visualization with pinpointed locations, and a registration system to differentiate'
                                       ' user privileges. ',
-                                  '/assets/objective',
+                                  'assets/objective',
                                 ),
                               ],
                             ),
@@ -517,12 +518,12 @@ class _UserPanelState extends State<UserPanel>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildBenefitItem(
-                            'Enhanced Community Safety', '/public-safety.png'),
+                            'Enhanced Community Safety', 'assets/public-safety.png'),
                         _buildBenefitItem(
-                            'Innovative Crime Reporting System', '/record.png'),
+                            'Innovative Crime Reporting System', 'assets/record.png'),
                         _buildBenefitItem(
                             "Dedicated Resources for Women's Safety",
-                            '/safe.png'),
+                            'assets/safe.png'),
                       ],
                     ),
                   ],

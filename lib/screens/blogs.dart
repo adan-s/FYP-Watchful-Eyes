@@ -16,30 +16,30 @@ class BlogPage extends StatefulWidget {
 
 class _BlogPageState extends State<BlogPage> {
   List<Blog> blogs = [
-    Blog(title: 'Blog 1', imagePath: '/blog1.jpg'),
-    Blog(title: 'Blog 2', imagePath: '/blog3.jpg'),
-    Blog(title: 'Blog 3', imagePath: '/blog2.jpg'),
+    Blog(title: 'Blog 1', imagePath: 'assets/blog1.jpg'),
+    Blog(title: 'Blog 2', imagePath: 'assets/blog3.jpg'),
+    Blog(title: 'Blog 3', imagePath: 'assets/blog2.jpg'),
   ];
 
   List<VideoPlayerWidget> videos = [
     VideoPlayerWidget(
       videoPath:
-          '/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
+          'assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
       key: UniqueKey(),
       title: 'Choke Hold Defenses - Women MUST Know Self-Defense',
-      imagePath: '/video1.PNG',
+      imagePath: 'assets/video1.PNG',
     ),
     VideoPlayerWidget(
-      videoPath: '/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
+      videoPath: 'assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
       key: UniqueKey(),
       title: '7 Self-Defense Techniques for Women from Professionals',
-      imagePath: '/video2.PNG',
+      imagePath: 'assets/video2.PNG',
     ),
     VideoPlayerWidget(
-      videoPath: '/Safety-Tips-for-Women.mp4',
+      videoPath: 'assets/Safety-Tips-for-Women.mp4',
       key: UniqueKey(),
       title: 'Safety Tips for Women',
-      imagePath: '/video3.PNG',
+      imagePath: 'assets/video3.PNG',
     ),
   ];
 
