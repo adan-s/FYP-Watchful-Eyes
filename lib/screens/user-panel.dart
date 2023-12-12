@@ -110,7 +110,7 @@ class _UserPanelState extends State<UserPanel>
                                     ),
                                     SizedBox(height: 5),
                                     Text(
-                                      "Welcome to 'Watchful Eyes' - "
+                                      kIsWeb ? "Welcome to 'Watchful Eyes' - "
                                       "Step into a new era of community safety with 'Watchful Eyes,'"
                                       " a groundbreaking crime reporting system designed to revolutionize "
                                       "the way we address security concerns. In the face of the traditionally "
@@ -119,7 +119,13 @@ class _UserPanelState extends State<UserPanel>
                                       " Our system is committed to simplifying and streamlining crime reporting, fostering "
                                       "enhanced police understanding, and, most importantly, elevating overall community safety. "
                                       "Trust in law enforcement is paramount, and 'Watchful Eyes' addresses this by providing a "
-                                      "user-friendly platform, offering a seamless and efficient reporting experience.",
+                                      "user-friendly platform, offering a seamless and efficient reporting experience."
+                                      :  "Welcome to 'Watchful Eyes' - "
+                                          "Step into a new era of community safety with 'Watchful Eyes,'"
+                                          " a groundbreaking crime reporting system designed to revolutionize "
+                                          "the way we address security concerns. In the face of the traditionally "
+                                          "challenging and disheartening process of reporting crimes—with its inherent "
+                                          "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change.",
                                       style: TextStyle(
                                           fontSize: 20,
                                           color: Colors.white,
@@ -154,108 +160,216 @@ class _UserPanelState extends State<UserPanel>
             Container(
               width: double.infinity,
               height: 600,
-              color: Color(0xFF193552), // Set the background color to #134B5F
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Left side: Lottie animations
-                  Expanded(
-                    child: kIsWeb
-                        ? Expanded(
-                            child: CarouselSlider(
-                              items: [
-                                'assets/mapup.json',
-                                'assets/reportup.json',
-                                'assets/alertup.json',
-                                'assets/communityup.json',
-                              ].map((item) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 600,
-                                  child: Lottie.asset(item),
-                                );
-                              }).toList(),
-                              options: CarouselOptions(
-                                height: 600,
-                                enableInfiniteScroll: true,
-                                autoPlay: true,
-                                autoPlayInterval: Duration(seconds: 5),
-                                autoPlayAnimationDuration:
-                                    Duration(milliseconds: 800),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                pauseAutoPlayOnTouch: true,
-                                aspectRatio: 2.0,
-                                onPageChanged: (index, reason) {
-                                  // Handle page change if needed
-                                },
-                              ),
-                            ),
-                          )
-                        : SizedBox(), // Placeholder for non-web platforms
-                  ),
-                  // Right side: Text container
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: 600,
-                    padding: EdgeInsets.all(20),
-                    color: Color(0xFF193552),
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        RotateAnimatedText(
-                            "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
-                            textStyle: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontFamily: 'silkscreen',
-                                shadows: [
-                                  Shadow(
-                                      color: Colors.black,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2)
-                                ])),
-                        RotateAnimatedText(
-                            "REPORT IN A BLINK, SWIFTLY AND SURELY",
-                            textStyle: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontFamily: 'silkscreen',
-                                shadows: [
-                                  Shadow(
-                                      color: Colors.black,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2)
-                                ])),
-                        RotateAnimatedText(
-                            "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
-                            textStyle: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontFamily: 'silkscreen',
-                                shadows: [
-                                  Shadow(
-                                      color: Colors.black,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2)
-                                ])),
-                        RotateAnimatedText("SHARE YOUR SPOT, ENGAGE FOR SAFETY",
-                            textStyle: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontFamily: 'silkscreen',
-                                shadows: [
-                                  Shadow(
-                                      color: Colors.black,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2)
-                                ])),
+              color: Color(0xFF193552),
+              child: kIsWeb
+                  ?
+              Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Left side: Lottie animations
+                        Expanded(
+                          child: kIsWeb
+                              ? Expanded(
+                                  child: CarouselSlider(
+                                    items: [
+                                      'assets/mapup.json',
+                                      'assets/reportup.json',
+                                      'assets/alertup.json',
+                                      'assets/communityup.json',
+                                    ].map((item) {
+                                      return Container(
+                                        width: double.infinity,
+                                        height: 600,
+                                        child: Lottie.asset(item),
+                                      );
+                                    }).toList(),
+                                    options: CarouselOptions(
+                                      height: 600,
+                                      enableInfiniteScroll: true,
+                                      autoPlay: true,
+                                      autoPlayInterval: Duration(seconds: 5),
+                                      autoPlayAnimationDuration:
+                                          Duration(milliseconds: 800),
+                                      autoPlayCurve: Curves.fastOutSlowIn,
+                                      pauseAutoPlayOnTouch: true,
+                                      aspectRatio: 2.0,
+                                      onPageChanged: (index, reason) {
+                                        // Handle page change if needed
+                                      },
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(), // Placeholder for non-web platforms
+                        ),
+                        // Right side: Text container
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 600,
+                          padding: EdgeInsets.all(20),
+                          color: Color(0xFF193552),
+                          child: AnimatedTextKit(
+                            animatedTexts: [
+                              RotateAnimatedText(
+                                  "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
+                                  textStyle: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontFamily: 'silkscreen',
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.black,
+                                            offset: Offset(1, 1),
+                                            blurRadius: 2)
+                                      ])),
+                              RotateAnimatedText(
+                                  "REPORT IN A BLINK, SWIFTLY AND SURELY",
+                                  textStyle: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontFamily: 'silkscreen',
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.black,
+                                            offset: Offset(1, 1),
+                                            blurRadius: 2)
+                                      ])),
+                              RotateAnimatedText(
+                                  "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
+                                  textStyle: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontFamily: 'silkscreen',
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.black,
+                                            offset: Offset(1, 1),
+                                            blurRadius: 2)
+                                      ])),
+                              RotateAnimatedText(
+                                  "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
+                                  textStyle: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontFamily: 'silkscreen',
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.black,
+                                            offset: Offset(1, 1),
+                                            blurRadius: 2)
+                                      ])),
+                            ],
+                            isRepeatingAnimation: true,
+                            pause: Duration(milliseconds: 500),
+                            totalRepeatCount:
+                                1000000, // Set to repeat indefinitely
+                          ),
+                        ),
                       ],
-                      isRepeatingAnimation: true,
-                      pause: Duration(milliseconds: 500),
-                      totalRepeatCount: 1000000, // Set to repeat indefinitely
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Lottie animations for Android
+                        CarouselSlider(
+                          items: [
+                            'assets/mapup.json',
+                            'assets/reportup.json',
+                            'assets/alertup.json',
+                            'assets/communityup.json',
+                          ].map((item) {
+                            return Container(
+                              width: double.infinity,
+                              height: 300, // Adjust the height as needed
+                              child: Lottie.asset(item),
+                            );
+                          }).toList(),
+                          options: CarouselOptions(
+                            height: 300,
+                            enableInfiniteScroll: true,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 5),
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            pauseAutoPlayOnTouch: true,
+                            aspectRatio: 2.0,
+                            onPageChanged: (index, reason) {
+                              // Handle page change if needed
+                            },
+                          ),
+                        ),
+                        // Text container for Android
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(20),
+                          color: Color(0xFF193552),
+                          child: AnimatedTextKit(
+                            animatedTexts: [
+                              RotateAnimatedText(
+                                "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
+                                textStyle: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontFamily: 'silkscreen',
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2)
+                                  ],
+                                ),
+                              ),
+                              RotateAnimatedText(
+                                "REPORT IN A BLINK, SWIFTLY AND SURELY",
+                                textStyle: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontFamily: 'silkscreen',
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2)
+                                  ],
+                                ),
+                              ),
+                              RotateAnimatedText(
+                                "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
+                                textStyle: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontFamily: 'silkscreen',
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2)
+                                  ],
+                                ),
+                              ),
+                              RotateAnimatedText(
+                                "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
+                                textStyle: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontFamily: 'silkscreen',
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2)
+                                  ],
+                                ),
+                              ),
+                            ],
+                            isRepeatingAnimation: true,
+                            pause: Duration(milliseconds: 500),
+                            totalRepeatCount:
+                                1000000, // Set to repeat indefinitely
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
             // Why Choose Us Section
             Container(
@@ -296,7 +410,7 @@ class _UserPanelState extends State<UserPanel>
                             Expanded(
                               child: _buildWhyChooseUsItem(
                                 'User-Friendly',
-                                'Our system offers a user-friendly solution to streamline crime reporting, '
+                               'Our system offers a user-friendly solution to streamline crime reporting, '
                                     'enhance police comprehension, and ultimately improve community safety. '
                                     'We understand the difficulties people face when reporting crimes – '
                                     'the time-consuming nature of the process, the scattered information, '
@@ -326,7 +440,7 @@ class _UserPanelState extends State<UserPanel>
                                     ' user privileges. "Watchful Eyes" collaborates with law enforcement, sharing data with local '
                                     'governments and offering special features to users, '
                                     'presenting a unique business opportunity that aligns with our commitment to community safety.',
-                                '/objective',
+                                '/assets/objective',
                               ),
                             ),
                           if (screenWidth <= 600)
@@ -336,29 +450,23 @@ class _UserPanelState extends State<UserPanel>
                                   'User-Friendly',
                                   'Our system offers a user-friendly solution to streamline crime reporting, '
                                       'enhance police comprehension, and ultimately improve community safety. '
-                                      'We understand the difficulties people face when reporting crimes – '
-                                      'the time-consuming nature of the process, the scattered information, '
-                                      'and the reservations about trusting law enforcement. "Watchful Eyes" addresses'
-                                      ' these issues head-on, providing a seamless and efficient platform for reporting crimes.',
+                                      'We understand the difficulties people face when reporting crimes – ',
                                   '/user-friendly',
                                 ),
                                 _buildWhyChooseUsItem(
                                   'Key Features',
                                   'At the heart of our system are key features aimed at making the reporting process easy, '
-                                      'transparent, and secure. Users can report crimes in real-time through a simple app or website, choosing to keep their identity private if desired. The system organizes crime information neatly, '
-                                      '"Watchful Eyes" also focuses on enhancing '
-                                      "women's safety, "
-                                      'providing a dedicated resource section with safety tips and guidelines for various situations.',
+                                      'transparent, and secure. Users can report crimes in real-time through a simple app or website, choosing'
+                                      ' to keep their identity private if desired. The system organizes crime information neatly, ',
+
                                   'key-features',
                                 ),
                                 _buildWhyChooseUsItem(
                                   'Objectives',
                                   'Our objectives include developing a web-based application accessible on multiple platforms, '
                                       'crime data visualization with pinpointed locations, and a registration system to differentiate'
-                                      ' user privileges. "Watchful Eyes" collaborates with law enforcement, sharing data with local '
-                                      'governments and offering special features to users, '
-                                      'presenting a unique business opportunity that aligns with our commitment to community safety.',
-                                  '/objective',
+                                      ' user privileges. ',
+                                  '/assets/objective',
                                 ),
                               ],
                             ),
