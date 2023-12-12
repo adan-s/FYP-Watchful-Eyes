@@ -85,16 +85,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   }
 
                   final user = snapshot.data!;
-                  String displayImageUrl =
-                      user.profileImage ?? profileImageUrl;
-
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
 
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(displayImageUrl),
+                        backgroundImage: NetworkImage(profileImageUrl),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -349,4 +346,5 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
     }
   }
+
 }
