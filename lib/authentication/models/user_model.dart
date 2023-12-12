@@ -64,7 +64,7 @@ class usermodel{
         gender: data["Gender"],
         password: data["Password"],
         confirmPassword: data["ConfirmPassword"],
-        profileImage: data["ProfileImage"]
+        profileImage: data["ProfileImage"],
 
     );
 

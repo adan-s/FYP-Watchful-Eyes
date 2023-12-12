@@ -56,9 +56,7 @@ class CommunityForumPage extends StatelessWidget {
           child: TabBarView(
             children: [
               HomeTab(),
-              Center(
-                child: const Text('People Page'),
-              ),
+              PeoplePage(),
               Center(
                 child: const Text('My Page'),
               ),
@@ -79,53 +77,49 @@ class CommunityForumPage extends StatelessWidget {
   }
 }
 
+//HomeTab
+Future<List<Post>> fetchPosts() async {
+  List<Post> posts = [];
+  QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
 
+
+  for (QueryDocumentSnapshot doc in snapshot.docs) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    List<Comment> comments = await fetchComments(data['id'] ?? ''); // Use post ID
+
+    posts.add(
+      Post(
+        postId: data['id'] ?? '',
+        username: data['username'] ?? 'Unknown User',
+        description: data['description'] ?? '',
+        imageUrl: data['imageUrl'] ?? '',
+        likes: data['likes'] ?? 0,
+        comments: comments,
+      ),
+    );
+  }
+
+  return posts;
+}
+Future<List<Comment>> fetchComments(String postId) async {
+  print("Fetching comments for post with ID: $postId");
+  QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+      .collection('items')
+      .doc(postId)
+      .collection('comments')
+      .get();
+
+  print("Fetched ${commentSnapshot.docs.length} comments");
+
+  return commentSnapshot.docs.map((commentDoc) {
+    Map<String, dynamic> commentData = commentDoc.data() as Map<String, dynamic>;
+    return Comment(
+      username: commentData['username'] ?? '',
+      text: commentData['text'] ?? '',
+    );
+  }).toList();
+}
 class HomeTab extends StatelessWidget {
-
-  Future<List<Post>> fetchPosts() async {
-    List<Post> posts = [];
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
-
-
-    for (QueryDocumentSnapshot doc in snapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      List<Comment> comments = await fetchComments(data['id'] ?? ''); // Use post ID
-
-      posts.add(
-        Post(
-          postId: data['id'] ?? '',
-          username: data['username'] ?? 'Unknown User',
-          description: data['description'] ?? '',
-          imageUrl: data['imageUrl'] ?? '',
-          likes: data['likes'] ?? 0,
-          comments: comments,
-        ),
-      );
-    }
-
-    return posts;
-  }
-
-  Future<List<Comment>> fetchComments(String postId) async {
-    print("Fetching comments for post with ID: $postId");
-    QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
-        .collection('items')
-        .doc(postId)
-        .collection('comments')
-        .get();
-
-    print("Fetched ${commentSnapshot.docs.length} comments");
-
-    return commentSnapshot.docs.map((commentDoc) {
-      Map<String, dynamic> commentData = commentDoc.data() as Map<String, dynamic>;
-      return Comment(
-        username: commentData['username'] ?? '',
-        text: commentData['text'] ?? '',
-      );
-    }).toList();
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -156,9 +150,6 @@ class HomeTab extends StatelessWidget {
     );
   }
 }
-
-
-
 class Post {
   final String postId;
   final String username;
@@ -176,7 +167,6 @@ class Post {
     required this.comments,
   });
 }
-
 class Comment {
   final String username;
   final String text;
@@ -186,9 +176,6 @@ class Comment {
     required this.text,
   });
 }
-
-
-
 class PostCard extends StatefulWidget {
   final Post post;
 
@@ -197,7 +184,6 @@ class PostCard extends StatefulWidget {
   @override
   _PostCardState createState() => _PostCardState();
 }
-
 class _PostCardState extends State<PostCard> {
   bool isLiked = false;
   TextEditingController commentController = TextEditingController();
@@ -384,10 +370,6 @@ class _PostCardState extends State<PostCard> {
     });
   }
 }
-
-
-
-// CommentSection widget to display comments
 class CommentSection extends StatelessWidget {
   final List<Comment> comments;
 
@@ -409,9 +391,6 @@ class CommentSection extends StatelessWidget {
     );
   }
 }
-
-
-// CommentTile widget to display a single comment
 class CommentTile extends StatelessWidget {
   final String username;
   final String comment;
@@ -427,6 +406,10 @@ class CommentTile extends StatelessWidget {
     );
   }
 }
+
+
+
+//Navbar
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -499,7 +482,6 @@ class ResponsiveAppBarActions extends StatelessWidget {
     );
   }
 }
-
 class ResponsiveRow extends StatelessWidget {
   final List<Widget> children;
 
@@ -529,4 +511,106 @@ class ResponsiveRow extends StatelessWidget {
       ],
     );
   }
+}
+
+
+
+//PeoplePage
+class PeoplePage extends StatelessWidget {
+  Future<List<User>> fetchUsers() async {
+    List<User> users = [];
+
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      users.add(
+        User(
+          username: data['username'] ?? 'Unknown User',
+          profileImage: data['profileImage'] ?? 'Url Not Found',
+          // Add other user-related fields here if needed
+        ),
+      );
+    }
+    return users;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<User>>(
+      future: fetchUsers(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+
+        List<User> users = snapshot.data ?? [];
+
+        return ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Collaborators',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                return UserProfileCard(user: users[index]);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+class UserProfileCard extends StatelessWidget {
+  final User user;
+
+  const UserProfileCard({Key? key, required this.user}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        leading: CircleAvatar(
+          // You can replace this with the user's profile image
+          backgroundImage: NetworkImage(user.profileImage),
+        ),
+        title: Text(user.username),
+        // Additional user information or actions can be added here
+      ),
+    );
+  }
+}
+class User {
+  final String username;
+  final String profileImage;
+
+  User({
+    required this.username,
+    required this.profileImage,
+  });
 }
