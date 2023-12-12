@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/signup.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Signup(),
+      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
