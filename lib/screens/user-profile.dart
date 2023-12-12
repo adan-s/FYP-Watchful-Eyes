@@ -87,6 +87,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   final user = snapshot.data!;
                   String displayImageUrl =
                       user.profileImage ?? profileImageUrl;
+                  print("Profile Image:");
+                  print(displayImageUrl);
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
