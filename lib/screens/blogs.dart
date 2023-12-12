@@ -885,55 +885,62 @@ class _BlogPageState extends State<BlogPage> {
             ),
             child: Column(
               children: [
+                // Display default text based on selection
+                Text(
+                  'Blogs Below :',
+                  style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                ),
                 // Dropdown button for Blogs
                 DropdownButton<String>(
-                  value: selectedBlogIndex == -1
-                      ? null
-                      : blogs[selectedBlogIndex].title,
+                  value: selectedBlogIndex == -1 ? null : blogs[selectedBlogIndex].title,
                   items: blogs.map((Blog blog) {
                     return DropdownMenuItem<String>(
                       value: blog.title,
-
-                        child: Text(
-                          blog.title,
-                          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
-                        ),
-
+                      child: Text(
+                        blog.title,
+                        style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                      ),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      selectedBlogIndex =
-                          blogs.indexWhere((blog) => blog.title == newValue);
+                      selectedBlogIndex = blogs.indexWhere((blog) => blog.title == newValue);
                       selectedVideoIndex = -1;
                     });
                   },
-                  style: TextStyle(fontFamily: 'outfit',color: Colors.black), // Dropdown button text color
-                  dropdownColor: Colors.black, // Dropdown menu background color
+                  style: TextStyle(fontFamily: 'outfit', color: Colors.black),
+                  dropdownColor: Colors.black,
                 ),
-                // Dropdown button for Videos
+
+// Dropdown button for Videos
+                Text(
+                  'Videos Below:',
+                  style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                ),
                 DropdownButton<String>(
-                  value: selectedVideoIndex == -1
-                      ? null
-                      : videos[selectedVideoIndex].title,
+                  value: selectedVideoIndex == -1 ? null : videos[selectedVideoIndex].title,
+
                   items: videos.map((VideoPlayerWidget video) {
                     return DropdownMenuItem<String>(
                       value: video.title,
-                      child: Text(video.title,
-                        style: TextStyle(fontFamily: 'outfit',color: Colors.white),),
-
+                      child: Text(
+                        video.title,
+                        style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                      ),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      selectedVideoIndex =
-                          videos.indexWhere((video) => video.title == newValue);
+                      selectedVideoIndex = videos.indexWhere((video) => video.title == newValue);
                       selectedBlogIndex = -1;
                     });
                   },
-                  style: TextStyle(fontFamily: 'outfit',color: Colors.black), // Dropdown button text color
-                  dropdownColor: Colors.black, // Dropdown menu background color
+                  style: TextStyle(fontFamily: 'outfit', color: Colors.black),
+                  dropdownColor: Colors.black,
                 ),
+
+
+
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
