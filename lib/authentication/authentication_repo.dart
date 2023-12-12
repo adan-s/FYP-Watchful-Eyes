@@ -27,7 +27,6 @@ class AuthenticationRepository extends GetxController {
         password: password,
       );
 
-      // After creating the user, get the current user
       final currentUser = FirebaseAuth.instance.currentUser;
 
       // Send email verification to the user
