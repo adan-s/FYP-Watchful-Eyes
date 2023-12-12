@@ -58,23 +58,17 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
       if (user != null) {
         // Fetch the username and profileImage
         String username = user.username ?? 'DefaultUsername';
-        String profileImage = user.profileImage ?? 'No image';
 
         String fileName = DateTime.now().microsecondsSinceEpoch.toString();
         String uniqueID = '$fileName-${DateTime.now().microsecondsSinceEpoch}';
 
-        print("Username:");
-        print(user.profileImage);
-        print(username);
-        print("ProfileImage:");
-        print(profileImage);
+
         newItem = {
           'id': uniqueID,
           'description': description,
           'username': username,
           'likes': 0,
           'comments': 0,
-          'profileImage':profileImage,
         };
 
         _descriptionController.clear();

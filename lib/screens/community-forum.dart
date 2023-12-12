@@ -35,15 +35,6 @@ class CommunityForumPage extends StatelessWidget {
           actions: [
             ResponsiveAppBarActions(),
           ],
-
-          bottom: TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.home, color: Colors.white)),
-              Tab(icon: Icon(Icons.people, color: Colors.white)),
-              Tab(icon: Icon(Icons.article, color: Colors.white))
-            ],
-            labelColor: Colors.white,
-          ),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -53,15 +44,7 @@ class CommunityForumPage extends StatelessWidget {
               colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
             ),
           ),
-          child: TabBarView(
-            children: [
-              HomeTab(),
-              PeoplePage(),
-              Center(
-                child: const Text('My Page'),
-              ),
-            ],
-          ),
+          child: HomeTab(),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -85,7 +68,7 @@ Future<List<Post>> fetchPosts() async {
 
   for (QueryDocumentSnapshot doc in snapshot.docs) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    List<Comment> comments = await fetchComments(data['id'] ?? ''); // Use post ID
+    List<Comment> comments = await fetchComments(data['id'] ?? '');
 
     posts.add(
       Post(
@@ -513,104 +496,3 @@ class ResponsiveRow extends StatelessWidget {
   }
 }
 
-
-
-//PeoplePage
-class PeoplePage extends StatelessWidget {
-  Future<List<User>> fetchUsers() async {
-    List<User> users = [];
-
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
-
-    for (QueryDocumentSnapshot doc in snapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      users.add(
-        User(
-          username: data['username'] ?? 'Unknown User',
-          profileImage: data['profileImage'] ?? 'Url Not Found',
-          // Add other user-related fields here if needed
-        ),
-      );
-    }
-    return users;
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<User>>(
-      future: fetchUsers(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        }
-
-        List<User> users = snapshot.data ?? [];
-
-        return ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Collaborators',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                return UserProfileCard(user: users[index]);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-class UserProfileCard extends StatelessWidget {
-  final User user;
-
-  const UserProfileCard({Key? key, required this.user}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: CircleAvatar(
-          // You can replace this with the user's profile image
-          backgroundImage: NetworkImage(user.profileImage),
-        ),
-        title: Text(user.username),
-        // Additional user information or actions can be added here
-      ),
-    );
-  }
-}
-class User {
-  final String username;
-  final String profileImage;
-
-  User({
-    required this.username,
-    required this.profileImage,
-  });
-}
