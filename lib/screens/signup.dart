@@ -118,20 +118,16 @@ class _SignupState extends State<Signup> {
       controller: controller.email,
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
-        if (controller.contactNo.text.isEmpty && (value == null || value.isEmpty)) {
+        if (value == null || value.isEmpty) {
           return 'Email is required';
         }
 
-        if (controller.contactNo.text.isNotEmpty && value != null && value.isNotEmpty) {
-          return 'Email should be empty';
+        // Validate the email format
+        if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b').hasMatch(value)) {
+          return 'Enter a valid email address';
         }
 
-        if (value != null && value.isNotEmpty) {
-          if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b').hasMatch(value)) {
-            return 'Enter a valid email address';
-          }
-        }
-        return null;
+        return null; // Validation passed
       },
       onSaved: (value) {
         if (value != null && value.isNotEmpty) {
@@ -152,27 +148,21 @@ class _SignupState extends State<Signup> {
 
 
 
+
     final contactNoField = TextFormField(
       autofocus: false,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
       validator: (value) {
-        if (controller.email.text.isEmpty && (value == null || value.isEmpty)) {
-          // If signing up with phone number and contact number is empty
+        if (value == null || value.isEmpty) {
+          // If contact number is empty
           return 'Contact number is required';
         }
 
-        if (controller.email.text.isNotEmpty && value != null && value.isNotEmpty) {
-          // If signing up with email and contact number is not empty
-          return 'Contact number should be empty';
-        }
-
-        if (value != null && value.isNotEmpty) {
-          // Format the phone number to comply with E.164 standards
-          final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
-          if (cleanedPhoneNumber.length == 13) {
-            return 'Enter a valid phone number with country code';
-          }
+        // Format the phone number to comply with E.164 standards
+        final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
+        if (cleanedPhoneNumber.length == 13) {
+          return 'Enter a valid phone number with country code';
         }
 
         return null; // Validation passed
@@ -336,15 +326,6 @@ class _SignupState extends State<Signup> {
                 controller.email.text.trim(),
                 controller.password.text.trim(),
               );
-            } else if (controller.contactNo.text.isNotEmpty)
-            {
-              // User is signing up with phone number
-              Signupcontroller.instance.PhoneAuthentication(controller.contactNo.text.trim());
-              Get.to(() => const OTPSCREEN());
-            }
-
-            // Additional code for creating the user and clearing fields
-            if (controller.email.text.isNotEmpty || controller.contactNo.text.isNotEmpty) {
               final user = usermodel(
                 username: controller.username.text.trim(),
                 firstName: controller.firstName.text.trim(),
