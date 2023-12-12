@@ -9,9 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:fyp/authentication/controllers/profile_controller.dart';
 import 'package:fyp/authentication/models/user_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
-import 'blogs.dart';
-
+import 'community-forum.dart';
 
 
 class UserProfilePage extends StatefulWidget {
