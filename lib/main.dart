@@ -4,6 +4,7 @@ import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/blogs.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/signup.dart';
+import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: UserPanel(),
       debugShowCheckedModeBanner: false,
     );
   }
