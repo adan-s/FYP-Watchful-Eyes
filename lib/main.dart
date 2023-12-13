@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/admindashboard.dart';
+import 'package:fyp/screens/blogs.dart';
+import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/login_screen.dart';
-import 'package:fyp/screens/signup.dart';
-import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
 
 void main() async {

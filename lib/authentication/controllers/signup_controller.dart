@@ -27,25 +27,61 @@ class Signupcontroller extends GetxController {
   final confirmPassword = TextEditingController();
   final user_repositoryy = Get.put(UserRepository());
 
-  Future<void> RegisterUser(String email, String password) async {
+  Future<void> RegisterUser(String email, String password, usermodel user) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      User? user = FirebaseAuth.instance.currentUser;
-      await user?.sendEmailVerification();
+
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      await currentUser?.sendEmailVerification();
+
+      // Display a snackbar for successful registration and email verification
       Get.snackbar(
         'Registration Successful',
         'Verification email sent. Please verify your email before logging in.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
       );
+
+      // Now, you can store the user data in the database
+      await createUser(user);
     } catch (e) {
-      print('Registration error: $e');
+      // Handle registration errors
+      if (e is FirebaseAuthException) {
+        if (e.code == 'email-already-in-use') {
+          // Handle email already in use error
+          Get.snackbar(
+            'Registration Failed',
+            'The email address is already in use. Please use a different email.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.grey,
+          );
+        } else {
+          // Handle other FirebaseAuthException errors
+          Get.snackbar(
+            'Registration Failed',
+            'An error occurred during registration. Please try again later.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.grey,
+          );
+        }
+      } else {
+        // Handle other non-FirebaseAuthException errors
+        Get.snackbar(
+          'Registration Failed',
+          'An unexpected error occurred. Please try again later.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.grey,
+        );
+      }
+
+      // Rethrow the exception after handling
       rethrow;
     }
   }
+
 
   Future<void> createUser(usermodel user) async {
     await user_repositoryy.createUser(user);

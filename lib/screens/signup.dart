@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fyp/screens/login_screen.dart';
-import 'package:fyp/screens/otp_screen.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../authentication/authentication_repo.dart';
@@ -18,11 +18,33 @@ class Signup extends StatefulWidget {
   _SignupState createState() => _SignupState();
 }
 
+class _CnicInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final StringBuffer newText = StringBuffer();
+
+    for (int i = 0; i < newValue.text.length; i++) {
+      if (i == 5 || i == 12) {
+        newText.write('-'); // Add hyphen at index 5 and 12
+      }
+      newText.write(newValue.text[i]);
+    }
+
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(
+        offset: newText.length,
+      ),
+    );
+  }
+}
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
   bool isEmailAuthentication = true;
   @override
   Widget build(BuildContext context) {
+    String selectedGender = 'Female';
     final controller = Get.put(Signupcontroller());
     final authenticationRepository = Get.put(AuthenticationRepository());
 
@@ -74,7 +96,7 @@ class _SignupState extends State<Signup> {
         }
         // Check if the input contains only alphabetical characters
         if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-          return 'Enter a valid First Name (letters only)';
+          return 'Enter a valid First Name';
         }
         return null;
       },
@@ -106,7 +128,7 @@ class _SignupState extends State<Signup> {
         }
         // Check if the input contains only alphabetical characters
         if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-          return 'Enter a valid Last Name (letters only)';
+          return 'Enter a valid Last Name';
         }
         return null;
       },
@@ -119,16 +141,16 @@ class _SignupState extends State<Signup> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Email is required';
+          return 'Password is required';
+        } else if (value.length < 6) {
+          return 'Password must be at least 6 characters long';
+        } else if (!RegExp(r'[@#$%^&*+=]') // Add symbols inside the brackets
+            .hasMatch(value)) {
+          return 'Password must contain at least one symbol';
         }
-
-        // Validate the email format
-        if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b').hasMatch(value)) {
-          return 'Enter a valid email address';
-        }
-
-        return null; // Validation passed
+        return null;
       },
+
       onSaved: (value) {
         if (value != null && value.isNotEmpty) {
           controller.email.text = value;
@@ -147,6 +169,78 @@ class _SignupState extends State<Signup> {
     );
 
 
+    final cnicField = TextFormField(
+      autofocus: false,
+      keyboardType: TextInputType.number,
+      controller: controller.cnic,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(13),
+        _CnicInputFormatter(),
+      ],
+      onSaved: (value) {
+        if (value != null && value.isNotEmpty) {
+          controller.cnic.text = value;
+        }
+      },
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.credit_card, color: Colors.white),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "CNIC (e.g., 12345-3389712-0)",
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'CNIC is required';
+        }
+        if (!RegExp(r'^\d{5}-\d{7}-\d{1}$').hasMatch(value)) {
+          return 'Enter a valid CNIC (e.g., 12345-3389712-0)';
+        }
+        return null;
+      },
+    );
+
+
+
+
+    final genderField = DropdownButtonFormField<String>(
+      value: selectedGender,
+      onChanged: (value) {
+        setState(() {
+          selectedGender = value!;
+        });
+      },
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.person, color: Colors.white),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Select Gender",
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.black),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+      items: ['Male', 'Female']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Gender is required';
+        }
+        return null;
+      },
+    );
+
+
 
 
     final contactNoField = TextFormField(
@@ -158,14 +252,12 @@ class _SignupState extends State<Signup> {
           // If contact number is empty
           return 'Contact number is required';
         }
-
         // Format the phone number to comply with E.164 standards
         final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
         if (cleanedPhoneNumber.length == 13) {
           return 'Enter a valid phone number with country code';
         }
-
-        return null; // Validation passed
+        return null;
       },
       onSaved: (value) {
         if (value != null && value.isNotEmpty) {
@@ -199,8 +291,6 @@ class _SignupState extends State<Signup> {
           firstDate: DateTime(1900),
           lastDate: DateTime.now(),
         );
-
-        // Update the controller with the selected date
         if (selectedDate != null) {
           controller.dob.text = "${selectedDate.month}/${selectedDate.day}/${selectedDate.year}";
         }
@@ -214,6 +304,29 @@ class _SignupState extends State<Signup> {
         if (!dateRegExp.hasMatch(value)) {
           return 'Enter a valid date format (MM/DD/YYYY)';
         }
+
+        try {
+          // Parse the selected date using the correct format
+          DateTime selectedDate = DateFormat('MM/dd/yyyy').parseStrict(value);
+
+          // Calculate age
+          DateTime currentDate = DateTime.now();
+          int age = currentDate.year - selectedDate.year;
+
+          // Check if the user is at least 18 years old
+          if (currentDate.month < selectedDate.month ||
+              (currentDate.month == selectedDate.month &&
+                  currentDate.day < selectedDate.day)) {
+            age--; // Subtract 1 year if the birthday hasn't occurred yet
+          }
+
+          if (age < 18) {
+            return 'You must be at least 18 years old';
+          }
+        } catch (e) {
+          return 'Enter a valid date';
+        }
+
         return null;
       },
       decoration: InputDecoration(
@@ -253,9 +366,12 @@ class _SignupState extends State<Signup> {
           return 'Password is required';
         } else if (value.length < 6) {
           return 'Password must be at least 6 characters long';
+        } else if (!RegExp(r'[@#$%^&+=]').hasMatch(value)) {
+          return 'Password must contain at least one symbol (@, #, %, ^, &, +, =)';
         }
         return null;
       },
+
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
@@ -300,6 +416,8 @@ class _SignupState extends State<Signup> {
           )
         : SizedBox.shrink();
 
+
+
     final signupButton = Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -317,41 +435,44 @@ class _SignupState extends State<Signup> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            if (controller.email.text.isNotEmpty) {
-              // User is signing up with email
-              Signupcontroller.instance.RegisterUser(
-                controller.email.text.trim(),
-                controller.password.text.trim(),
-              );
-              final user = usermodel(
-                username: controller.username.text.trim(),
-                firstName: controller.firstName.text.trim(),
-                lastName: controller.lastName.text.trim(),
-                contactNo: controller.contactNo.text.trim(),
-                email: controller.email.text.trim(),
-                dob: controller.dob.text.trim(),
-                cnic: controller.cnic.text.trim(),
-                gender: controller.gender.text.trim(),
-                password: controller.password.text.trim(),
-                confirmPassword: controller.confirmPassword.text.trim(),
-                profileImage: " ",
-              );
-              Signupcontroller.instance.createUser(user);
-              controller.username.clear();
-              controller.firstName.clear();
-              controller.lastName.clear();
-              controller.email.clear();
-              controller.contactNo.clear();
-              controller.dob.clear();
-              controller.password.clear();
-              controller.confirmPassword.clear();
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),onPressed: () async {
+        if (_formKey.currentState!.validate()) {
+          if (controller.email.text.isNotEmpty) {
+            // Create a usermodel instance with the necessary data
+            usermodel newUser = usermodel(
+              username: controller.username.text.trim(),
+              firstName: controller.firstName.text.trim(),
+              lastName: controller.lastName.text.trim(),
+              email: controller.email.text.trim(),
+              contactNo: controller.contactNo.text.trim(),
+              cnic: controller.cnic.text.trim(),
+              dob: controller.dob.text.trim(),
+              gender: selectedGender,
+              password: controller.password.text.trim(),
+              confirmPassword: controller.confirmPassword.text.trim(),
+              profileImage: '',
 
-            }
+            );
+
+            // User is signing up with email
+            await Signupcontroller.instance.RegisterUser(
+              controller.email.text.trim(),
+              controller.password.text.trim(),
+              newUser,
+            );
+            controller.username.clear();
+            controller.firstName.clear();
+            controller.lastName.clear();
+            controller.email.clear();
+            controller.contactNo.clear();
+            controller.cnic.clear();
+            controller.dob.clear();
+            controller.password.clear();
+            controller.confirmPassword.clear();
           }
-        },
+        }
+      },
+
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -418,7 +539,11 @@ class _SignupState extends State<Signup> {
                       SizedBox(height: 20),
                       contactNoField,
                       SizedBox(height: 20),
+                      cnicField,
+                      SizedBox(height: 20),
                       dobField,
+                      SizedBox(height: 20),
+                      genderField,
                       SizedBox(height: 20),
                       passwordField,
                       SizedBox(height: 20),
@@ -466,6 +591,7 @@ class _SignupState extends State<Signup> {
           ],
         ),
       ),
+
     );
   }
 }

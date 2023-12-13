@@ -519,7 +519,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
                               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                                 return Text(
-                                  '0',
+                                  '8',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -544,6 +544,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
               ],
+            ),Expanded(
+              child: Homescreen(),
             ),
             // ... (existing code)
           ],
