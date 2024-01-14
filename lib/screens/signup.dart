@@ -219,7 +219,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.person, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Select Gender",
-        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.black),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -421,17 +421,7 @@ class _SignupState extends State<Signup> {
     final signupButton = Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF000104),
-            Color(0xFF18293F),
-            Color(0xFF141E2C),
-            Color(0xFF18293F),
-            Color(0xFF000104),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
       child: MaterialButton(
@@ -476,7 +466,7 @@ class _SignupState extends State<Signup> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.person_add, color: Colors.white),
+            Icon(Icons.person_add, color: Colors.black),
             SizedBox(width: 10),
             Text(
               "Sign-Up",
@@ -484,7 +474,7 @@ class _SignupState extends State<Signup> {
               style: TextStyle(
                 fontFamily: 'outfit',
                 fontSize: 20,
-                color: Colors.white,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -500,11 +490,12 @@ class _SignupState extends State<Signup> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF000104),
-              Color(0xFF18293F),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF000104),
+              Color(0xFFCBE1EE),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -573,7 +564,7 @@ class _SignupState extends State<Signup> {
                               "LogIn",
                               style: TextStyle(
                                 fontFamily: 'outfit',
-                                color: Colors.lightBlue,
+                                color: Colors.black,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15,
                               ),

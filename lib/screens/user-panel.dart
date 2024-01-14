@@ -45,7 +45,7 @@ class _UserPanelState extends State<UserPanel>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:  Color(0xFF769DC9),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -56,6 +56,7 @@ class _UserPanelState extends State<UserPanel>
             ResponsiveAppBarActions(),
           ],
         ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -74,11 +75,11 @@ class _UserPanelState extends State<UserPanel>
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xFF000104),
-                          Color(0xFF0E121B),
-                          Color(0xFF141E2C),
-                          Color(0xFF18293F),
-                          Color(0xFF193552)
+                          Color(0xFF769DC9),
+                          Color(0xFF769DC9),
+                          Color(0xFF7EA3CA),
+                          Color(0xFF769DC9),
+                          Color(0xFFCBE1EE),
                         ],
                       ),
                     ),
@@ -157,220 +158,220 @@ class _UserPanelState extends State<UserPanel>
                 );
               },
             ),
-            Container(
-              width: double.infinity,
-              height: 600,
-              color: Color(0xFF193552),
-              child: kIsWeb
-                  ?
-              Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Left side: Lottie animations
-                        Expanded(
-                          child: kIsWeb
-                              ? Expanded(
-                                  child: CarouselSlider(
-                                    items: [
-                                      'assets/mapup.json',
-                                      'assets/reportup.json',
-                                      'assets/alertup.json',
-                                      'assets/communityup.json',
-                                    ].map((item) {
-                                      return Container(
-                                        width: double.infinity,
-                                        height: 600,
-                                        child: Lottie.asset(item),
-                                      );
-                                    }).toList(),
-                                    options: CarouselOptions(
-                                      height: 600,
-                                      enableInfiniteScroll: true,
-                                      autoPlay: true,
-                                      autoPlayInterval: Duration(seconds: 5),
-                                      autoPlayAnimationDuration:
-                                          Duration(milliseconds: 800),
-                                      autoPlayCurve: Curves.fastOutSlowIn,
-                                      pauseAutoPlayOnTouch: true,
-                                      aspectRatio: 2.0,
-                                      onPageChanged: (index, reason) {
-                                        // Handle page change if needed
-                                      },
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(), // Placeholder for non-web platforms
-                        ),
-                        // Right side: Text container
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 600,
-                          padding: EdgeInsets.all(20),
-                          color: Color(0xFF193552),
-                          child: AnimatedTextKit(
-                            animatedTexts: [
-                              RotateAnimatedText(
-                                  "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontFamily: 'silkscreen',
-                                      shadows: [
-                                        Shadow(
-                                            color: Colors.black,
-                                            offset: Offset(1, 1),
-                                            blurRadius: 2)
-                                      ])),
-                              RotateAnimatedText(
-                                  "REPORT IN A BLINK, SWIFTLY AND SURELY",
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontFamily: 'silkscreen',
-                                      shadows: [
-                                        Shadow(
-                                            color: Colors.black,
-                                            offset: Offset(1, 1),
-                                            blurRadius: 2)
-                                      ])),
-                              RotateAnimatedText(
-                                  "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontFamily: 'silkscreen',
-                                      shadows: [
-                                        Shadow(
-                                            color: Colors.black,
-                                            offset: Offset(1, 1),
-                                            blurRadius: 2)
-                                      ])),
-                              RotateAnimatedText(
-                                  "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontFamily: 'silkscreen',
-                                      shadows: [
-                                        Shadow(
-                                            color: Colors.black,
-                                            offset: Offset(1, 1),
-                                            blurRadius: 2)
-                                      ])),
-                            ],
-                            isRepeatingAnimation: true,
-                            pause: Duration(milliseconds: 500),
-                            totalRepeatCount:
-                                1000000, // Set to repeat indefinitely
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Lottie animations for Android
-                        CarouselSlider(
-                          items: [
-                            'assets/mapup.json',
-                            'assets/reportup.json',
-                            'assets/alertup.json',
-                            'assets/communityup.json',
-                          ].map((item) {
-                            return Container(
-                              width: double.infinity,
-                              height: 300, // Adjust the height as needed
-                              child: Lottie.asset(item),
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            height: 300,
-                            enableInfiniteScroll: true,
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 5),
-                            autoPlayAnimationDuration:
-                                Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            pauseAutoPlayOnTouch: true,
-                            aspectRatio: 2.0,
-                            onPageChanged: (index, reason) {
-                              // Handle page change if needed
-                            },
-                          ),
-                        ),
-                        // Text container for Android
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(20),
-                          color: Color(0xFF193552),
-                          child: AnimatedTextKit(
-                            animatedTexts: [
-                              RotateAnimatedText(
-                                "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
-                                textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontFamily: 'silkscreen',
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 2)
-                                  ],
-                                ),
-                              ),
-                              RotateAnimatedText(
-                                "REPORT IN A BLINK, SWIFTLY AND SURELY",
-                                textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontFamily: 'silkscreen',
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 2)
-                                  ],
-                                ),
-                              ),
-                              RotateAnimatedText(
-                                "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
-                                textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontFamily: 'silkscreen',
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 2)
-                                  ],
-                                ),
-                              ),
-                              RotateAnimatedText(
-                                "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
-                                textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontFamily: 'silkscreen',
-                                  shadows: [
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 2)
-                                  ],
-                                ),
-                              ),
-                            ],
-                            isRepeatingAnimation: true,
-                            pause: Duration(milliseconds: 500),
-                            totalRepeatCount:
-                                1000000, // Set to repeat indefinitely
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
+            // Container(
+            //   width: double.infinity,
+            //   height: 600,
+            //   color: Color(0xFF193552),
+            //   child: kIsWeb
+            //       ?
+            //   Row(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             // Left side: Lottie animations
+            //             Expanded(
+            //               child: kIsWeb
+            //                   ? Expanded(
+            //                       child: CarouselSlider(
+            //                         items: [
+            //                           'assets/mapup.json',
+            //                           'assets/reportup.json',
+            //                           'assets/alertup.json',
+            //                           'assets/communityup.json',
+            //                         ].map((item) {
+            //                           return Container(
+            //                             width: double.infinity,
+            //                             height: 600,
+            //                             child: Lottie.asset(item),
+            //                           );
+            //                         }).toList(),
+            //                         options: CarouselOptions(
+            //                           height: 600,
+            //                           enableInfiniteScroll: true,
+            //                           autoPlay: true,
+            //                           autoPlayInterval: Duration(seconds: 5),
+            //                           autoPlayAnimationDuration:
+            //                               Duration(milliseconds: 800),
+            //                           autoPlayCurve: Curves.fastOutSlowIn,
+            //                           pauseAutoPlayOnTouch: true,
+            //                           aspectRatio: 2.0,
+            //                           onPageChanged: (index, reason) {
+            //                             // Handle page change if needed
+            //                           },
+            //                         ),
+            //                       ),
+            //                     )
+            //                   : SizedBox(), // Placeholder for non-web platforms
+            //             ),
+            //             // Right side: Text container
+            //             Container(
+            //               width: MediaQuery.of(context).size.width * 0.25,
+            //               height: 600,
+            //               padding: EdgeInsets.all(20),
+            //               color: Color(0xFF193552),
+            //               child: AnimatedTextKit(
+            //                 animatedTexts: [
+            //                   RotateAnimatedText(
+            //                       "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
+            //                       textStyle: TextStyle(
+            //                           fontSize: 30,
+            //                           color: Colors.white,
+            //                           fontFamily: 'silkscreen',
+            //                           shadows: [
+            //                             Shadow(
+            //                                 color: Colors.black,
+            //                                 offset: Offset(1, 1),
+            //                                 blurRadius: 2)
+            //                           ])),
+            //                   RotateAnimatedText(
+            //                       "REPORT IN A BLINK, SWIFTLY AND SURELY",
+            //                       textStyle: TextStyle(
+            //                           fontSize: 30,
+            //                           color: Colors.white,
+            //                           fontFamily: 'silkscreen',
+            //                           shadows: [
+            //                             Shadow(
+            //                                 color: Colors.black,
+            //                                 offset: Offset(1, 1),
+            //                                 blurRadius: 2)
+            //                           ])),
+            //                   RotateAnimatedText(
+            //                       "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
+            //                       textStyle: TextStyle(
+            //                           fontSize: 30,
+            //                           color: Colors.white,
+            //                           fontFamily: 'silkscreen',
+            //                           shadows: [
+            //                             Shadow(
+            //                                 color: Colors.black,
+            //                                 offset: Offset(1, 1),
+            //                                 blurRadius: 2)
+            //                           ])),
+            //                   RotateAnimatedText(
+            //                       "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
+            //                       textStyle: TextStyle(
+            //                           fontSize: 30,
+            //                           color: Colors.white,
+            //                           fontFamily: 'silkscreen',
+            //                           shadows: [
+            //                             Shadow(
+            //                                 color: Colors.black,
+            //                                 offset: Offset(1, 1),
+            //                                 blurRadius: 2)
+            //                           ])),
+            //                 ],
+            //                 isRepeatingAnimation: true,
+            //                 pause: Duration(milliseconds: 500),
+            //                 totalRepeatCount:
+            //                     1000000, // Set to repeat indefinitely
+            //               ),
+            //             ),
+            //           ],
+            //         )
+            //       : Column(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             // Lottie animations for Android
+            //             CarouselSlider(
+            //               items: [
+            //                 'assets/mapup.json',
+            //                 'assets/reportup.json',
+            //                 'assets/alertup.json',
+            //                 'assets/communityup.json',
+            //               ].map((item) {
+            //                 return Container(
+            //                   width: double.infinity,
+            //                   height: 300, // Adjust the height as needed
+            //                   child: Lottie.asset(item),
+            //                 );
+            //               }).toList(),
+            //               options: CarouselOptions(
+            //                 height: 300,
+            //                 enableInfiniteScroll: true,
+            //                 autoPlay: true,
+            //                 autoPlayInterval: Duration(seconds: 5),
+            //                 autoPlayAnimationDuration:
+            //                     Duration(milliseconds: 800),
+            //                 autoPlayCurve: Curves.fastOutSlowIn,
+            //                 pauseAutoPlayOnTouch: true,
+            //                 aspectRatio: 2.0,
+            //                 onPageChanged: (index, reason) {
+            //                   // Handle page change if needed
+            //                 },
+            //               ),
+            //             ),
+            //             // Text container for Android
+            //             Container(
+            //               width: double.infinity,
+            //               padding: EdgeInsets.all(20),
+            //               color: Color(0xFF193552),
+            //               child: AnimatedTextKit(
+            //                 animatedTexts: [
+            //                   RotateAnimatedText(
+            //                     "NAVIGATE WITH CONFIDENCE, YOUR SAFETY'S BEST PREFERENCE",
+            //                     textStyle: TextStyle(
+            //                       fontSize: 30,
+            //                       color: Colors.white,
+            //                       fontFamily: 'silkscreen',
+            //                       shadows: [
+            //                         Shadow(
+            //                             color: Colors.black,
+            //                             offset: Offset(1, 1),
+            //                             blurRadius: 2)
+            //                       ],
+            //                     ),
+            //                   ),
+            //                   RotateAnimatedText(
+            //                     "REPORT IN A BLINK, SWIFTLY AND SURELY",
+            //                     textStyle: TextStyle(
+            //                       fontSize: 30,
+            //                       color: Colors.white,
+            //                       fontFamily: 'silkscreen',
+            //                       shadows: [
+            //                         Shadow(
+            //                             color: Colors.black,
+            //                             offset: Offset(1, 1),
+            //                             blurRadius: 2)
+            //                       ],
+            //                     ),
+            //                   ),
+            //                   RotateAnimatedText(
+            //                     "DIVE INTO SAFETY, ARM YOURSELF WITH TIPS",
+            //                     textStyle: TextStyle(
+            //                       fontSize: 30,
+            //                       color: Colors.white,
+            //                       fontFamily: 'silkscreen',
+            //                       shadows: [
+            //                         Shadow(
+            //                             color: Colors.black,
+            //                             offset: Offset(1, 1),
+            //                             blurRadius: 2)
+            //                       ],
+            //                     ),
+            //                   ),
+            //                   RotateAnimatedText(
+            //                     "SHARE YOUR SPOT, ENGAGE FOR SAFETY",
+            //                     textStyle: TextStyle(
+            //                       fontSize: 30,
+            //                       color: Colors.white,
+            //                       fontFamily: 'silkscreen',
+            //                       shadows: [
+            //                         Shadow(
+            //                             color: Colors.black,
+            //                             offset: Offset(1, 1),
+            //                             blurRadius: 2)
+            //                       ],
+            //                     ),
+            //                   ),
+            //                 ],
+            //                 isRepeatingAnimation: true,
+            //                 pause: Duration(milliseconds: 500),
+            //                 totalRepeatCount:
+            //                     1000000, // Set to repeat indefinitely
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            // ),
             // Why Choose Us Section
             Container(
               decoration: BoxDecoration(
@@ -378,11 +379,11 @@ class _UserPanelState extends State<UserPanel>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF000104),
-                    Color(0xFF0E121B),
-                    Color(0xFF141E2C),
-                    Color(0xFF18293F),
-                    Color(0xFF193552)
+                    Color(0xFF769DC9),
+                    Color(0xFF7EA3CA),
+                    Color(0xFFCBE1EE),
+                    Color(0xFFCBE1EE),
+                    Color(0xFFCBE1EE),
                   ],
                 ),
               ),
@@ -486,11 +487,11 @@ class _UserPanelState extends State<UserPanel>
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [
-                    Color(0xFF000104),
-                    Color(0xFF0E121B),
-                    Color(0xFF141E2C),
-                    Color(0xFF18293F),
-                    Color(0xFF193552)
+                    Color(0xFFCBE1EE),
+                    Color(0xFF769DC9),
+                    Color(0xFF7EA3CA),
+                    Color(0xFF769DC9),
+                    Color(0xFFCBE1EE),
                   ],
                 ),
               ),
@@ -518,11 +519,11 @@ class _UserPanelState extends State<UserPanel>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildBenefitItem(
-                            'Enhanced Community Safety', 'assets/public-safety.png'),
+                            'Enhanced Safety', 'assets/public-safety.png'),
                         _buildBenefitItem(
-                            'Innovative Crime Reporting System', 'assets/record.png'),
+                            'Innovative Reporting System', 'assets/record.png'),
                         _buildBenefitItem(
-                            "Dedicated Resources for Women's Safety",
+                            "Resources for Women's Safety",
                             'assets/safe.png'),
                       ],
                     ),
@@ -677,8 +678,8 @@ Widget _buildWhyChooseUsItem(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20), // Make the boxes rounded
-        color: Colors.black,
+        borderRadius: BorderRadius.circular(20),
+        color: Color(0xFF769DC8),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withOpacity(0.2),
@@ -700,7 +701,7 @@ Widget _buildWhyChooseUsItem(
             title,
             style: TextStyle(
               color: Colors.white,
-              fontFamily: "outfit", // Change the font to "outfit"
+              fontFamily: "outfit",
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),

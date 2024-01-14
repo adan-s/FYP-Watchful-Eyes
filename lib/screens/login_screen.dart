@@ -154,12 +154,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
                                     color: Colors.transparent,
-                                    border: Border.all(color: Colors.black),
+                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.mail_outline_rounded,
-                                          size: 40.0, color: Colors.black),
+                                          size: 40.0, color: Colors.white),
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
@@ -193,12 +193,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
                                     color: Colors.transparent,
-                                    border: Border.all(color: Colors.black),
+                                    border: Border.all(color: Colors.white),
                                   ),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.phone,
-                                          size: 40.0, color: Colors.black),
+                                          size: 40.0, color: Colors.white),
                                       const SizedBox(width: 5.0),
                                       Column(
                                         crossAxisAlignment:
@@ -240,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "Forgot Password?",
               style: TextStyle(
                 fontFamily: 'outfit',
-                color: Colors.blue,
+                color: Colors.white,
                 fontWeight: FontWeight.w400,
                 fontSize: 15,
               ),
@@ -253,17 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final loginButton = Container(
       width: 400,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF000104),
-            Color(0xFF18293F),
-            Color(0xFF141E2C),
-            Color(0xFF18293F),
-            Color(0xFF000104),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
       child: MaterialButton(
@@ -313,13 +303,13 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 fontFamily: 'outfit',
                 fontSize: 20,
-                color: Colors.white,
+                color:  Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Icon(
               Icons.login,
-              color: Colors.white,
+              color:  Colors.black,
             ),
           ],
         ),
@@ -336,11 +326,12 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF000104),
-              Color(0xFF18293F),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF000104),
+              Color(0xFFCBE1EE),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -378,14 +369,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: kIsWeb ? 400 : null, // Set the desired width
                           child: passwordField,
                         ),
-                        SizedBox(height: 30),
+                        SizedBox(height: 18),
                         Align(
                           alignment: Alignment.center,
                           child: loginButton,
                         ),
                         SizedBox(height: 15),
                         errorText,
-                        SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -408,7 +398,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 "SignUp",
                                 style: TextStyle(
                                   fontFamily: 'outfit',
-                                  color: Colors.lightBlue,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 15,
                                 ),
@@ -444,9 +434,9 @@ Future<String?> forgetPassword(BuildContext context) async {
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email, color: Colors.black),
+                prefixIcon: Icon(Icons.email, color: Colors.white),
                 hintText: "Enter Email",
-                hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.black),
+                hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

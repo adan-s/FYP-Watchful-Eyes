@@ -30,14 +30,11 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
               ],
-              begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
             ),
           ),
         ),
@@ -49,28 +46,50 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         actions: [
           ResponsiveAppBarActions(),
         ],
+        iconTheme: IconThemeData(color: Colors.white),
+
       ),
 
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
             ],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
           ),
+          borderRadius: BorderRadius.circular(0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
+
         child: Center(
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(20.0),
             decoration: BoxDecoration(
-              color: Colors.black,
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFFCBE1EE),
+                  Color(0xFF769DC9),
+                  Color(0xFF7EA3CA),
+                  Color(0xFF769DC9),
+                  Color(0xFFCBE1EE),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
               borderRadius: BorderRadius.circular(8.0),
               boxShadow: [
                 BoxShadow(
@@ -81,6 +100,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                 ),
               ],
             ),
+
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +228,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         // Handle form submission
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent, // Set button color to transparent
+                        backgroundColor: Colors.white, // Set button color to transparent
                         elevation: 0, // Remove button elevation
                       ),
                       child: Container(
@@ -216,7 +236,10 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                            colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF000104)],
+                            colors: [
+                              Color(0xFFFF),
+                              Color(0xFFFF),
+                            ],
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -228,11 +251,11 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             SizedBox(width: 8),
                             Text(
                               "Submit",
-                              style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.white),
+                              style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.black),
                             ),
                             Icon(
                               Icons.send, // You can use a different icon if needed
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ],
                         ),

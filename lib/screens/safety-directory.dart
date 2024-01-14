@@ -28,7 +28,11 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
+                colors:
+                [  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+
+                 ],
               ),
             ),
           ),
@@ -37,29 +41,52 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
             style: TextStyle(color: Colors.white, fontFamily: 'outfit'),
           ),
           centerTitle: true,
-          actions: [
+            iconTheme: IconThemeData(color: Colors.white),
+            actions: [
             ResponsiveAppBarActions(),
           ],
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.warning, color: Colors.white)),
-              Tab(icon: Icon(Icons.shield, color: Colors.white)),
-              Tab(icon: Icon(Icons.security, color: Colors.white)),
+              Tab(
+                child: Column(
+                  children: [
+                    Icon(Icons.warning, color: Colors.white),
+                    Text('Threats Handling', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Column(
+                  children: [
+                    Icon(Icons.shield, color: Colors.white),
+                    Text('Defence Procedures', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Column(
+                  children: [
+                    Icon(Icons.security, color: Colors.white),
+                    Text('Defence Gadgets', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
             ],
-            labelColor: Colors.white,
-          ),
+          )
+
         ),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
+                Color(0xFF769DC9),
+                Color(0xFFCBE1EE),
+
               ],
             ),
           ),
@@ -426,21 +453,21 @@ class SelfDefenseProcedures extends StatelessWidget {
 
   Widget _buildCard(String title, IconData icon, List<String> content) {
     return Card(
-      color: Color(0xFF2D3748),
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: Icon(icon, color: Colors.white),
+              leading: Icon(icon, color: Color(0xFF779ECA)),
               title: Text(
                 title,
                 style: TextStyle(
                   fontFamily: 'outfit',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Color(0xFF779ECA),
                 ),
               ),
             ),
@@ -450,10 +477,10 @@ class SelfDefenseProcedures extends StatelessWidget {
               itemCount: content.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Icon(Icons.arrow_right, color: Colors.white),
+                  leading: Icon(Icons.arrow_right, color:Color(0xFF779ECA)),
                   title: Text(
                     content[index],
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: Color(0xFF779ECA)),
                   ),
                 );
               },
@@ -553,7 +580,7 @@ class SelfDefenseGadgets extends StatelessWidget {
         _showGadgetDetails(context, gadget.title, gadget.buyLink);
       },
       child: Card(
-        color: Color(0xFF2D3748),
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -562,7 +589,7 @@ class SelfDefenseGadgets extends StatelessWidget {
                 width: MediaQuery.of(context).size.width > 1100 ? 300 : 150,
                 height: MediaQuery.of(context).size.width > 1100 ? 300 : 150,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
+                  border: Border.all(color: Color(0xFF779ECA)),
                 ),
                 child: Image.asset(
                   gadget.imagePath,

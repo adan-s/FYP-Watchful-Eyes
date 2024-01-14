@@ -27,7 +27,10 @@ class CommunityForumPage extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
+                colors:
+                [ Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                 ],
               ),
             ),
           ),
@@ -36,6 +39,7 @@ class CommunityForumPage extends StatelessWidget {
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
           ),
           centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.white),
           actions: [
             ResponsiveAppBarActions(),
           ],
@@ -43,9 +47,15 @@ class CommunityForumPage extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF193552)],
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
+              colors: [
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
+                Color(0xFF769DC9),
+                Color(0xFFCBE1EE),
+              ],
             ),
           ),
           child: HomeTab(),

@@ -95,27 +95,25 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
               ],
             ),
           ),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
             colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
             ],
           ),
         ),
@@ -130,7 +128,11 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _postNewItem,
-                child: const Text('Post'),
+                child: const Text(
+                  'Post',
+                  style: TextStyle(color: Colors.black),
+                ),
+
               ),
             ],
           ),
@@ -180,7 +182,10 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
               });
             }
           },
-          child: const Text('Pick Image'),
+          child: const Text(
+            'Pick Image',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ],
     );

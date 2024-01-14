@@ -91,14 +91,12 @@ class _MapPageState extends State<MapPage> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              begin: Alignment.bottomCenter,
               colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
+
               ],
             ),
           ),
@@ -116,18 +114,20 @@ class _MapPageState extends State<MapPage> {
         actions: [
           ResponsiveAppBarActions(),
         ],
+        iconTheme: IconThemeData(color: Colors.white),
+
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
             colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
             ],
           ),
         ),
@@ -177,15 +177,15 @@ class _MapPageState extends State<MapPage> {
                     _getCurrentLocation();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                ),
+
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [Color(0xFF000104), Color(0xFF0E121B), Color(0xFF141E2C), Color(0xFF18293F), Color(0xFF000104)],
+                      colors: [
+                        Color(0xFFFFFF),
+                        Color(0xFFFFFF),],
                     ),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -197,11 +197,11 @@ class _MapPageState extends State<MapPage> {
                       SizedBox(width: 8),
                       Text(
                         "Show Map",
-                        style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.black),
                       ),
                       Icon(
                         Icons.arrow_forward,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ],
                   ),

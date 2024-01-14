@@ -36,11 +36,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
               ],
             ),
           ),
@@ -50,6 +47,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           ResponsiveAppBarActions(),
         ],
@@ -57,14 +55,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
             colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
             ],
           ),
         ),
