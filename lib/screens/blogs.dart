@@ -16,9 +16,9 @@ class BlogPage extends StatefulWidget {
 
 class _BlogPageState extends State<BlogPage> {
   List<Blog> blogs = [
-    Blog(title: 'Blog 1', imagePath: 'assets/blog1.jpg'),
-    Blog(title: 'Blog 2', imagePath: 'assets/blog3.jpg'),
-    Blog(title: 'Blog 3', imagePath: 'assets/blog2.jpg'),
+    Blog(title: 'Tackling Behaviors', imagePath: 'assets/blog1.jpg'),
+    Blog(title: 'Abuse Awareness', imagePath: 'assets/blog3.jpg'),
+    Blog(title: 'Safe Night-Out', imagePath: 'assets/blog2.jpg'),
   ];
 
   List<VideoPlayerWidget> videos = [
@@ -26,13 +26,13 @@ class _BlogPageState extends State<BlogPage> {
       videoPath:
           'assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4',
       key: UniqueKey(),
-      title: 'Choke Hold Defenses - Women MUST Know Self-Defense',
+      title: 'Choke Hold Defenses',
       imagePath: 'assets/video1.PNG',
     ),
     VideoPlayerWidget(
       videoPath: 'assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4',
       key: UniqueKey(),
-      title: '7 Self-Defense Techniques for Women from Professionals',
+      title: 'Self-Defense Techniques',
       imagePath: 'assets/video2.PNG',
     ),
     VideoPlayerWidget(
@@ -64,11 +64,8 @@ class _BlogPageState extends State<BlogPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF000104),
-                  Color(0xFF0E121B),
-                  Color(0xFF141E2C),
-                  Color(0xFF18293F),
-                  Color(0xFF193552),
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
                 ],
               ),
             ),
@@ -98,11 +95,11 @@ class _BlogPageState extends State<BlogPage> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0xFF000104),
-                        Color(0xFF0E121B),
-                        Color(0xFF141E2C),
-                        Color(0xFF18293F),
-                        Color(0xFF193552),
+                        Color(0xFF769DC9),
+                        Color(0xFF769DC9),
+                        Color(0xFF7EA3CA),
+                        Color(0xFF769DC9),
+                        Color(0xFFCBE1EE),
                       ],
                     ),
                     border: Border(
@@ -153,7 +150,7 @@ class _BlogPageState extends State<BlogPage> {
                       ),
                       // Videos Section
                       const Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Text(
                           'Videos',
                           style: TextStyle(
@@ -182,7 +179,7 @@ class _BlogPageState extends State<BlogPage> {
                                 ),
                               ),
                               title: Text(
-                                'Video $videoIndex',
+                                '${videos[index].title}',
                                 style: const TextStyle(fontFamily: 'outfit',color: Colors.white),
                               ),
                               onTap: () {
@@ -206,11 +203,11 @@ class _BlogPageState extends State<BlogPage> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xFF000104),
-                          Color(0xFF0E121B),
-                          Color(0xFF141E2C),
-                          Color(0xFF18293F),
-                          Color(0xFF193552),
+                          Color(0xFF769DC9),
+                          Color(0xFF769DC9),
+                          Color(0xFF7EA3CA),
+                          Color(0xFF769DC9),
+                          Color(0xFFCBE1EE),
                         ],
                       ),
                     ),
@@ -874,11 +871,11 @@ class _BlogPageState extends State<BlogPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFF000104),
-                  Color(0xFF0E121B),
-                  Color(0xFF141E2C),
-                  Color(0xFF18293F),
-                  Color(0xFF193552),
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                  Color(0xFF7EA3CA),
+                  Color(0xFF769DC9),
+                  Color(0xFFCBE1EE),
                 ],
               ),
             ),
@@ -947,11 +944,11 @@ class _BlogPageState extends State<BlogPage> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0xFF000104),
-                          Color(0xFF0E121B),
-                          Color(0xFF141E2C),
-                          Color(0xFF18293F),
-                          Color(0xFF193552),
+                          Color(0xFF769DC9),
+                          Color(0xFF769DC9),
+                          Color(0xFF7EA3CA),
+                          Color(0xFF769DC9),
+                          Color(0xFFCBE1EE),
                         ],
                       ),
                     ),
