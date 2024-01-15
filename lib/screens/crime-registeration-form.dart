@@ -307,6 +307,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     }
   }
 }
+
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -318,11 +319,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        if (!kIsWeb) // Check if the app is not running on the web
+        if (!kIsWeb)
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
+              MaterialPageRoute(
+                  builder: (context) => const CommunityForumPage()),
             );
           }),
         _buildNavBarItem("Map", Icons.map, () {
@@ -337,10 +339,11 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registeration", Icons.report, () {
+        _buildNavBarItem("Crime Registration", Icons.report, () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CrimeRegistrationForm()),
+            MaterialPageRoute(
+                builder: (context) => const CrimeRegistrationForm()),
           );
         }),
         _buildNavBarItem("Blogs", Icons.newspaper, () {
@@ -363,23 +366,52 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null,
+            tooltip: title,
+          ),
+          Text(
+            title,
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
     );
   }
+
+
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null, // Disable IconButton onPressed
+            tooltip: "User Profile",
+          ),
+          Text(
+            "User Profile",
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
     );
   }
+
 }
+
 class ResponsiveRow extends StatelessWidget {
   final List<Widget> children;
 
@@ -398,15 +430,32 @@ class ResponsiveRow extends StatelessWidget {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return children
-                  .map((child) => PopupMenuItem(
-                child: child,
-              ))
+                  .map(
+                    (child) => PopupMenuItem(
+                  child: ListTile(
+                    leading: child,
+                    title: Text(
+                      _getTitleFromWidget(child),
+                      style: TextStyle(color: Color(0xFF769DC9)),
+                    ),
+                  ),
+                ),
+              )
                   .toList();
             },
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            color: Colors.black,
+            icon: Icon(Icons.menu, color: Colors.white),
+            color: Colors.white,
+            offset: Offset(0, 50),
           ),
       ],
     );
+  }
+
+  String _getTitleFromWidget(Widget widget) {
+    if (widget is IconButton) {
+      return widget.tooltip ?? '';
+    } else {
+      return '';
+    }
   }
 }
