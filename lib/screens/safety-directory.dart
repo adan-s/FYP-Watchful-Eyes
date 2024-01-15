@@ -50,7 +50,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
               Tab(
                 child: Column(
                   children: [
-                    Icon(Icons.warning, color: Colors.white),
+                    if (kIsWeb) Icon(Icons.warning, color: Colors.white),
                     Text('Threats Handling', style: TextStyle(color: Colors.white)),
                   ],
                 ),
@@ -58,7 +58,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
               Tab(
                 child: Column(
                   children: [
-                    Icon(Icons.shield, color: Colors.white),
+                    if (kIsWeb) Icon(Icons.shield, color: Colors.white),
                     Text('Defence Procedures', style: TextStyle(color: Colors.white)),
                   ],
                 ),
@@ -66,7 +66,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
               Tab(
                 child: Column(
                   children: [
-                    Icon(Icons.security, color: Colors.white),
+                    if (kIsWeb) Icon(Icons.security, color: Colors.white),
                     Text('Defence Gadgets', style: TextStyle(color: Colors.white)),
                   ],
                 ),

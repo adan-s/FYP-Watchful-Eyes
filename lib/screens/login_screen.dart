@@ -343,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -369,12 +369,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: kIsWeb ? 400 : null, // Set the desired width
                           child: passwordField,
                         ),
-                        SizedBox(height: 18),
+                        SizedBox(height: 20),
                         Align(
                           alignment: Alignment.center,
                           child: loginButton,
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height: 25),
                         errorText,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
