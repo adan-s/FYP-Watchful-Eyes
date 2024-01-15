@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -21,6 +22,8 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   final ProfileController controller = Get.put(ProfileController());
+  final Completer<void> _updateProfileCompleter = Completer<void>();
+
   String profileImageUrl =
       'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 
@@ -158,9 +161,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-
-  Future<void> _handleUpdateProfile(String username, String contactNo,
-      AsyncSnapshot<usermodel> snapshot) async {
+  Future<void> _handleUpdateProfile(String username, String contactNo, AsyncSnapshot<usermodel> snapshot) async {
     try {
       if (snapshot.data == null) {
         // Handle the case where user data is not available
@@ -180,12 +181,52 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ContactNo: contactNo,
       );
 
-      // Refresh user data
-      await controller.getUserData();
+      // Show success message
+      _showAlertDialog(
+        'Success',
+        'Profile updated successfully!',
+        Colors.green,
+      );
+
+      // Move back to user profile page
+      Navigator.of(context).pop();
+
+      // Complete the Future when the dialog is dismissed
+      _updateProfileCompleter.complete();
     } catch (e) {
-      print('Error updating profile: $e');
-      // Handle the error as needed
+      _showAlertDialog(
+        'Error',
+        'Error Updating Profile!',
+        Colors.red,
+      );
     }
+  }
+
+  void _showAlertDialog(String title, String message, Color backgroundColor) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          backgroundColor: backgroundColor,
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                // Complete the Future when the dialog is dismissed
+                _updateProfileCompleter.complete();
+              },
+              child: const Text('OK', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Return the Future to wait for the dialog to be dismissed
+    return _updateProfileCompleter.future;
   }
 
   void _showEditProfileDialog(BuildContext context, String userEmail,
@@ -241,12 +282,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                await _handleUpdateProfile(
-                  nameController.text,
-                  contactNoController.text,
-                  snapshot,
-                );
-                Navigator.of(context).pop();
+                bool confirmed = await _showConfirmationDialog(context);
+                if (confirmed) {
+                  await _handleUpdateProfile(
+                    nameController.text,
+                    contactNoController.text,
+                    snapshot,
+                  );
+                  Navigator.of(context).pop();
+                }
               },
               child: Text(
                 'Save',
@@ -276,6 +320,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
         );
       },
     );
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content: const Text('Are you sure you want to update?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    ) ??
+        false; // Return false if the dialog is dismissed
   }
 
   Future<void> _updateProfileImage(
@@ -311,16 +382,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
               .child("uploadImage/$userEmail.jpeg")
               .putData(data, metadata);
 
-          await uploadTask!.whenComplete(() async {
-            imageUrl = await storageRef
-                .child("uploadImage/$userEmail.jpeg")
-                .getDownloadURL();
-            await controller.updateProfileImage(
-                email: userEmail, imageUrl: imageUrl);
-            setState(() {
-              profileImageUrl = imageUrl;
+          bool confirmed = await _showConfirmationDialog(context);
+          if (confirmed) {
+            await uploadTask!.whenComplete(() async {
+              imageUrl = await storageRef
+                  .child("uploadImage/$userEmail.jpeg")
+                  .getDownloadURL();
+              await controller.updateProfileImage(
+                  email: userEmail, imageUrl: imageUrl);
+              setState(() {
+                profileImageUrl = imageUrl;
+              });
+
+              // Show success message
+              _showAlertDialog(
+                'Success',
+                'Image uploaded successfully!',
+                Colors.green,
+              );
+
+              // Move back to user profile page
+              Navigator.of(context).pop();
             });
-          });
+          }
         } else {
           print('User data is null. Cannot upload image.');
         }
@@ -328,22 +412,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
     } catch (e) {
       print('Error uploading image: $e');
       // Handle the error as needed
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to upload profile image. Please try again.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
+      _showAlertDialog(
+        'Error',
+        'Failed to upload profile image. Please try again.',
+        Colors.red,
       );
     }
   }
