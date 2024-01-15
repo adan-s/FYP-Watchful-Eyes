@@ -39,6 +39,65 @@ class _CnicInputFormatter extends TextInputFormatter {
     );
   }
 }
+
+class _PhoneNumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final StringBuffer newText = StringBuffer();
+
+    for (int i = 0; i < newValue.text.length; i++) {
+      if (i == 4) {
+        newText.write('-'); // Add hyphen after 4 digits
+      }
+      newText.write(newValue.text[i]);
+    }
+
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(
+        offset: newText.length,
+      ),
+    );
+  }
+}
+
+
+class _MaskedTextInputFormatter extends TextInputFormatter {
+  final String mask;
+
+  _MaskedTextInputFormatter({required this.mask});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final List<String> maskChars = mask.split('');
+
+    final StringBuffer newText = StringBuffer();
+    int maskIndex = 0;
+
+    for (int i = 0; i < maskChars.length; i++) {
+      if (maskChars[i] == 'D') {
+        if (maskIndex < newValue.text.length) {
+          newText.write(newValue.text[maskIndex]);
+          maskIndex++;
+        } else {
+          newText.write(' ');
+        }
+      } else {
+        newText.write(maskChars[i]);
+      }
+    }
+
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(
+        offset: newText.length,
+      ),
+    );
+  }
+}
+
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
   bool isEmailAuthentication = true;
@@ -51,6 +110,7 @@ class _SignupState extends State<Signup> {
     final usernameField = TextFormField(
       autofocus: false,
       controller: controller.username,
+      maxLength: 15,
       keyboardType: TextInputType.name,
       onSaved: (value) {
         if (value != null) {
@@ -60,6 +120,7 @@ class _SignupState extends State<Signup> {
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.person, color: Colors.white),
+        counterText: '',
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "User-Name",
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
@@ -68,11 +129,22 @@ class _SignupState extends State<Signup> {
         ),
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Username is required';
+        } else if (value.length > 15) {
+          return 'Username must be at most 15 characters long';
+        }
+        return null;
+      },
+
     );
+
 
     final firstNameField = TextFormField(
       autofocus: false,
       controller: controller.firstName,
+      maxLength: 20,
       keyboardType: TextInputType.name,
       onSaved: (value) {
         if (value != null) {
@@ -84,6 +156,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
+        counterText: '',
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -106,6 +179,7 @@ class _SignupState extends State<Signup> {
       autofocus: false,
       controller: controller.lastName,
       keyboardType: TextInputType.name,
+      maxLength: 20,
       onSaved: (value) {
         if (value != null) {
           controller.lastName.text = value;
@@ -116,6 +190,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.account_circle, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
+        counterText: '',
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -141,12 +216,9 @@ class _SignupState extends State<Signup> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Password is required';
-        } else if (value.length < 6) {
-          return 'Password must be at least 6 characters long';
-        } else if (!RegExp(r'[@#$%^&*+=]') // Add symbols inside the brackets
-            .hasMatch(value)) {
-          return 'Password must contain at least one symbol';
+          return 'Email is required';
+        } else if (!value.endsWith("@gmail.com")) {
+          return 'Please enter a valid Gmail address';
         }
         return null;
       },
@@ -159,7 +231,7 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.mail, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Email",
+        hintText: "Email (abc@gmail.com)",
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -187,7 +259,7 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.credit_card, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "CNIC (e.g., 12345-3389712-0)",
+        hintText: "CNIC (12345-3389712-0)",
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -247,6 +319,11 @@ class _SignupState extends State<Signup> {
       autofocus: false,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(13),
+        _PhoneNumberInputFormatter(),
+      ],
       validator: (value) {
         if (value == null || value.isEmpty) {
           // If contact number is empty
@@ -269,7 +346,7 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Contact No",
+        hintText: "Contact No (1111-1111111)",
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -283,6 +360,9 @@ class _SignupState extends State<Signup> {
       autofocus: false,
       controller: controller.dob,
       keyboardType: TextInputType.datetime,
+      inputFormatters: [
+        _MaskedTextInputFormatter(mask: 'MM/DD/YYYY'),
+      ],
       onTap: () async {
 
         DateTime? selectedDate = await showDatePicker(
@@ -344,6 +424,7 @@ class _SignupState extends State<Signup> {
 
     final passwordField = TextFormField(
       autofocus: false,
+      maxLength: 20,
       controller: controller.password,
       onSaved: (value) {
         if (value != null) {
@@ -354,9 +435,10 @@ class _SignupState extends State<Signup> {
       obscureText: true,
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.key, color: Colors.white),
+        counterText: '',
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Password",
-        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white,),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -585,4 +667,5 @@ class _SignupState extends State<Signup> {
 
     );
   }
+
 }
