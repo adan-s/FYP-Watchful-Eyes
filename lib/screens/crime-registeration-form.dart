@@ -319,7 +319,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        if (!kIsWeb)
+        if (!kIsWeb) // Check if the app is not running on the web
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
@@ -339,7 +339,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registration", Icons.report, () {
+        _buildNavBarItem("Crime Registeration", Icons.report, () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -366,32 +366,37 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return InkWell(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(icon, color: Color(0xFF769DC9)),
-            onPressed: null,
-            tooltip: title,
-          ),
-          Text(
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+      tooltip: title,
+    ): Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, color: Color(0xFF769DC9)),
+          onPressed: onPressed,
+          tooltip: title,
+        ),
+        GestureDetector(
+          onTap: onPressed,
+          child: Text(
             title,
             style: TextStyle(color: Color(0xFF769DC9)),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-
-
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return InkWell(
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+    ): InkWell(
       onTap: onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -409,7 +414,6 @@ class ResponsiveAppBarActions extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class ResponsiveRow extends StatelessWidget {
@@ -430,32 +434,15 @@ class ResponsiveRow extends StatelessWidget {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return children
-                  .map(
-                    (child) => PopupMenuItem(
-                  child: ListTile(
-                    leading: child,
-                    title: Text(
-                      _getTitleFromWidget(child),
-                      style: TextStyle(color: Color(0xFF769DC9)),
-                    ),
-                  ),
-                ),
-              )
+                  .map((child) => PopupMenuItem(
+                child: child,
+              ))
                   .toList();
             },
             icon: Icon(Icons.menu, color: Colors.white),
             color: Colors.white,
-            offset: Offset(0, 50),
           ),
       ],
     );
-  }
-
-  String _getTitleFromWidget(Widget widget) {
-    if (widget is IconButton) {
-      return widget.tooltip ?? '';
-    } else {
-      return '';
-    }
   }
 }
