@@ -12,8 +12,6 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'map.dart';
 
-
-
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
 
@@ -68,10 +66,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            height: MediaQuery.of(context).size.height,
             child: Center(
               child: FutureBuilder<usermodel>(
                 future: controller.getUserData(),
@@ -88,7 +83,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(profileImageUrl),
@@ -127,17 +121,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                Color(0xFF000104),
-                                Color(0xFF0E121B),
-                                Color(0xFF141E2C),
-                                Color(0xFF18293F),
-                                Color(0xFF000104),
-                              ],
-                            ),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -153,12 +137,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 style: TextStyle(
                                   fontFamily: 'outfit',
                                   fontSize: 16,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                               Icon(
                                 Icons.edit,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ],
                           ),
@@ -174,7 +158,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-
 
   Future<void> _handleUpdateProfile(String username, String contactNo,
       AsyncSnapshot<usermodel> snapshot) async {
@@ -205,7 +188,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-
   void _showEditProfileDialog(BuildContext context, String userEmail,
       AsyncSnapshot<usermodel> snapshot) {
     showDialog(
@@ -232,8 +214,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(BuildContext context,
-      AsyncSnapshot<usermodel> snapshot) {
+  void _showEditNameDialog(
+      BuildContext context, AsyncSnapshot<usermodel> snapshot) {
     TextEditingController nameController = TextEditingController();
     TextEditingController contactNoController = TextEditingController();
 
@@ -266,16 +248,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 );
                 Navigator.of(context).pop();
               },
-              child: const Text('Save'),
+              child: Text(
+                'Save',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Choose your desired button color
+                backgroundColor: Colors.green,
               ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
             ),
           ],
         );
@@ -283,7 +278,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Future<void> _updateProfileImage(BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
+  Future<void> _updateProfileImage(
+      BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
     try {
       dynamic imageFile;
 
@@ -311,11 +307,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
           firebase_storage.UploadTask? uploadTask;
 
-          uploadTask = storageRef.child("uploadImage/$userEmail.jpeg").putData(data, metadata);
+          uploadTask = storageRef
+              .child("uploadImage/$userEmail.jpeg")
+              .putData(data, metadata);
 
           await uploadTask!.whenComplete(() async {
-            imageUrl = await storageRef.child("uploadImage/$userEmail.jpeg").getDownloadURL();
-            await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+            imageUrl = await storageRef
+                .child("uploadImage/$userEmail.jpeg")
+                .getDownloadURL();
+            await controller.updateProfileImage(
+                email: userEmail, imageUrl: imageUrl);
             setState(() {
               profileImageUrl = imageUrl;
             });
@@ -346,5 +347,4 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
     }
   }
-
 }
