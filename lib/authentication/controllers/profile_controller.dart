@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:fyp/user_repository.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,14 @@ class ProfileController extends GetxController {
   }) async {
     try {
       if (email.isEmpty) {
-        Get.snackbar("Error", "User email is empty");
+        Get.snackbar(
+          "Error",
+          "Email is Empty!",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+
         return;
       }
 
@@ -61,6 +69,42 @@ class ProfileController extends GetxController {
         return;
       }
 
+      if (UserName.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Username is Empty!",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+
+        return;
+      }
+
+      if (ContactNo.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Contact No is Empty!",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+
+        return;
+      }
+
+      // Check if ContactNo contains only digits
+      if (!RegExp(r'^[0-9]+$').hasMatch(ContactNo)) {
+        Get.snackbar(
+          "Error",
+          "Contact No should only contain digits",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+        return;
+      }
+
       // Update the document
       await _database.collection('Users').doc(userDoc.docs.first.id).update({
         'UserName': UserName,
@@ -68,7 +112,14 @@ class ProfileController extends GetxController {
 
       });
 
-      Get.snackbar("Success", "Profile updated successfully");
+      Get.snackbar(
+        "Success",
+        "Profile updated successfully",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+
     } catch (e) {
       print('Error updating user data: $e');
       Get.snackbar("Error", "Failed to update profile");
@@ -88,11 +139,25 @@ class ProfileController extends GetxController {
         });
 
         print('Profile image updated successfully');
+        Get.snackbar(
+          "Success",
+          "Profile image updated successfully",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
       } else {
         print('User with email $email not found');
       }
     } catch (e) {
       print('Error updating profile image: $e');
+      Get.snackbar(
+        "Error",
+        "Error updating image",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
       // Handle the error as needed
     }
   }

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,6 +12,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'map.dart';
 
+
+
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
 
@@ -22,8 +23,6 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   final ProfileController controller = Get.put(ProfileController());
-  final Completer<void> _updateProfileCompleter = Completer<void>();
-
   String profileImageUrl =
       'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 
@@ -34,11 +33,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              begin: Alignment.bottomCenter,
               colors: [
                 Color(0xFF769DC9),
-                Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
               ],
             ),
           ),
@@ -48,11 +47,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           ResponsiveAppBarActions(),
         ],
+        iconTheme: IconThemeData(color: Colors.white),
+
       ),
+
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -60,16 +61,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
             begin: Alignment.topCenter,
             colors: [
               Color(0xFF769DC9),
-              Color(0xFF769DC9),
               Color(0xFF7EA3CA),
-              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFFCBE1EE),
               Color(0xFFCBE1EE),
             ],
           ),
         ),
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
             child: Center(
               child: FutureBuilder<usermodel>(
                 future: controller.getUserData(),
@@ -86,6 +90,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(profileImageUrl),
@@ -124,14 +129,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            gradient: const LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Color(0xFF7EA3CA),
+                                Color(0xFF7EA3CA),
+                              ],
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 20,
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(width: 8),
@@ -140,12 +152,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 style: TextStyle(
                                   fontFamily: 'outfit',
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                               Icon(
                                 Icons.edit,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ],
                           ),
@@ -161,7 +173,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-  Future<void> _handleUpdateProfile(String username, String contactNo, AsyncSnapshot<usermodel> snapshot) async {
+
+
+  Future<void> _handleUpdateProfile(String username, String contactNo,
+      AsyncSnapshot<usermodel> snapshot) async {
     try {
       if (snapshot.data == null) {
         // Handle the case where user data is not available
@@ -181,53 +196,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ContactNo: contactNo,
       );
 
-      // Show success message
-      _showAlertDialog(
-        'Success',
-        'Profile updated successfully!',
-        Colors.green,
-      );
-
-      // Move back to user profile page
+      // Refresh user data
+      await controller.getUserData();
       Navigator.of(context).pop();
-
-      // Complete the Future when the dialog is dismissed
-      _updateProfileCompleter.complete();
     } catch (e) {
-      _showAlertDialog(
-        'Error',
-        'Error Updating Profile!',
-        Colors.red,
-      );
+      print('Error updating profile: $e');
+      // Handle the error as needed
     }
   }
 
-  void _showAlertDialog(String title, String message, Color backgroundColor) async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          backgroundColor: backgroundColor,
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-
-                // Complete the Future when the dialog is dismissed
-                _updateProfileCompleter.complete();
-              },
-              child: const Text('OK', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-
-    // Return the Future to wait for the dialog to be dismissed
-    return _updateProfileCompleter.future;
-  }
 
   void _showEditProfileDialog(BuildContext context, String userEmail,
       AsyncSnapshot<usermodel> snapshot) {
@@ -241,7 +218,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               onPressed: () {
                 _showEditNameDialog(context, snapshot);
               },
-              child: const Text('Update Name'),
+              child: const Text('Update Info'),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -255,8 +232,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(
-      BuildContext context, AsyncSnapshot<usermodel> snapshot) {
+  void _showEditNameDialog(BuildContext context, AsyncSnapshot<usermodel> snapshot) {
     TextEditingController nameController = TextEditingController();
     TextEditingController contactNoController = TextEditingController();
 
@@ -264,17 +240,32 @@ class _UserProfilePageState extends State<UserProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit Name'),
+          title: const Text('Edit Info'),
           content: SingleChildScrollView(
             child: Column(
               children: [
                 TextField(
                   controller: nameController,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    counterText: '',
+                    hintText: 'Max 15 characters',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    suffixIcon: Icon(Icons.person, color: Colors.grey),
+                  ),
+                  maxLength: 15,
                 ),
                 TextField(
                   controller: contactNoController,
-                  decoration: InputDecoration(labelText: 'Contact No'),
+                  decoration: const InputDecoration(
+                    labelText: 'Contact No',
+                    counterText: '',
+                    hintText: '11111111111',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    suffixIcon: Icon(Icons.phone, color: Colors.grey),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  maxLength: 11,
                 ),
               ],
             ),
@@ -282,36 +273,36 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                bool confirmed = await _showConfirmationDialog(context);
-                if (confirmed) {
-                  await _handleUpdateProfile(
-                    nameController.text,
-                    contactNoController.text,
-                    snapshot,
-                  );
-                  Navigator.of(context).pop();
+                bool confirmUpdate = await _showConfirmationDialog(context);
+                if (confirmUpdate) {
+                  if (contactNoController.text.length == 11 && nameController.text.isNotEmpty) {
+                    await _handleUpdateProfile(
+                      nameController.text,
+                      contactNoController.text,
+                      snapshot,
+                    );
+                    Navigator.of(context).pop();
+                  } else {
+                    Get.snackbar(
+                      "Error",
+                      "Invalid input. Please check username and contact number.",
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      snackPosition: SnackPosition.TOP,
+                    );
+                  }
                 }
               },
-              child: Text(
-                'Save',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Colors.green, // Choose your desired button color
               ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
@@ -322,35 +313,42 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
+
   Future<bool> _showConfirmationDialog(BuildContext context) async {
-    return await showDialog<bool>(
+    return await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmation'),
-          content: const Text('Are you sure you want to update?'),
+          title: Text('Confirmation'),
+          content: Text('Are you sure you want to update?'),
           actions: <Widget>[
-            TextButton(
+
+            ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed
+                Navigator.of(context).pop(true); // Confirm update
               },
-              child: const Text('Yes'),
+              child: const Text('Yes', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // Choose your desired button color
+              ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // User canceled
+                Navigator.of(context).pop(false); // Do not update
               },
-              child: const Text('No'),
+              child: const Text('No', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Choose your desired button color
+              ),
             ),
           ],
         );
       },
-    ) ??
-        false; // Return false if the dialog is dismissed
+    );
   }
 
-  Future<void> _updateProfileImage(
-      BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
+
+  Future<void> _updateProfileImage(BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
     try {
       dynamic imageFile;
 
@@ -378,33 +376,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
           firebase_storage.UploadTask? uploadTask;
 
-          uploadTask = storageRef
-              .child("uploadImage/$userEmail.jpeg")
-              .putData(data, metadata);
+          uploadTask = storageRef.child("uploadImage/$userEmail.jpeg").putData(data, metadata);
 
-          bool confirmed = await _showConfirmationDialog(context);
-          if (confirmed) {
-            await uploadTask!.whenComplete(() async {
-              imageUrl = await storageRef
-                  .child("uploadImage/$userEmail.jpeg")
-                  .getDownloadURL();
-              await controller.updateProfileImage(
-                  email: userEmail, imageUrl: imageUrl);
-              setState(() {
-                profileImageUrl = imageUrl;
-              });
-
-              // Show success message
-              _showAlertDialog(
-                'Success',
-                'Image uploaded successfully!',
-                Colors.green,
-              );
-
-              // Move back to user profile page
-              Navigator.of(context).pop();
-            });
-          }
+          await uploadTask!.whenComplete(() async {
+            imageUrl = await storageRef.child("uploadImage/$userEmail.jpeg").getDownloadURL();
+            await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+            Navigator.of(context).pop(); // Close the dialog box
+          });
         } else {
           print('User data is null. Cannot upload image.');
         }
@@ -412,11 +390,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
     } catch (e) {
       print('Error uploading image: $e');
       // Handle the error as needed
-      _showAlertDialog(
-        'Error',
-        'Failed to upload profile image. Please try again.',
-        Colors.red,
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to upload profile image. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
     }
   }
+
+
 }

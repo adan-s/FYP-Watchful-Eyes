@@ -45,7 +45,7 @@ class _UserPanelState extends State<UserPanel>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color(0xFF769DC9),
+        backgroundColor: Color(0xFF769DC9),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -111,22 +111,23 @@ class _UserPanelState extends State<UserPanel>
                                     ),
                                     SizedBox(height: 5),
                                     Text(
-                                      kIsWeb ? "Welcome to 'Watchful Eyes' - "
-                                      "Step into a new era of community safety with 'Watchful Eyes,'"
-                                      " a groundbreaking crime reporting system designed to revolutionize "
-                                      "the way we address security concerns. In the face of the traditionally "
-                                      "challenging and disheartening process of reporting crimes—with its inherent "
-                                      "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change."
-                                      " Our system is committed to simplifying and streamlining crime reporting, fostering "
-                                      "enhanced police understanding, and, most importantly, elevating overall community safety. "
-                                      "Trust in law enforcement is paramount, and 'Watchful Eyes' addresses this by providing a "
-                                      "user-friendly platform, offering a seamless and efficient reporting experience."
-                                      :  "Welcome to 'Watchful Eyes' - "
-                                          "Step into a new era of community safety with 'Watchful Eyes,'"
-                                          " a groundbreaking crime reporting system designed to revolutionize "
-                                          "the way we address security concerns. In the face of the traditionally "
-                                          "challenging and disheartening process of reporting crimes—with its inherent "
-                                          "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change.",
+                                      kIsWeb
+                                          ? "Welcome to 'Watchful Eyes' - "
+                                              "Step into a new era of community safety with 'Watchful Eyes,'"
+                                              " a groundbreaking crime reporting system designed to revolutionize "
+                                              "the way we address security concerns. In the face of the traditionally "
+                                              "challenging and disheartening process of reporting crimes—with its inherent "
+                                              "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change."
+                                              " Our system is committed to simplifying and streamlining crime reporting, fostering "
+                                              "enhanced police understanding, and, most importantly, elevating overall community safety. "
+                                              "Trust in law enforcement is paramount, and 'Watchful Eyes' addresses this by providing a "
+                                              "user-friendly platform, offering a seamless and efficient reporting experience."
+                                          : "Welcome to 'Watchful Eyes' - "
+                                              "Step into a new era of community safety with 'Watchful Eyes,'"
+                                              " a groundbreaking crime reporting system designed to revolutionize "
+                                              "the way we address security concerns. In the face of the traditionally "
+                                              "challenging and disheartening process of reporting crimes—with its inherent "
+                                              "complexities and concerns about law enforcement. 'Watchful Eyes' emerges as a beacon of change.",
                                       style: TextStyle(
                                           fontSize: 20,
                                           color: Colors.white,
@@ -196,7 +197,7 @@ class _UserPanelState extends State<UserPanel>
                             Expanded(
                               child: _buildWhyChooseUsItem(
                                 'User-Friendly',
-                               'Our system offers a user-friendly solution to streamline crime reporting, '
+                                'Our system offers a user-friendly solution to streamline crime reporting, '
                                     'enhance police comprehension, and ultimately improve community safety. '
                                     'We understand the difficulties people face when reporting crimes – '
                                     'the time-consuming nature of the process, the scattered information, '
@@ -220,15 +221,13 @@ class _UserPanelState extends State<UserPanel>
                           if (screenWidth > 600)
                             Expanded(
                               child: _buildWhyChooseUsItem(
-                                'Objectives',
-                                'Our objectives include developing a web-based application accessible on multiple platforms, '
-                                    'crime data visualization with pinpointed locations, and a registration system to differentiate'
-                                    ' user privileges. "Watchful Eyes" collaborates with law enforcement, sharing data with local '
-                                    'governments and offering special features to users, '
-                                    'presenting a unique business opportunity that aligns with our commitment to community safety.',
-                                '/objective'
-
-                              ),
+                                  'Objectives',
+                                  'Our objectives include developing a web-based application accessible on multiple platforms, '
+                                      'crime data visualization with pinpointed locations, and a registration system to differentiate'
+                                      ' user privileges. "Watchful Eyes" collaborates with law enforcement, sharing data with local '
+                                      'governments and offering special features to users, '
+                                      'presenting a unique business opportunity that aligns with our commitment to community safety.',
+                                  '/objective'),
                             ),
                           if (screenWidth <= 600)
                             Column(
@@ -245,7 +244,6 @@ class _UserPanelState extends State<UserPanel>
                                   'At the heart of our system are key features aimed at making the reporting process easy, '
                                       'transparent, and secure. Users can report crimes in real-time through a simple app or website, choosing'
                                       ' to keep their identity private if desired. The system organizes crime information neatly, ',
-
                                   'assets/key-features',
                                 ),
                                 _buildWhyChooseUsItem(
@@ -300,18 +298,72 @@ class _UserPanelState extends State<UserPanel>
                       ],
                     ),
                     SizedBox(height: 50),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildBenefitItem(
-                            'Enhanced Safety', 'assets/public-safety.png'),
-                        _buildBenefitItem(
-                            'Innovative Reporting System', 'assets/record.png'),
-                        _buildBenefitItem(
+                    if (kIsWeb)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildBenefitItem(
+                              'Enhanced Safety', 'assets/public-safety.png'),
+                          _buildBenefitItem('Innovative Reporting System',
+                              'assets/record.png'),
+                          _buildBenefitItem("Resources for Women's Safety",
+                              'assets/safe.png'),
+                        ],
+                      ),
+                    if (!kIsWeb)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/public-safety.png',
+                            width: 65,
+                            height: 65,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Enhanced Safety',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "outfit",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/record.png',
+                            width: 65,
+                            height: 65,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Innovative Reporting System',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "outfit",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/safe.png',
+                            width: 65,
+                            height: 65,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
                             "Resources for Women's Safety",
-                            'assets/safe.png'),
-                      ],
-                    ),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "outfit",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      )
                   ],
                 ),
               ),
@@ -334,11 +386,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        if (!kIsWeb) // Check if the app is not running on the web
+        if (!kIsWeb)
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CommunityForumPage()),
+              MaterialPageRoute(
+                  builder: (context) => const CommunityForumPage()),
             );
           }),
         _buildNavBarItem("Map", Icons.map, () {
@@ -353,7 +406,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registeration", Icons.report, () {
+        _buildNavBarItem("Crime Registration", Icons.report, () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -380,22 +433,50 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null,
+            tooltip: title,
+          ),
+          Text(
+            title,
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
     );
   }
+
+
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null, // Disable IconButton onPressed
+            tooltip: "User Profile",
+          ),
+          Text(
+          "User Profile",
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
     );
   }
+
 }
 
 class ResponsiveRow extends StatelessWidget {
@@ -416,16 +497,33 @@ class ResponsiveRow extends StatelessWidget {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return children
-                  .map((child) => PopupMenuItem(
-                        child: child,
-                      ))
+                  .map(
+                    (child) => PopupMenuItem(
+                      child: ListTile(
+                        leading: child,
+                        title: Text(
+                          _getTitleFromWidget(child),
+                          style: TextStyle(color: Color(0xFF769DC9)),
+                        ),
+                      ),
+                    ),
+                  )
                   .toList();
             },
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            color: Colors.black,
+            icon: Icon(Icons.menu, color: Colors.white),
+            color: Colors.white,
+            offset: Offset(0, 50),
           ),
       ],
     );
+  }
+
+  String _getTitleFromWidget(Widget widget) {
+    if (widget is IconButton) {
+      return widget.tooltip ?? '';
+    } else {
+      return '';
+    }
   }
 }
 
