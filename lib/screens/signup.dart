@@ -62,7 +62,6 @@ class _PhoneNumberInputFormatter extends TextInputFormatter {
   }
 }
 
-
 class _MaskedTextInputFormatter extends TextInputFormatter {
   final String mask;
 
@@ -101,6 +100,7 @@ class _MaskedTextInputFormatter extends TextInputFormatter {
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
   bool isEmailAuthentication = true;
+
   @override
   Widget build(BuildContext context) {
     String selectedGender = 'Female';
@@ -137,9 +137,7 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
-
     );
-
 
     final firstNameField = TextFormField(
       autofocus: false,
@@ -209,7 +207,6 @@ class _SignupState extends State<Signup> {
       },
     );
 
-
     final emailField = TextFormField(
       autofocus: false,
       controller: controller.email,
@@ -222,7 +219,6 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
-
       onSaved: (value) {
         if (value != null && value.isNotEmpty) {
           controller.email.text = value;
@@ -239,7 +235,6 @@ class _SignupState extends State<Signup> {
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
-
 
     final cnicField = TextFormField(
       autofocus: false,
@@ -277,9 +272,6 @@ class _SignupState extends State<Signup> {
       },
     );
 
-
-
-
     final genderField = DropdownButtonFormField<String>(
       value: selectedGender,
       onChanged: (value) {
@@ -297,11 +289,19 @@ class _SignupState extends State<Signup> {
         ),
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
-      items: ['Male', 'Female']
+      dropdownColor: Color(0xFF769DC9),
+      items: ['Male', 'Female', 'Other']
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Container(
+
+            // Set the background color for each dropdown item
+            child: Text(
+              value,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         );
       }).toList(),
       validator: (value) {
@@ -312,13 +312,12 @@ class _SignupState extends State<Signup> {
       },
     );
 
-
-
-
     final contactNoField = TextFormField(
       autofocus: false,
+      maxLength: 11,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
+
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(13),
@@ -347,6 +346,7 @@ class _SignupState extends State<Signup> {
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Contact No (1111-1111111)",
+        counterText: '',
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -354,7 +354,6 @@ class _SignupState extends State<Signup> {
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
-
 
     final dobField = TextFormField(
       autofocus: false,
@@ -364,7 +363,6 @@ class _SignupState extends State<Signup> {
         _MaskedTextInputFormatter(mask: 'MM/DD/YYYY'),
       ],
       onTap: () async {
-
         DateTime? selectedDate = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
@@ -372,7 +370,10 @@ class _SignupState extends State<Signup> {
           lastDate: DateTime.now(),
         );
         if (selectedDate != null) {
-          controller.dob.text = "${selectedDate.month}/${selectedDate.day}/${selectedDate.year}";
+          String formattedMonth = selectedDate.month.toString().padLeft(2, '0');
+          String formattedDay = selectedDate.day.toString().padLeft(2, '0');
+          controller.dob.text = "$formattedMonth/$formattedDay/${selectedDate.year}";
+
         }
       },
       validator: (value) {
@@ -421,7 +422,6 @@ class _SignupState extends State<Signup> {
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
-
     final passwordField = TextFormField(
       autofocus: false,
       maxLength: 20,
@@ -438,7 +438,10 @@ class _SignupState extends State<Signup> {
         counterText: '',
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Password",
-        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white,),
+        hintStyle: TextStyle(
+          fontFamily: 'outfit',
+          color: Colors.white,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -453,7 +456,6 @@ class _SignupState extends State<Signup> {
         }
         return null;
       },
-
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
 
@@ -498,8 +500,6 @@ class _SignupState extends State<Signup> {
           )
         : SizedBox.shrink();
 
-
-
     final signupButton = Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -507,44 +507,43 @@ class _SignupState extends State<Signup> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),onPressed: () async {
-        if (_formKey.currentState!.validate()) {
-          if (controller.email.text.isNotEmpty) {
-            // Create a usermodel instance with the necessary data
-            usermodel newUser = usermodel(
-              username: controller.username.text.trim(),
-              firstName: controller.firstName.text.trim(),
-              lastName: controller.lastName.text.trim(),
-              email: controller.email.text.trim(),
-              contactNo: controller.contactNo.text.trim(),
-              cnic: controller.cnic.text.trim(),
-              dob: controller.dob.text.trim(),
-              gender: selectedGender,
-              password: controller.password.text.trim(),
-              confirmPassword: controller.confirmPassword.text.trim(),
-              profileImage: '',
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            if (controller.email.text.isNotEmpty) {
+              // Create a usermodel instance with the necessary data
+              usermodel newUser = usermodel(
+                username: controller.username.text.trim(),
+                firstName: controller.firstName.text.trim(),
+                lastName: controller.lastName.text.trim(),
+                email: controller.email.text.trim(),
+                contactNo: controller.contactNo.text.trim(),
+                cnic: controller.cnic.text.trim(),
+                dob: controller.dob.text.trim(),
+                gender: selectedGender,
+                password: controller.password.text.trim(),
+                confirmPassword: controller.confirmPassword.text.trim(),
+                profileImage: '',
+              );
 
-            );
-
-            // User is signing up with email
-            await Signupcontroller.instance.RegisterUser(
-              controller.email.text.trim(),
-              controller.password.text.trim(),
-              newUser,
-            );
-            controller.username.clear();
-            controller.firstName.clear();
-            controller.lastName.clear();
-            controller.email.clear();
-            controller.contactNo.clear();
-            controller.cnic.clear();
-            controller.dob.clear();
-            controller.password.clear();
-            controller.confirmPassword.clear();
+              // User is signing up with email
+              await Signupcontroller.instance.RegisterUser(
+                controller.email.text.trim(),
+                controller.password.text.trim(),
+                newUser,
+              );
+              controller.username.clear();
+              controller.firstName.clear();
+              controller.lastName.clear();
+              controller.email.clear();
+              controller.contactNo.clear();
+              controller.cnic.clear();
+              controller.dob.clear();
+              controller.password.clear();
+              controller.confirmPassword.clear();
+            }
           }
-        }
-      },
-
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -565,8 +564,6 @@ class _SignupState extends State<Signup> {
       ),
     );
 
-
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -575,7 +572,6 @@ class _SignupState extends State<Signup> {
               Color(0xFFCBE1EE),
               Color(0xFF769DC9),
               Color(0xFF7EA3CA),
-
               Color(0xFF7EA3CA),
               Color(0xFF769DC9),
             ],
@@ -659,13 +655,10 @@ class _SignupState extends State<Signup> {
                 ),
               ),
             ),
-            if (kIsWeb && screenWidth>700) lottieAnimation,
-
+            if (kIsWeb && screenWidth > 700) lottieAnimation,
           ],
         ),
       ),
-
     );
   }
-
 }

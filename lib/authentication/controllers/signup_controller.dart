@@ -41,8 +41,9 @@ class Signupcontroller extends GetxController {
       Get.snackbar(
         'Registration Successful',
         'Verification email sent. Please verify your email before logging in.',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
 
       // Now, you can store the user data in the database
@@ -55,16 +56,18 @@ class Signupcontroller extends GetxController {
           Get.snackbar(
             'Registration Failed',
             'The email address is already in use. Please use a different email.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.grey,
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
           );
         } else {
           // Handle other FirebaseAuthException errors
           Get.snackbar(
             'Registration Failed',
             'An error occurred during registration. Please try again later.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.grey,
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
           );
         }
       } else {
@@ -72,8 +75,9 @@ class Signupcontroller extends GetxController {
         Get.snackbar(
           'Registration Failed',
           'An unexpected error occurred. Please try again later.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.grey,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
         );
       }
 

@@ -18,10 +18,33 @@ class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
 
   @override
+
   _UserProfilePageState createState() => _UserProfilePageState();
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    fetchProfileImage();
+  }
+
+
+  // Fetch profile image URL from the database
+  Future<void> fetchProfileImage() async {
+    try {
+      final user = await controller.getUserData();
+      print(user.profileImage);
+      if (user != null && user.profileImage != null) {
+        setState(() {
+          profileImageUrl = user.profileImage!;
+        });
+      }
+    } catch (e) {
+      print('Error fetching profile image: $e');
+    }
+  }
+
   final ProfileController controller = Get.put(ProfileController());
   String profileImageUrl =
       'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
@@ -94,6 +117,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: NetworkImage(profileImageUrl),
+
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -110,7 +134,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         'Email: ${user.email}',
                         style: const TextStyle(
                           fontFamily: 'outfit',
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -381,6 +405,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
           await uploadTask!.whenComplete(() async {
             imageUrl = await storageRef.child("uploadImage/$userEmail.jpeg").getDownloadURL();
             await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+            setState(() {
+              profileImageUrl = imageUrl;
+              print(profileImageUrl);
+            });
             Navigator.of(context).pop(); // Close the dialog box
           });
         } else {

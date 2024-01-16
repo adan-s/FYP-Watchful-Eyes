@@ -18,7 +18,10 @@ class ProfileController extends GetxController {
     if (email != null) {
       return await _userRepo.getUserDetails(email);
     } else {
-      Get.snackbar("Error", "Login to Continue");
+      Get.snackbar("Error", "Login to Continue",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,);
       throw Exception("User not logged in");
     }
   }

@@ -28,7 +28,8 @@ class LoginController extends GetxController {
           'Login Successful',
           'Welcome, Admin!',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
       } else {
         // For regular users or non-web admin login, perform Firebase authentication
@@ -45,17 +46,19 @@ class LoginController extends GetxController {
             Get.offAll(() => UserPanel());
             Get.snackbar(
               'Login Successful',
-              'Welcome, User!',
+              'Welcome to Watchful Eyes!',
               snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.grey,
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
             );
           } else {
             // Email is not verified
             Get.snackbar(
               'Email Not Verified',
               'Please verify your email before logging in.',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.grey,
+              snackPosition: SnackPosition.TOP,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
             );
           }
         } else {

@@ -316,10 +316,13 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    final errorText = Obx(() => Text(
-          controller.errorMessage.value,
-          style: TextStyle(color: Colors.red), // Customize the color as needed
-        ));
+    final errorText = Obx(() => Center(
+      child: Text(
+        controller.errorMessage.value,
+        style: TextStyle(color: Colors.red),
+      ),
+    ));
+
 
     return Scaffold(
       body: Container(
