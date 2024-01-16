@@ -47,8 +47,8 @@ class _PhoneNumberInputFormatter extends TextInputFormatter {
     final StringBuffer newText = StringBuffer();
 
     for (int i = 0; i < newValue.text.length; i++) {
-      if (i == 4) {
-        newText.write('-'); // Add hyphen after 4 digits
+      if (i == 6) {
+        newText.write('-');
       }
       newText.write(newValue.text[i]);
     }
@@ -314,25 +314,23 @@ class _SignupState extends State<Signup> {
 
     final contactNoField = TextFormField(
       autofocus: false,
-      maxLength: 11,
+      maxLength: 14,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
-
       inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(13),
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
         _PhoneNumberInputFormatter(),
       ],
       validator: (value) {
         if (value == null || value.isEmpty) {
-          // If contact number is empty
           return 'Contact number is required';
         }
-        // Format the phone number to comply with E.164 standards
+
         final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
-        if (cleanedPhoneNumber.length == 13) {
-          return 'Enter a valid phone number with country code';
+        if (cleanedPhoneNumber.length != 12) {
+          return 'Enter a valid phone number';
         }
+
         return null;
       },
       onSaved: (value) {
@@ -345,7 +343,7 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Contact No (1111-1111111)",
+        hintText: "Contact No (+92321-5722553)",
         counterText: '',
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(
@@ -354,6 +352,11 @@ class _SignupState extends State<Signup> {
       ),
       style: TextStyle(fontFamily: 'outfit', color: Colors.white),
     );
+
+
+
+
+
 
     final dobField = TextFormField(
       autofocus: false,
