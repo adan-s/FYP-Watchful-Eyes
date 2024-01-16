@@ -7,6 +7,7 @@ import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
 
+import '../authentication/controllers/crime_registeration_controller.dart';
 import 'blogs.dart';
 
 class CrimeRegistrationForm extends StatefulWidget {
@@ -225,11 +226,12 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Handle form submission
+                        CrimeRegistrationController.instance.submitCrimeReport();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white, // Set button color to transparent
-                        elevation: 0, // Remove button elevation
+                        backgroundColor:
+                        Colors.white,
+                        elevation: 0,
                       ),
                       child: Container(
                         decoration: BoxDecoration(
@@ -243,15 +245,18 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-
                             SizedBox(width: 8),
                             Text(
                               "Submit",
-                              style: TextStyle(fontFamily: 'outfit',fontSize: 16, color: Colors.black),
+                              style: TextStyle(
+                                  fontFamily: 'outfit',
+                                  fontSize: 16,
+                                  color: Colors.black),
                             ),
                             Icon(
                               Icons.send, // You can use a different icon if needed

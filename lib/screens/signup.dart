@@ -511,7 +511,6 @@ class _SignupState extends State<Signup> {
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (controller.email.text.isNotEmpty) {
-              // Create a usermodel instance with the necessary data
               usermodel newUser = usermodel(
                 username: controller.username.text.trim(),
                 firstName: controller.firstName.text.trim(),
