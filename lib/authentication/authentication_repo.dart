@@ -86,6 +86,15 @@ class AuthenticationRepository extends GetxController {
     var credentials = await _auth.signInWithCredential(PhoneAuthProvider.credential(verificationId: this.verificationId.value, smsCode: otp));
     return credentials.user !=null ? true:false;
   }
+  Future<void> logout() async {
+    print('Before Logout: ${_auth.currentUser}');
+    try {
+      await _auth.signOut();
+      print('After Logout: ${_auth.currentUser}');
+    } catch (e) {
+      print('Logout error: $e');
+    }
+  }
 
 
 

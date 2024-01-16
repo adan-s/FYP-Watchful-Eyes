@@ -40,7 +40,11 @@ class _UserPanelState extends State<UserPanel>
 
     _animationController.forward();
   }
-
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

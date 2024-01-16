@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/blogs.dart';
 import 'package:fyp/screens/community-forum.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AuthenticationRepository());
     return GetMaterialApp(
       title: 'Watchful Eyes',
       theme: ThemeData(

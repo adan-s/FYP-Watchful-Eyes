@@ -6,6 +6,9 @@ import 'package:fyp/screens/home.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/usermanagement.dart';
 
+import '../authentication/authentication_repo.dart';
+import 'login_screen.dart';
+
 class AdminDashboard extends StatefulWidget {
   @override
   _AdminDashboardState createState() => _AdminDashboardState();
@@ -249,19 +252,29 @@ class _AdminDashboardState extends State<AdminDashboard> {
               Divider(
                 color: Colors.white,
               ),
-              ListTile(
-                leading: Icon(Icons.exit_to_app, color: Colors.white),
-                title: Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.white,
+              GestureDetector(
+                onTap: () async {
+                  bool confirmLogout = await _showLogoutConfirmationDialog(context);
+
+                  if (confirmLogout) {
+                    await AuthenticationRepository.instance.logout();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  }
+                },
+                child: ListTile(
+                  leading: Icon(Icons.exit_to_app, color: Colors.white),
+                  title: Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                onTap: () {
-                  // ... (Handle Logout action)
-                  Navigator.pop(context);
-                },
-              ),
+              )
+
             ],
           ),
         ),
@@ -655,4 +668,30 @@ class _AdminDashboardState extends State<AdminDashboard> {
       onPressed: onPressed,
     );
   }
+  Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout Confirmation'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // No, do not logout
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Yes, logout
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
 }
