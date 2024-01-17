@@ -1,9 +1,8 @@
-import 'dart:html';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../models/crime_data_model.dart';
 
 class CrimeRegistrationController extends GetxController {
   static CrimeRegistrationController get instance =>
@@ -16,23 +15,30 @@ class CrimeRegistrationController extends GetxController {
   final phoneNumberController = TextEditingController();
   final selectedDateController = TextEditingController();
   final selectedTimeController = TextEditingController();
-  final crimeTypeController = TextEditingController();
-  final attachmentController = TextEditingController();
+  RxString crimeType = ''.obs;
+  RxString attachments = ''.obs;
   final descriptionController = TextEditingController();
-  final isAnonymousController = TextEditingController();
+  RxBool isAnonymous = false.obs;
 
   Future<void> submitCrimeReport() async {
     try {
-      await crimeCollection.add({
-        'fullName': fullNameController.text,
-        'phoneNumber': phoneNumberController.text,
-        'date': selectedDateController.text,
-        'time': selectedTimeController.text,
-        'crimeType': crimeTypeController.text,
-        'attachment': attachmentController.text,
-        'description': descriptionController.text,
-        'isAnonymous': isAnonymousController.text == 'true',
-      });
+      // Create a CrimeDataModel instance with the collected data
+      CrimeDataModel crimeData = CrimeDataModel(
+        fullName: fullNameController.text,
+        phoneNumber: phoneNumberController.text,
+        date: selectedDateController.text,
+        time: selectedTimeController.text,
+        crimeType: crimeType.value,
+        attachments: attachments.value, // Store attachment as a list
+        description: descriptionController.text,
+        isAnonymous: isAnonymous.value,
+      );
+
+      // Convert CrimeDataModel to a Map
+      Map<String, dynamic> crimeMap = crimeData.toMap();
+
+      // Add the crime data to Firestore
+      await crimeCollection.add(crimeMap);
 
       Get.snackbar(
         'Crime Report Submitted',
@@ -42,6 +48,7 @@ class CrimeRegistrationController extends GetxController {
         colorText: Colors.white,
       );
 
+      // Clear form fields after submission
       clearFormFields();
     } catch (e) {
       print('Error submitting crime report: $e');
@@ -58,15 +65,14 @@ class CrimeRegistrationController extends GetxController {
     }
   }
 
-
   void clearFormFields() {
     fullNameController.clear();
     phoneNumberController.clear();
     selectedDateController.clear();
     selectedTimeController.clear();
-    crimeTypeController.clear();
-    attachmentController.clear();
+    crimeType.value = '';
+    attachments.value= '';
     descriptionController.clear();
-    isAnonymousController.clear();
+    isAnonymous.value = false;
   }
 }

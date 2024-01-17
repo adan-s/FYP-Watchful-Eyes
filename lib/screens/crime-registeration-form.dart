@@ -1,3 +1,5 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -6,12 +8,15 @@ import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
-
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../authentication/controllers/crime_registeration_controller.dart';
 import 'blogs.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:image_picker/image_picker.dart';
 
 class CrimeRegistrationForm extends StatefulWidget {
-  const CrimeRegistrationForm({super.key});
+  const CrimeRegistrationForm({Key? key}) : super(key: key);
 
   @override
   _CrimeRegistrationFormState createState() => _CrimeRegistrationFormState();
@@ -19,38 +24,37 @@ class CrimeRegistrationForm extends StatefulWidget {
 
 class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
   DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
+  late TimeOfDay selectedTime;
+
   bool isAnonymous = false;
 
   @override
   Widget build(BuildContext context) {
+    final CrimeRegistrationController controller =
+        Get.put(CrimeRegistrationController());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF769DC9),
-                Color(0xFF769DC9),
-              ],
+              colors: [Color(0xFF769DC9), Color(0xFF769DC9)],
               end: Alignment.bottomCenter,
               begin: Alignment.topCenter,
             ),
           ),
         ),
         title: const Text(
-          'Crime Registeration',
-          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
+          'Crime Registration',
+          style: TextStyle(fontFamily: 'outfit', color: Colors.white),
         ),
         centerTitle: true,
         actions: [
           ResponsiveAppBarActions(),
         ],
         iconTheme: IconThemeData(color: Colors.white),
-
       ),
-
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -74,7 +78,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
             ),
           ],
         ),
-
         child: Center(
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
@@ -101,12 +104,11 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                 ),
               ],
             ),
-
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 24.0), // Adjust the space as needed
+                  SizedBox(height: 24.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -121,46 +123,118 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0), // Adjust the spac
+                  SizedBox(height: 16.0),
                   TextFormField(
+                    controller: controller.fullNameController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Full Name',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.person, color: Colors.white),
                     ),
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
+                    controller: controller.phoneNumberController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.phone, color: Colors.white),
                     ),
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
+                    controller: controller.selectedDateController,
                     readOnly: true,
-                    onTap: () => _selectDate(context),
+                    onTap: () async {
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDate != null) {
+                        String formattedMonth =
+                            selectedDate.month.toString().padLeft(2, '0');
+                        String formattedDay =
+                            selectedDate.day.toString().padLeft(2, '0');
+                        controller.selectedDateController.text =
+                            "$formattedMonth/$formattedDay/${selectedDate.year}";
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Date of Birth is required';
+                      }
+
+                      final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
+                      if (!dateRegExp.hasMatch(value)) {
+                        return 'Enter a valid date format (MM/DD/YYYY)';
+                      }
+
+                      try {
+                        // Parse the selected date using the correct format
+                        DateTime selectedDate =
+                            DateFormat('MM/dd/yyyy').parseStrict(value);
+
+                        // Calculate age
+                        DateTime currentDate = DateTime.now();
+                        int age = currentDate.year - selectedDate.year;
+
+                        // Check if the user is at least 18 years old
+                        if (currentDate.month < selectedDate.month ||
+                            (currentDate.month == selectedDate.month &&
+                                currentDate.day < selectedDate.day)) {
+                          age--; // Subtract 1 year if the birthday hasn't occurred yet
+                        }
+
+                        if (age < 18) {
+                          return 'You must be at least 18 years old';
+                        }
+                      } catch (e) {
+                        return 'Enter a valid date';
+                      }
+
+                      return null;
+                    },
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Date',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.date_range, color: Colors.white),
-                      suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                      suffixIcon:
+                          Icon(Icons.arrow_drop_down, color: Colors.white),
                     ),
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
+                    controller: controller.selectedTimeController,
                     readOnly: true,
-                    onTap: () => _selectTime(context),
+                    onTap: () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (pickedTime != null) {
+                        setState(() {
+                          selectedTime = pickedTime;
+                          controller.selectedTimeController.text =
+                              selectedTime.toString();
+                        });
+                      }
+                    },
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Time',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.access_time, color: Colors.white),
-                      suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                      suffixIcon:
+                          Icon(Icons.arrow_drop_down, color: Colors.white),
                     ),
                   ),
                   SizedBox(height: 16.0),
@@ -169,68 +243,89 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         .map((String crimeType) {
                       return DropdownMenuItem<String>(
                         value: crimeType,
-                        child: Text(crimeType, style: TextStyle(fontFamily: 'outfit',color: Colors.black)),
+                        child: Text(
+                          crimeType,
+                          style: TextStyle(
+                              fontFamily: 'outfit', color: Colors.white),
+                        ),
                       );
                     }).toList(),
                     onChanged: (String? value) {
-                      // Handle crime type selection
+                      controller.crimeType.value = value ?? 'Harassment';
                     },
                     decoration: InputDecoration(
                       labelText: 'Crime Type',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.category, color: Colors.white),
                     ),
+                    dropdownColor: Color(
+                        0xFF769DC9), // Set the background color of the dropdown menu
                   ),
                   SizedBox(height: 16.0),
-                  TextFormField(
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Attachment',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
-                      prefixIcon: Icon(Icons.attach_file, color: Colors.white),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.attach_file, color: Colors.white),
-                        onPressed: () {
-                          _selectFile(context);
-                        },
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.attach_file, color: Colors.white),
+                            onPressed: () {
+                              _uploadCrimeAttachments(context);
+                            },
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Attachments',
+                            style: TextStyle(
+                              fontFamily: 'outfit',
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                      Divider(
+                        color:  Color(0xFF747775), // Set the color of the line
+                        thickness: 1,         // Set the thickness of the line
+                      ),
+                    ],
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
+                    controller: controller.descriptionController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Description',
-                      labelStyle: TextStyle(fontFamily: 'outfit',color: Colors.white),
+                      labelStyle:
+                          TextStyle(fontFamily: 'outfit', color: Colors.white),
                       prefixIcon: Icon(Icons.description, color: Colors.white),
                     ),
-                    maxLines: 3,
                   ),
                   SizedBox(height: 16.0),
                   Row(
                     children: [
-                      Checkbox(
-                        value: isAnonymous,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isAnonymous = value ?? false;
-                          });
-                        },
-                      ),
-                      Text('Submit Anonymously', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
+                      Obx(() => Checkbox(
+                            value: controller.isAnonymous.value,
+                            onChanged: (bool? value) {
+                              if (value != null) {
+                                controller.isAnonymous.value = value;
+                              }
+                            },
+                          )),
+                      Text('Submit Anonymously',
+                          style: TextStyle(
+                              fontFamily: 'outfit', color: Colors.white)),
                     ],
                   ),
                   SizedBox(height: 32.0),
-
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        CrimeRegistrationController.instance.submitCrimeReport();
+                        CrimeRegistrationController.instance
+                            .submitCrimeReport();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                        Colors.white,
+                        backgroundColor: Colors.white,
                         elevation: 0,
                       ),
                       child: Container(
@@ -246,7 +341,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -259,7 +354,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                                   color: Colors.black),
                             ),
                             Icon(
-                              Icons.send, // You can use a different icon if needed
+                              Icons.send,
                               color: Colors.black,
                             ),
                           ],
@@ -267,7 +362,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -275,32 +369,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         ),
       ),
     );
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-      });
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: selectedTime,
-    );
-
-    if (picked != null && picked != selectedTime)
-      setState(() {
-        selectedTime = picked;
-      });
   }
 
   Future<void> _selectFile(BuildContext context) async {
@@ -324,7 +392,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        if (!kIsWeb) // Check if the app is not running on the web
+        if (!kIsWeb)
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
@@ -344,7 +412,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registeration", Icons.report, () {
+        _buildNavBarItem("Crime Registration", Icons.report, () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -371,53 +439,57 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
-    ): Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(icon, color: Color(0xFF769DC9)),
-          onPressed: onPressed,
-          tooltip: title,
-        ),
-        GestureDetector(
-          onTap: onPressed,
-          child: Text(
-            title,
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ),
-      ],
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+            tooltip: title,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(icon, color: Color(0xFF769DC9)),
+                onPressed: onPressed,
+                tooltip: title,
+              ),
+              GestureDetector(
+                onTap: onPressed,
+                child: Text(
+                  title,
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ),
+            ],
+          );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-    ): InkWell(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(icon, color: Color(0xFF769DC9)),
-            onPressed: null, // Disable IconButton onPressed
-            tooltip: "User Profile",
-          ),
-          Text(
-            "User Profile",
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ],
-      ),
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+          )
+        : InkWell(
+            onTap: onPressed,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(icon, color: Color(0xFF769DC9)),
+                  onPressed: null, // Disable IconButton onPressed
+                  tooltip: "User Profile",
+                ),
+                Text(
+                  "User Profile",
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ],
+            ),
+          );
   }
 }
 
@@ -432,16 +504,16 @@ class ResponsiveRow extends StatelessWidget {
       children: [
         if (MediaQuery.of(context).size.width > 600)
           ...children.map((child) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: child,
-          )),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: child,
+              )),
         if (MediaQuery.of(context).size.width <= 600)
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return children
                   .map((child) => PopupMenuItem(
-                child: child,
-              ))
+                        child: child,
+                      ))
                   .toList();
             },
             icon: Icon(Icons.menu, color: Colors.white),
@@ -451,3 +523,75 @@ class ResponsiveRow extends StatelessWidget {
     );
   }
 }
+
+Future<void> _uploadCrimeAttachments(BuildContext context) async {
+  try {
+    List<XFile>? imageFiles;
+
+    final ImagePicker _picker = ImagePicker();
+    imageFiles = await _picker.pickMultiImage();
+
+    if (imageFiles != null && imageFiles.isNotEmpty) {
+      List<String> imageUrls = [];
+      Uint8List data;
+
+      for (var imageFile in imageFiles) {
+        if (imageFile is XFile) {
+          data = await imageFile.readAsBytes();
+
+          String imageName =
+          DateTime.now().millisecondsSinceEpoch.toString();
+
+          final metadata =
+          firebase_storage.SettableMetadata(contentType: 'image/*');
+          final storageRef =
+          firebase_storage.FirebaseStorage.instance.ref();
+
+          firebase_storage.UploadTask? uploadTask;
+
+          uploadTask = storageRef
+              .child("crimeAttachments/$imageName.jpeg")
+              .putData(data, metadata);
+
+          // Inside _uploadCrimeAttachments function
+          await uploadTask!.whenComplete(() async {
+            String imageUrl = await storageRef
+                .child("crimeAttachments/$imageName.jpeg")
+                .getDownloadURL();
+            imageUrls.add(imageUrl);
+
+            // Update attachments string in CrimeRegistrationController
+            CrimeRegistrationController.instance.attachments.value = imageUrls.join(',');
+          });
+
+        } else {
+          throw Exception("Unsupported image file type");
+        }
+      }
+
+      print("Uploaded image URLs: $imageUrls");
+    }
+  } catch (e) {
+    print('Error uploading crime attachments: $e');
+    // Handle the error as needed
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(
+              'Failed to upload crime attachments. Please try again.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+

@@ -7,7 +7,7 @@ class CrimeDataModel {
   final String date;
   final String time;
   final String crimeType;
-  final String attachment;
+  final String attachments; // Change to List<String> for multiple attachments
   final String description;
   final bool isAnonymous;
 
@@ -18,7 +18,7 @@ class CrimeDataModel {
     required this.date,
     required this.time,
     required this.crimeType,
-    required this.attachment,
+    required this.attachments,
     required this.description,
     required this.isAnonymous,
   });
@@ -30,7 +30,7 @@ class CrimeDataModel {
       'date': date,
       'time': time,
       'crimeType': crimeType,
-      'attachment': attachment,
+      'attachments': attachments,
       'description': description,
       'isAnonymous': isAnonymous,
     };
@@ -45,7 +45,7 @@ class CrimeDataModel {
       date: data['date'],
       time: data['time'],
       crimeType: data['crimeType'],
-      attachment: data['attachment'],
+      attachments: data['attachements'],
       description: data['description'],
       isAnonymous: data['isAnonymous'],
     );
