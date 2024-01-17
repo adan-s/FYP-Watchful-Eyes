@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp/screens/Addcontact.dart';
+import 'package:fyp/screens/EmergencyContact.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'blogs.dart';
@@ -40,7 +42,11 @@ class _UserPanelState extends State<UserPanel>
 
     _animationController.forward();
   }
-
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -394,6 +400,14 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
+        if (!kIsWeb) // Check if the app is not running on the web
+          _buildNavBarItem("Emergency Contact", Icons.contacts, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  AddContact()),
+            );
+          }),
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -428,6 +442,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+
       ],
     );
   }

@@ -280,9 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Set the callback for successful login
           controller.setOnLoginSuccess(() async {
-            // Simulating a 3-second delay
-            await Future.delayed(Duration(seconds: 0));
-            // After the delay, navigate to UserPanel
+
             Get.offAll(() => UserPanel());
           });
 
