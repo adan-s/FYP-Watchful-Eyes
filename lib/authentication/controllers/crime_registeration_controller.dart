@@ -9,7 +9,7 @@ class CrimeRegistrationController extends GetxController {
       Get.find<CrimeRegistrationController>();
 
   final CollectionReference crimeCollection =
-  FirebaseFirestore.instance.collection('crimeData');
+      FirebaseFirestore.instance.collection('crimeData');
 
   final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
@@ -19,6 +19,7 @@ class CrimeRegistrationController extends GetxController {
   RxString attachments = ''.obs;
   final descriptionController = TextEditingController();
   RxBool isAnonymous = false.obs;
+  RxString voiceMessageUrl = ''.obs;
 
   Future<void> submitCrimeReport() async {
     try {
@@ -29,9 +30,11 @@ class CrimeRegistrationController extends GetxController {
         date: selectedDateController.text,
         time: selectedTimeController.text,
         crimeType: crimeType.value,
-        attachments: attachments.value, // Store attachment as a list
+        attachments: attachments.value,
+        // Store attachment as a list
         description: descriptionController.text,
         isAnonymous: isAnonymous.value,
+        voiceMessageUrl: voiceMessageUrl.value,
       );
 
       // Convert CrimeDataModel to a Map
@@ -49,7 +52,7 @@ class CrimeRegistrationController extends GetxController {
       );
 
       // Clear form fields after submission
-      clearFormFields();
+      //clearFormFields();
     } catch (e) {
       print('Error submitting crime report: $e');
 
@@ -71,8 +74,9 @@ class CrimeRegistrationController extends GetxController {
     selectedDateController.clear();
     selectedTimeController.clear();
     crimeType.value = '';
-    attachments.value= '';
+    attachments.value = '';
     descriptionController.clear();
     isAnonymous.value = false;
+    voiceMessageUrl.value = '';
   }
 }

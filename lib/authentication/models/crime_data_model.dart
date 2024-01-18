@@ -7,9 +7,10 @@ class CrimeDataModel {
   final String date;
   final String time;
   final String crimeType;
-  final String attachments; // Change to List<String> for multiple attachments
+  final String attachments;
   final String description;
   final bool isAnonymous;
+  final String voiceMessageUrl;
 
   CrimeDataModel({
     this.id,
@@ -21,6 +22,7 @@ class CrimeDataModel {
     required this.attachments,
     required this.description,
     required this.isAnonymous,
+    required this.voiceMessageUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -33,10 +35,12 @@ class CrimeDataModel {
       'attachments': attachments,
       'description': description,
       'isAnonymous': isAnonymous,
+      'voiceMessageUrl': voiceMessageUrl,
     };
   }
 
-  factory CrimeDataModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
+  factory CrimeDataModel.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return CrimeDataModel(
       id: document.id,
@@ -48,6 +52,7 @@ class CrimeDataModel {
       attachments: data['attachements'],
       description: data['description'],
       isAnonymous: data['isAnonymous'],
+      voiceMessageUrl: data['voiceMessageUrl'],
     );
   }
 }
