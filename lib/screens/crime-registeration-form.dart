@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -15,6 +14,9 @@ import 'blogs.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 
+bool attachmentsSelected = false;
+bool recordingsSelected = false;
+
 class CrimeRegistrationForm extends StatefulWidget {
   const CrimeRegistrationForm({Key? key}) : super(key: key);
 
@@ -26,7 +28,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime selectedDate = DateTime.now();
   late TimeOfDay selectedTime;
-
   bool isAnonymous = false;
 
   @override
@@ -302,16 +303,20 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Attachments',
+                              attachmentsSelected ? 'Attachments Selected': 'Attachments',
                               style: TextStyle(
                                 fontFamily: 'outfit',
-                                color: Colors.white,
+                                color: attachmentsSelected ? Colors.white : Colors.red,
                               ),
                             ),
                           ],
                         ),
+                        // Divider(
+                        //   color: Color(0xFF747775), // Set the color of the line
+                        //   thickness: 1, // Set the thickness of the line
+                        // ),
                         Divider(
-                          color: Color(0xFF747775), // Set the color of the line
+                          color: attachmentsSelected ? Color(0xFF747775) : Colors.red,
                           thickness: 1, // Set the thickness of the line
                         ),
                       ],
@@ -329,17 +334,17 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Recordings',
+                              recordingsSelected ?'Recording Selected': 'Recording',
                               style: TextStyle(
                                 fontFamily: 'outfit',
-                                color: Colors.white,
+                                color: recordingsSelected ? Colors.white : Colors.red,
                               ),
                             ),
                           ],
                         ),
                         Divider(
-                          color: Color(0xFF747775), // Set the color of the line
-                          thickness: 1, // Set the thickness of the line
+                          color: recordingsSelected ? Color(0xFF747775) : Colors.red,
+                          thickness: 1,
                         ),
                       ],
                     ),
@@ -437,6 +442,140 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
       ),
     );
   }
+
+  Future<void> _uploadCrimeAttachments(BuildContext context) async {
+    try {
+      List<XFile>? imageFiles;
+
+      final ImagePicker _picker = ImagePicker();
+      imageFiles = await _picker.pickMultiImage();
+
+      if (imageFiles != null && imageFiles.isNotEmpty) {
+        List<String> imageUrls = [];
+        Uint8List data;
+
+        for (var imageFile in imageFiles) {
+          if (imageFile is XFile) {
+            data = await imageFile.readAsBytes();
+
+            String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+
+            final metadata =
+            firebase_storage.SettableMetadata(contentType: 'image/*');
+            final storageRef = firebase_storage.FirebaseStorage.instance.ref();
+
+            firebase_storage.UploadTask? uploadTask;
+
+            uploadTask = storageRef
+                .child("crimeAttachments/$imageName.jpeg")
+                .putData(data, metadata);
+
+            // Inside _uploadCrimeAttachments function
+            await uploadTask!.whenComplete(() async {
+              String imageUrl = await storageRef
+                  .child("crimeAttachments/$imageName.jpeg")
+                  .getDownloadURL();
+              imageUrls.add(imageUrl);
+            });
+          } else {
+            throw Exception("Unsupported image file type");
+          }
+        }
+
+        // Update attachments string in CrimeRegistrationController
+        if (imageUrls.isNotEmpty) {
+          setState(() {
+            CrimeRegistrationController.instance.attachments.value =
+                imageUrls.join(',');
+            print("Uploaded image URLs: $imageUrls");
+            attachmentsSelected = true;
+          });
+        } else {
+          setState(() {
+            print("No attachments selected");
+            attachmentsSelected = false;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        print('Error uploading crime attachments: $e');
+        // Handle the error as needed
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text(
+                'Failed to upload crime attachments. Please try again.',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+  }
+
+  Future<void> _pickVoiceMessage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp3', 'wav', 'ogg'],
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        // Handle selected audio file
+        File audioFile = File(result.files.first.path!);
+        _uploadVoiceMessage(audioFile);
+        setState(() {
+          recordingsSelected = true;
+        });
+
+      }
+
+    } catch (e) {
+      print('Error picking voice message: $e');
+
+      // Handle the error as needed
+    }
+  }
+
+  Future<void> _uploadVoiceMessage(File audioFile) async {
+    try {
+      Uint8List data = await audioFile.readAsBytes();
+      String audioName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      final metadata = firebase_storage.SettableMetadata(contentType: 'audio/*');
+      final storageRef = firebase_storage.FirebaseStorage.instance.ref();
+
+      firebase_storage.UploadTask? uploadTask;
+
+      uploadTask = storageRef
+          .child("voiceMessages/$audioName.mp3")
+          .putData(data, metadata);
+
+      await uploadTask!.whenComplete(() async {
+        String audioUrl = await storageRef
+            .child("voiceMessages/$audioName.mp3")
+            .getDownloadURL();
+
+        CrimeRegistrationController.instance.voiceMessageUrl.value = audioUrl;
+        print("Uploaded voice message URL: $audioUrl");
+      });
+    } catch (e) {
+      print('Error uploading voice message: $e');
+      // Handle the error as needed
+    }
+  }
+
 }
 
 class ResponsiveAppBarActions extends StatelessWidget {
@@ -581,141 +720,3 @@ class ResponsiveRow extends StatelessWidget {
     );
   }
 }
-Future<void> _uploadCrimeAttachments(BuildContext context) async {
-  try {
-    List<XFile>? imageFiles;
-
-    final ImagePicker _picker = ImagePicker();
-    imageFiles = await _picker.pickMultiImage();
-
-    if (imageFiles != null && imageFiles.isNotEmpty) {
-      List<String> imageUrls = [];
-      Uint8List data;
-
-      for (var imageFile in imageFiles) {
-        if (imageFile is XFile) {
-          data = await imageFile.readAsBytes();
-
-          String imageName = DateTime.now().millisecondsSinceEpoch.toString();
-
-          final metadata =
-          firebase_storage.SettableMetadata(contentType: 'image/*');
-          final storageRef = firebase_storage.FirebaseStorage.instance.ref();
-
-          firebase_storage.UploadTask? uploadTask;
-
-          uploadTask = storageRef
-              .child("crimeAttachments/$imageName.jpeg")
-              .putData(data, metadata);
-
-          // Inside _uploadCrimeAttachments function
-          await uploadTask!.whenComplete(() async {
-            String imageUrl = await storageRef
-                .child("crimeAttachments/$imageName.jpeg")
-                .getDownloadURL();
-            imageUrls.add(imageUrl);
-          });
-        } else {
-          throw Exception("Unsupported image file type");
-        }
-      }
-
-      // Update attachments string in CrimeRegistrationController
-      if (imageUrls.isNotEmpty) {
-        CrimeRegistrationController.instance.attachments.value = imageUrls.join(',');
-        print("Uploaded image URLs: $imageUrls");
-      } else {
-        print("No attachments selected");
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text(
-                'No attachments selected. Please try again.',
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-  } catch (e) {
-    print('Error uploading crime attachments: $e');
-    // Handle the error as needed
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error'),
-          content: Text(
-            'Failed to upload crime attachments. Please try again.',
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-Future<void> _pickVoiceMessage() async {
-  try {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'ogg'],
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      // Handle selected audio file
-      File audioFile = File(result.files.first.path!);
-      _uploadVoiceMessage(audioFile);
-    }
-  } catch (e) {
-    print('Error picking voice message: $e');
-    // Handle the error as needed
-  }
-}
-
-Future<void> _uploadVoiceMessage(File audioFile) async {
-  try {
-    Uint8List data = await audioFile.readAsBytes();
-    String audioName = DateTime.now().millisecondsSinceEpoch.toString();
-
-    final metadata = firebase_storage.SettableMetadata(contentType: 'audio/*');
-    final storageRef = firebase_storage.FirebaseStorage.instance.ref();
-
-    firebase_storage.UploadTask? uploadTask;
-
-    uploadTask = storageRef
-        .child("voiceMessages/$audioName.mp3")
-        .putData(data, metadata);
-
-    await uploadTask!.whenComplete(() async {
-      String audioUrl = await storageRef
-          .child("voiceMessages/$audioName.mp3")
-          .getDownloadURL();
-
-      CrimeRegistrationController.instance.voiceMessageUrl.value = audioUrl;
-      print("Uploaded voice message URL: $audioUrl");
-    });
-  } catch (e) {
-    print('Error uploading voice message: $e');
-    // Handle the error as needed
-  }
-}
-
-

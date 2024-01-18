@@ -52,7 +52,7 @@ class CrimeRegistrationController extends GetxController {
       );
 
       // Clear form fields after submission
-      //clearFormFields();
+      clearFormFields();
     } catch (e) {
       print('Error submitting crime report: $e');
 
