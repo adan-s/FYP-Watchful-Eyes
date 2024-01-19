@@ -383,10 +383,7 @@ class CommentSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Comments',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+
         Divider(),
         for (var comment in comments)
           CommentTile(username: comment.username, comment: comment.text),

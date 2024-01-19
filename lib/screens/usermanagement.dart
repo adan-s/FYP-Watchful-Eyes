@@ -4,6 +4,7 @@ import 'package:fyp/screens/admindashboard.dart';
 import 'package:get/get.dart';
 
 import '../authentication/authentication_repo.dart';
+import 'CommunityForumPostsAdmin.dart';
 import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
@@ -145,14 +146,17 @@ class UserManagement extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.check, color: Colors.white),
               title: Text(
-                'Post Approval',
+                'Community Forum Posts',
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
               onTap: () {
-                // ... (Handle Post Approval action)
                 Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CommunityForumPostsAdmin()),
+                );
               },
             ),
             ListTile(
@@ -355,10 +359,11 @@ class UserManagement extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF769DC9),
+                            Color(0xFFCBE1EE),
                             Color(0xFF769DC9),
                             Color(0xFF7EA3CA),
                             Color(0xFF769DC9),
+                            Color(0xFFCBE1EE),
                             Color(0xFFCBE1EE),
                           ],
                           begin: Alignment.topCenter,
@@ -610,26 +615,6 @@ class UserManagement extends StatelessWidget {
         : Text('User data not available');
   }
 
-
-
-
-  Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
-    );
-  }
-
-  Widget _buildIconButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-    );
-  }
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(

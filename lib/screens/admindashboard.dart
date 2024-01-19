@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fyp/screens/CommunityForumPostsAdmin.dart';
 import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/home.dart';
@@ -159,14 +160,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ListTile(
                 leading: Icon(Icons.check, color: Colors.white),
                 title: Text(
-                  'Post Approval',
+                  'Community Forum Posts',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
                 onTap: () {
-                  // ... (Handle Post Approval action)
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CommunityForumPostsAdmin()),
+                  );
                 },
               ),
               ListTile(
@@ -245,7 +249,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF769DC9),
+                            Color(0xFFCBE1EE),
                             Color(0xFF769DC9),
                             Color(0xFF7EA3CA),
                             Color(0xFF769DC9),
@@ -260,7 +264,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       child: Column(
                         children: [
                           Text(
-                            'Total Number of Users',
+                            (kIsWeb) ? 'Total Number of Users': 'Total Users',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -321,7 +325,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF769DC9),
+                            Color(0xFFCBE1EE),
                             Color(0xFF769DC9),
                             Color(0xFF7EA3CA),
                             Color(0xFF769DC9),
@@ -336,7 +340,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       child: Column(
                         children: [
                           Text(
-                            'Total Registered Cases',
+                            (kIsWeb) ?'Total Registered Cases': 'Registered Cases',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
