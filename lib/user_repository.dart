@@ -12,13 +12,7 @@ class UserRepository extends GetxController {
   createUser(usermodel user) async {
     try {
       await _database.collection("Users").add(user.toJson());
-      Get.snackbar(
-        "Success",
-        "Account has been Created",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.white,
-        colorText: Colors.black,
-      );
+
     } catch (error, stackTrace) {
       Get.snackbar(
         "Error",

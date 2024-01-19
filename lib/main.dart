@@ -11,6 +11,7 @@ import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/signup.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
+import 'package:fyp/screens/usermanagement.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: AdminDashboard(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,268 +1,212 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fyp/screens/admindashboard.dart';
+import 'package:get/get.dart';
+
+import '../authentication/authentication_repo.dart';
+import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
-    void _showProfileMenu(BuildContext context, Offset tapPosition) async {
-      await showMenu(
-        context: context,
-        position: RelativeRect.fromLTRB(
-          tapPosition.dx,
-          tapPosition.dy,
-          tapPosition.dx + 1,
-          tapPosition.dy + 1,
-        ),
-        items: [
-          PopupMenuItem(
-            child: ListTile(
-              leading: Icon(Icons.person, color: Colors.white),
-              title: Text('Profile', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
-              onTap: () {
-                // Handle the Profile option
-                Navigator.pop(context); // Close the menu
-              },
-            ),
-          ),
-          PopupMenuItem(
-            child: ListTile(
-              leading: Icon(Icons.exit_to_app, color: Colors.white),
-              title: Text('Logout', style: TextStyle(fontFamily: 'outfit',color: Colors.white)),
-              onTap: () {
-                // Handle the Logout option
-                Navigator.pop(context); // Close the menu
-              },
-            ),
-          ),
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        color: Colors.black, // Set background color
-        elevation: 8.0,
-      );
-    }
-
+    TextEditingController _searchController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Admin Dashboard',
-          style: TextStyle(fontFamily: 'outfit',color: Colors.white),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        backgroundColor: Color(0xFF769DC9),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'User Management',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
+          ],
         ),
-        actions: [
-          _buildNavBarItem("Home", Icons.home, () {
-            // ... (Navigate to Home page)
-          }),
-          SizedBox(width: 8),
-          _buildNavBarItem("Community Forum", Icons.group, () {
-            // ... (Navigate to Community Forum page)
-          }),
-          SizedBox(width: 8),
-          _buildNavBarItem("Map", Icons.map, () {
-            // ... (Navigate to Map page)
-          }),
-          SizedBox(width: 8),
-          _buildNavBarItem("Safety Directory", Icons.book, () {
-            // ... (Navigate to Safety Directory page)
-          }),
-          SizedBox(width: 8),
-          _buildNavBarItem("Crime Registration", Icons.report, () {
-            // ... (Navigate to Crime Registration page)
-          }),
-          SizedBox(width: 8),
-          _buildIconButton(
-            icon: Icons.person,
-            onPressed: () {
-              // ... (Navigate to User Profile page)
-            },
-          ),
-        ],
-
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
-        child: Container(
-          width: 250,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF000104),
-                Color(0xFF0E121B),
-                Color(0xFF141E2C),
-                Color(0xFF18293F),
-                Color(0xFF193552),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+      child: Container(
+        width: 250,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF000104),
-                      Color(0xFF0E121B),
-                      Color(0xFF141E2C),
-                      Color(0xFF18293F),
-                      Color(0xFF193552),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF769DC9),
+                    Color(0xFF769DC9),
+                    Color(0xFF7EA3CA),
+                    Color(0xFF769DC9),
+                    Color(0xFFCBE1EE),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ClipOval(
-                      child: GestureDetector(
-                        onTapDown: (details) {
-                          _showProfileMenu(context, details.globalPosition);
-                        },
-                        child: Image.asset(
-                          "assets/admin.png",
-                          height: 70,
-                          width: 70,
-                          fit: BoxFit.cover,
-                        ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ClipOval(
+                    child: GestureDetector(
+                      child: Image.asset(
+                        "assets/admin.png",
+                        height: 70,
+                        width: 70,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Watchful Eyes',
-                          style: TextStyle(
-                            fontFamily: 'outfit',
-                            color: Colors.white,
-                            fontSize: 24,
-                          ),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Watchful Eyes',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
                         ),
-                        Text(
-                          'Admin Dashboard',
-                          style: TextStyle(
-                            fontFamily: 'outfit',
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                      ),
+                      Text(
+                        'Admin Dashboard',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.supervised_user_circle, color: Colors.white),
-                title: Text(
-                  'User Management',
-                  style: TextStyle(
-                    fontFamily: 'outfit',
-                    color: Colors.white,
+                      ),
+                    ],
                   ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading:
+              Icon(Icons.dashboard, color: Colors.white),
+              title: Text(
+                'Dashboard',
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-                onTap: () {
-                  // ... (Handle User Management action)
-                  Navigator.pop(context);
-                },
               ),
-              ListTile(
-                leading: Icon(Icons.analytics, color: Colors.white),
-                title: Text(
-                  'Analytics and Reports',
-                  style: TextStyle(
-                    fontFamily: 'outfit',
-                    color: Colors.white,
-                  ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdminDashboard()),
+                );
+              },
+            ),
+            ListTile(
+              leading:
+              Icon(Icons.supervised_user_circle, color: Colors.white),
+              title: Text(
+                'User Management',
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-                onTap: () {
-                  // ... (Handle Analytics and Reports action)
-                  Navigator.pop(context);
-                },
               ),
-              Divider(
-                color: Colors.white,
-              ),
-              ListTile(
-                leading: Icon(Icons.check, color: Colors.white),
-                title: Text(
-                  'Post Approval',
-                  style: TextStyle(
-                    fontFamily: 'outfit',
-                    color: Colors.white,
-                  ),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.analytics, color: Colors.white),
+              title: Text(
+                'Analytics and Reports',
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-                onTap: () {
-                  // ... (Handle Post Approval action)
-                  Navigator.pop(context);
-                },
               ),
-              ListTile(
-                leading: Icon(Icons.warning, color: Colors.white),
-                title: Text(
-                  'Registered Complaints',
-                  style: TextStyle(
-                    fontFamily: 'outfit',
-                    color: Colors.white,
-                  ),
+              onTap: () {
+                // ... (Handle Analytics and Reports action)
+                Navigator.pop(context);
+              },
+            ),
+            Divider(
+              color: Colors.white,
+            ),
+            ListTile(
+              leading: Icon(Icons.check, color: Colors.white),
+              title: Text(
+                'Post Approval',
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-                onTap: () {
-                  // ... (Handle Registered Complaints action)
-                  Navigator.pop(context);
-                },
               ),
-              Divider(
-                color: Colors.white,
+              onTap: () {
+                // ... (Handle Post Approval action)
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.warning, color: Colors.white),
+              title: Text(
+                'Registered Complaints',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
-              ListTile(
+              onTap: () {
+                // ... (Handle Registered Complaints action)
+                Navigator.pop(context);
+              },
+            ),
+            Divider(
+              color: Colors.white,
+            ),
+            GestureDetector(
+              onTap: () async {
+                bool confirmLogout =
+                await _showLogoutConfirmationDialog(context);
+
+                if (confirmLogout) {
+                  await AuthenticationRepository.instance.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                }
+              },
+              child: ListTile(
                 leading: Icon(Icons.exit_to_app, color: Colors.white),
                 title: Text(
                   'Logout',
                   style: TextStyle(
-                    fontFamily: 'outfit',
                     color: Colors.white,
                   ),
                 ),
-                onTap: () {
-                  // ... (Handle Logout action)
-                  Navigator.pop(context);
-                },
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
+    ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF000104),
-              Color(0xFF0E121B),
-              Color(0xFF141E2C),
-              Color(0xFF18293F),
-              Color(0xFF193552),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -279,18 +223,111 @@ class UserManagement extends StatelessWidget {
                     child: Container(
                       width: screenWidth < 600 ? screenWidth - 32 : 250,
                       child: TextField(
+                        controller: _searchController,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
-                          hintText: '  Search...',
+                          hintText: 'Search a User (by email)...',
                           hintStyle: TextStyle(fontFamily: 'outfit',color: Colors.grey),
-                          suffixIcon: Icon(Icons.search, color: Colors.black),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.search, color: Colors.black),
+                            onPressed: () async {
+                              final email = _searchController.text.trim();
+
+                              if (email.isNotEmpty) {
+                                try {
+                                  final userSnapshot = await getUserByUsername(email);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+
+                                        child: Container(
+                                          width: 300, // Set your desired width
+                                          height: 300, // Set your desired height
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xFF769DC9),
+                                                Color(0xFF769DC9),
+                                                Color(0xFF7EA3CA),
+                                                Color(0xFF769DC9),
+                                                Color(0xFFCBE1EE),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                            borderRadius: BorderRadius.circular(12.0),
+                                          ),
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '           User Data Found',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white, // Add text color as needed
+                                                ),
+                                              ),
+                                              SizedBox(height: 16),
+                                              UserDataDisplay(userSnapshot: userSnapshot),
+                                              SizedBox(height: 16),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text('Close', style: TextStyle(color: Colors.white)), // Add text color as needed
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+
+
+
+
+                                } catch (error) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('User Not Found'),
+                                        content: Text('The user with the given email does not exist.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Close'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              }
+                            },
+                          ),
+
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: Colors.black),
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 10),
+                          contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 10),
                           prefixIconConstraints: BoxConstraints(
                             maxHeight: 24,
                             maxWidth: 24,
@@ -300,18 +337,6 @@ class UserManagement extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10),
-                  Container(
-                    padding: EdgeInsets.only(top: 10, right: 10),
-                    child: GestureDetector(
-                      onTapDown: (details) {
-                        _showProfileMenu(context, details.globalPosition);
-                      },
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage("assets/admin.png"),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -330,11 +355,11 @@ class UserManagement extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF000104),
-                            Color(0xFF0E121B),
-                            Color(0xFF141E2C),
-                            Color(0xFF18293F),
-                            Color(0xFF193552),
+                            Color(0xFF769DC9),
+                            Color(0xFF769DC9),
+                            Color(0xFF7EA3CA),
+                            Color(0xFF769DC9),
+                            Color(0xFFCBE1EE),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -442,17 +467,52 @@ class UserManagement extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () {
-                                  // Handle the edit action for the user
-                                },
-                              ),
-                              IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () async {
-                                  // Handle the delete action for the user
-                                  String userId = users[index].id;
-                                  await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
+                                  // Show confirmation dialog before deleting
+                                  bool confirmDelete = await showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Confirmation'),
+                                        content: Text('Are you sure you want to delete this user?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true); // Yes, delete
+                                            },
+                                            child: Text('Yes', style: TextStyle(color: Colors.white)),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false); // No, don't delete
+                                            },
+                                            child: Text('No', style: TextStyle(color: Colors.white)),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  if (confirmDelete == true) {
+                                    // User confirmed to delete
+                                    String userId = users[index].id;
+                                    await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
+                                    // Show Snackbar
+                                    Get.snackbar(
+                                      "Congratulations",
+                                      "User deleted successfully.",
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                      snackPosition: SnackPosition.BOTTOM,
+                                    );
+                                  }
                                 },
                               ),
                             ],
@@ -469,6 +529,89 @@ class UserManagement extends StatelessWidget {
       ),
     );
   }
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserByUsername(String email) async {
+    final userQuery = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('Email', isEqualTo: email)
+        .get();
+
+    if (userQuery.docs.isNotEmpty) {
+      return userQuery.docs.first;
+    } else {
+      return Future.error('User not found');
+    }
+  }
+  Widget UserDataDisplay({required DocumentSnapshot<Map<String, dynamic>> userSnapshot}) {
+    final userData = userSnapshot.data();
+
+    return userData != null
+        ? Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Email: ${userData['Email']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'First Name: ${userData['FirstName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Last Name: ${userData['LastName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'UserName: ${userData['UserName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Contact No: ${userData['ContactNo']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Dob: ${userData['DOB']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    )
+        : Text('User data not available');
+  }
+
+
+
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
     return IconButton(
@@ -486,5 +629,41 @@ class UserManagement extends StatelessWidget {
       icon: Icon(icon, color: Colors.white),
       onPressed: onPressed,
     );
+  }
+
+  Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout Confirmation'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // No, do not logout
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(true); // Yes, logout
+
+                // Perform logout
+                await AuthenticationRepository.instance.logout();
+
+                // Redirect to the login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    ) ??
+        false;
   }
 }
