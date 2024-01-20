@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fyp/authentication/EmergencycontactsRepo.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
-
 import '../authentication/models/EmergencyContact.dart';
 
 class AddContact extends StatelessWidget {
@@ -10,17 +9,44 @@ class AddContact extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
-  void _addEmergencyContact(String userEmail) async {
+  void _addEmergencyContact(BuildContext context, String userEmail) async {
+    // Validate phone number format
+    if (!_isValidPhoneNumber(_phoneNumberController.text)) {
+      // Show an error message or handle the invalid phone number format
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Invalid Phone Number'),
+          content: Text('Please enter a valid phone number format: +923XXXXXXXXX'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     var contact = EmergencyContact(
       name: _nameController.text,
       phoneNumber: _phoneNumberController.text,
     );
 
     await _contactRepository.addEmergencyContact(userEmail, contact);
-
-    // Clear the input fields after adding the contact
     _nameController.clear();
     _phoneNumberController.clear();
+  }
+
+  bool _isValidPhoneNumber(String phoneNumber) {
+    // Define the regex pattern for the required phone number format
+    RegExp regex = RegExp(r'^\+\d{12}$'); // + followed by 12 digits
+
+    // Check if the phone number matches the pattern
+    return regex.hasMatch(phoneNumber);
   }
 
   @override
@@ -38,33 +64,91 @@ class AddContact extends StatelessWidget {
       appBar: AppBar(
         title: Text('Add Emergency Contact'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _phoneNumberController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFCBE1EE),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Centered TextField for Name
+              Center(
+                child: TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 16),
+              // Centered TextField for Phone Number
+              Center(
+                child: TextField(
+                  controller: _phoneNumberController,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    hintText: '+923215722553',
+                    hintStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.white),
+                    counterText: '', // To hide the character counter
+                  ),
+                  keyboardType: TextInputType.phone,
+                  style: TextStyle(color: Colors.white),
+                  maxLength: 13, // Set the maximum length
+                ),
+              ),
+              SizedBox(height: 32),
+              // Centered ElevatedButton
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              if (_nameController.text.isNotEmpty && _phoneNumberController.text.isNotEmpty) {
                 if (userEmail != null) {
-                  _addEmergencyContact(userEmail);
+                  _addEmergencyContact(context, userEmail);
                 } else {
-                  // Handle the case when the user's email is not available
+                  // Handle the case when userEmail is null
                 }
-              },
-              child: Text('Add Contact'),
-            ),
-          ],
+              } else {
+                // Show an error message for incomplete form
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Incomplete Form'),
+                    content: Text('Please fill in both name and phone number.'),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+            child: Text('Add Contact'),
+          ),
+        ),
+
+
+            ],
+          ),
         ),
       ),
     );

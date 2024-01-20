@@ -17,7 +17,7 @@ android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.example.fyp"
-        minSdkVersion localProperties.getProperty('flutter.minSdkVersion')?.toInteger() ?: 20
+        minSdkVersion localProperties.getProperty('flutter.minSdkVersion')?.toInteger() ?: 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode localProperties.getProperty('flutter.versionCode')?.toInteger() ?: 1
         versionName localProperties.getProperty('flutter.versionName') ?: "1.0"
@@ -52,4 +52,5 @@ flutter {
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
