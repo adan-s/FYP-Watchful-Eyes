@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fyp/authentication/EmergencycontactsRepo.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import '../authentication/models/EmergencyContact.dart';
+import 'EmergencyContact.dart';
+
 
 class AddContact extends StatelessWidget {
   final EmergencycontactsRepo _contactRepository = EmergencycontactsRepo();
@@ -15,18 +17,20 @@ class AddContact extends StatelessWidget {
       // Show an error message or handle the invalid phone number format
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Invalid Phone Number'),
-          content: Text('Please enter a valid phone number format: +923XXXXXXXXX'),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
+        builder: (context) =>
+            AlertDialog(
+              title: Text('Invalid Phone Number'),
+              content: Text(
+                  'Please enter a valid phone number format: +923XXXXXXXXX'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
       return;
     }
@@ -81,7 +85,8 @@ class AddContact extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+            mainAxisAlignment: MainAxisAlignment.center,
+            // Center content vertically
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Centered TextField for Name
@@ -91,6 +96,10 @@ class AddContact extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Name',
                     labelStyle: TextStyle(color: Colors.white),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
                   ),
                   style: TextStyle(color: Colors.white),
                 ),
@@ -105,48 +114,67 @@ class AddContact extends StatelessWidget {
                     hintText: '+923215722553',
                     hintStyle: TextStyle(color: Colors.white),
                     labelStyle: TextStyle(color: Colors.white),
+                    prefixIcon: Icon(
+                      Icons.phone, // Use the phone icon
+                      color: Colors.white,
+                    ),
                     counterText: '', // To hide the character counter
                   ),
                   keyboardType: TextInputType.phone,
                   style: TextStyle(color: Colors.white),
                   maxLength: 13, // Set the maximum length
                 ),
+
               ),
               SizedBox(height: 32),
-              // Centered ElevatedButton
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              if (_nameController.text.isNotEmpty && _phoneNumberController.text.isNotEmpty) {
-                if (userEmail != null) {
-                  _addEmergencyContact(context, userEmail);
-                } else {
-                  // Handle the case when userEmail is null
-                }
-              } else {
-                // Show an error message for incomplete form
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Incomplete Form'),
-                    content: Text('Please fill in both name and phone number.'),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('OK'),
-                      ),
-                    ],
+              // Row with Add Contact and Show Contacts buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_nameController.text.isNotEmpty &&
+                          _phoneNumberController.text.isNotEmpty) {
+                        if (userEmail != null) {
+                          _addEmergencyContact(context, userEmail);
+                        } else {
+                          // Handle the case when userEmail is null
+                        }
+                      } else {
+                        // Show an error message for incomplete form
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              AlertDialog(
+                                title: Text('Incomplete Form'),
+                                content: Text(
+                                    'Please fill in both name and phone number.'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              ),
+                        );
+                      }
+                    },
+                    child: Text('Add Contact'),
                   ),
-                );
-              }
-            },
-            child: Text('Add Contact'),
-          ),
-        ),
-
-
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EmergencyContactListScreen()),
+                      );
+                    },
+                    child: Text('Show Contacts'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
