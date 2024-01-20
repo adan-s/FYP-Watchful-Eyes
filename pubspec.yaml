@@ -72,7 +72,7 @@ dependencies:
   telephony_sms: ^0.0.4
   flutter_sms:
     path: F:\flutter_sms-master
-  flutter-toast: ^8.2.4
+  fluttertoast: ^8.2.4
 
 
 
