@@ -65,6 +65,14 @@ dependencies:
   lottie: ^2.7.0
   intl: ^0.19.0
   fl_chart: ^0.65.0
+  shake: ^2.2.0
+  background_sms: ^0.0.4
+  shake_event: ^0.0.9
+
+  telephony_sms: ^0.0.4
+  flutter_sms:
+    path: F:\flutter_sms-master
+  fluttertoast: ^8.2.4
 
 
 
@@ -142,9 +150,7 @@ flutter:
     - assets/procedure1.jpg
     - assets/security.json
     - assets/loginbgg.png
-    - assets/5-Choke-Hold-Defenses-Women-MUSTKnow_SelfDefense_AjaDang.mp4
-    - assets/Safety-Tips-for-Women.mp4
-    - assets/7-Self-Defense-Techniques-for-Women-from-Professionals.mp4
+
     - assets/forget1.jpg
     - assets/forget2.jpg
 

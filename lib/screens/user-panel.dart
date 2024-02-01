@@ -1,9 +1,18 @@
+import 'package:background_sms/background_sms.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fyp/screens/Addcontact.dart';
 import 'package:fyp/screens/EmergencyContact.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/safety-directory.dart';
+
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shake/shake.dart';
+import '../authentication/EmergencycontactsRepo.dart';
+import '../authentication/authentication_repo.dart';
 import 'blogs.dart';
 import 'community-forum.dart';
 import 'map.dart';
@@ -11,10 +20,7 @@ import 'user-profile.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:lottie/lottie.dart';
-import 'package:flutter_animated_button/flutter_animated_button.dart';
+
 
 class UserPanel extends StatefulWidget {
   const UserPanel({Key? key}) : super(key: key);
@@ -27,10 +33,15 @@ class _UserPanelState extends State<UserPanel>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  LocationData? currentLocation;
+  late ShakeDetector detector;
 
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
+    _getPermission();
+
 
     _animationController = AnimationController(
       vsync: this,
@@ -41,12 +52,93 @@ class _UserPanelState extends State<UserPanel>
         Tween<double>(begin: 0, end: 1).animate(_animationController);
 
     _animationController.forward();
+
+    detector = ShakeDetector.autoStart(onPhoneShake: () async {
+      // Handle phone shake
+      if (currentLocation != null) {
+        await _sendEmergencyMessage();
+      }
+    });
+    detector.startListening();
   }
   @override
   void dispose() {
     _animationController.dispose();
+    detector.stopListening();
     super.dispose();
   }
+  Future<void> _getPermission() async {
+    await [Permission.sms].request();
+  }
+
+  Future<bool> _isPermissionGranted() async {
+    return await Permission.sms.status.isGranted;
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      var location = Location();
+      LocationData userLocation = await location.getLocation();
+      print("User Location: $userLocation");
+      setState(() {
+        currentLocation = userLocation;
+      });
+    } catch (e) {
+      print("Error getting location: $e");
+    }
+  }
+
+  Future<void> _sendEmergencyMessage() async {
+    try {
+      User? user = AuthenticationRepository.instance.firebaseUser.value;
+      if (user != null) {
+        var userEmail = user.email;
+        print('User Email: $userEmail');
+
+
+        var contacts = await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
+
+        var locationLink =
+            'https://maps.google.com/?q=${currentLocation!.latitude},${currentLocation!.longitude}';
+        var message = 'Emergency! I need help. My current location is: $locationLink';
+
+        // Send messages to emergency contacts
+        for (var contact in contacts) {
+          await _simulateSendMessage(contact.phoneNumber, message);
+        }
+      }
+    } catch (e) {
+      print('Error sending emergency message: $e');
+    }
+  }
+
+  Future<void> _simulateSendMessage(String phoneNumber, String message) async {
+    try {
+      if (await _isPermissionGranted()) {
+        SmsStatus result = await BackgroundSms.sendMessage(
+          phoneNumber: phoneNumber,
+          message: message,
+          simSlot: 1,
+        );
+
+        if (result == SmsStatus.sent) {
+          print('Message sent successfully');
+          Fluttertoast.showToast(msg: 'Message sent successfully');
+        } else {
+          print('Failed to send message');
+          Fluttertoast.showToast(msg: 'Failed to send message');
+        }
+      } else {
+        Fluttertoast.showToast(msg: 'SMS permission not granted');
+      }
+    } catch (e) {
+      print('Error sending SMS: $e');
+      Fluttertoast.showToast(msg: 'Error sending SMS: $e');
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -408,6 +500,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) =>  AddContact()),
             );
           }),
+
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
