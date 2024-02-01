@@ -31,7 +31,6 @@ class CrimeRegistrationController extends GetxController {
         time: selectedTimeController.text,
         crimeType: crimeType.value,
         attachments: attachments.value,
-        // Store attachment as a list
         description: descriptionController.text,
         isAnonymous: isAnonymous.value,
         voiceMessageUrl: voiceMessageUrl.value,

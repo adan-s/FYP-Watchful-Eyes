@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../authentication/authentication_repo.dart';
+import 'CrimeDataPage.dart';
 import 'admindashboard.dart';
 import 'login_screen.dart';
 
@@ -174,8 +175,11 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    // ... (Handle Registered Complaints action)
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CrimeDataPage()),
+                    );
                   },
                 ),
                 Divider(

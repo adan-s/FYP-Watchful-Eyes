@@ -11,6 +11,7 @@ import 'package:fyp/screens/usermanagement.dart';
 
 import '../authentication/authentication_repo.dart';
 import 'Addcontact.dart';
+import 'CrimeDataPage.dart';
 import 'blogs.dart';
 import 'login_screen.dart';
 import 'map.dart';
@@ -182,8 +183,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
                 onTap: () {
-                  // ... (Handle Registered Complaints action)
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
+                  );
                 },
               ),
               Divider(
@@ -398,24 +401,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
-    );
-  }
-
-  Widget _buildIconButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
     );
   }
 
