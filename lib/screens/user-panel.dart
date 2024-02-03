@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fyp/screens/Addcontact.dart';
-import 'package:fyp/screens/EmergencyContact.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
+import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/safety-directory.dart';
 
 import 'package:location/location.dart';
@@ -18,7 +18,6 @@ import 'community-forum.dart';
 import 'map.dart';
 import 'user-profile.dart';
 import 'dart:ui' as ui;
-import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 
@@ -493,7 +492,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           }),
         if (!kIsWeb) // Check if the app is not running on the web
-          _buildNavBarItem("Emergency Contact", Icons.contacts, () {
+          _buildNavBarItem("Emergency Contact", Icons.phone, () {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -535,7 +534,57 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+        _buildNavBarItem("Logout", Icons.logout, () async {
+          bool confirmed = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Logout"),
+                content: Text("Are you sure you want to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          );
 
+          if (confirmed == true) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Logging out..."),
+                    ],
+                  ),
+                );
+              },
+              barrierDismissible: false,
+            );
+
+            try {
+              await AuthenticationRepository.instance.logout();
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            } catch (e) {
+              print("Logout error: $e");
+              Navigator.pop(context);
+            }
+          }
+        }),
       ],
     );
   }
