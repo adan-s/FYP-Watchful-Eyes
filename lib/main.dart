@@ -1,17 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
-import 'package:fyp/screens/admindashboard.dart';
-import 'package:fyp/screens/blogs.dart';
-import 'package:fyp/screens/community-forum.dart';
-import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/login_screen.dart';
-import 'package:fyp/screens/map.dart';
-import 'package:fyp/screens/safety-directory.dart';
-import 'package:fyp/screens/signup.dart';
 import 'package:fyp/screens/user-panel.dart';
-import 'package:fyp/screens/user-profile.dart';
-import 'package:fyp/screens/usermanagement.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -42,16 +33,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AuthenticationRepository());
+
+    AuthenticationRepository authRepository = AuthenticationRepository();
+    authRepository.checkLocalUserDetails();
+
     return GetMaterialApp(
       title: 'Watchful Eyes',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AdminDashboard(),
+      // Pass the initialized AuthenticationRepository to your screens
+      initialBinding: BindingsBuilder(() {
+        Get.put(authRepository);
+      }),
+      home: Obx(
+            () {
+          var user = authRepository.firebaseUser.value;
+          return user == null ? LoginScreen() : UserPanel();
+        },
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
+
 

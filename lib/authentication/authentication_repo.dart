@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/login_screen.dart';
 import '../screens/user-panel.dart';
@@ -18,6 +19,34 @@ class AuthenticationRepository extends GetxController {
     firebaseUser = Rx<User?>(_auth.currentUser);
     firebaseUser.bindStream(_auth.userChanges());
 
+    checkLocalUserDetails();
+  }
+
+  Future<void> checkLocalUserDetails() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userId = prefs.getString('userId');
+    final String? userEmail = prefs.getString('userEmail');
+
+    if (userId != null && userEmail != null) {
+      try {
+        final result = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: userEmail,
+          password: '',
+        );
+        firebaseUser.value = result.user;
+
+        print('User signed in with locally stored details');
+      } catch (e) {
+        // Handle sign-in errors
+        print('Sign-in error: $e');
+      }
+    }
+  }
+  Future<void> saveUserDetailsLocally(User user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('userId', user.uid);
+    prefs.setString('userEmail', user.email ?? '');
+    print('User details saved locally');
   }
 
   Future<void> registerUser(String email, String password, String username) async {
@@ -53,7 +82,6 @@ class AuthenticationRepository extends GetxController {
 
       return result.user;
     } catch (e) {
-      // Handle sign-in errors
       print('Sign-in error: $e');
       return null;
     }
@@ -90,12 +118,17 @@ class AuthenticationRepository extends GetxController {
     print('Before Logout: ${_auth.currentUser}');
     try {
       await _auth.signOut();
+
+      // Clear locally stored user details upon logout
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove('userId');
+      prefs.remove('userEmail');
+
       print('After Logout: ${_auth.currentUser}');
     } catch (e) {
       print('Logout error: $e');
     }
   }
-
 
 
 }
