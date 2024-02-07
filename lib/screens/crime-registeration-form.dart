@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -7,12 +8,14 @@ import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../authentication/controllers/crime_registeration_controller.dart';
 import 'blogs.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
+import 'package:geocoding/geocoding.dart';
 
 bool attachmentsSelected = false;
 bool recordingsSelected = false;
@@ -26,6 +29,7 @@ class CrimeRegistrationForm extends StatefulWidget {
 
 class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController locationController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   late TimeOfDay selectedTime;
   bool isAnonymous = false;
@@ -35,11 +39,84 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     final CrimeRegistrationController controller =
         Get.put(CrimeRegistrationController());
 
+    Future<String> getAddressFromCoordinates(
+        double latitude, double longitude) async {
+      try {
+        List<Placemark> placemarks =
+            await placemarkFromCoordinates(latitude, longitude);
+
+        if (placemarks.isNotEmpty) {
+          Placemark place = placemarks.first;
+          return "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+        } else {
+          return "Address not found";
+        }
+      } catch (e) {
+        print("Error converting coordinates to address: $e");
+        return "Error fetching address";
+      }
+    }
+
+    Future<void> _getCurrentLocationOnLoad() async {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+
+        String address = await getAddressFromCoordinates(
+            position.latitude, position.longitude);
+
+        setState(() {
+          controller.location.value =
+              GeoPoint(position.latitude, position.longitude);
+          locationController.text =
+              '(${position.latitude}, ${position.longitude})\n$address';
+          print('location stored');
+        });
+      } catch (e) {
+        print('location fetching failed');
+      }
+    }
+
+    Future<void> _getCoordinatesFromAddress(String address) async {
+      try {
+        List<Location> locations = await locationFromAddress(address);
+
+        if (locations.isNotEmpty) {
+          Location location = locations.first;
+          setState(() {
+            controller.location.value =
+                GeoPoint(location.latitude, location.longitude);
+            locationController.text =
+                '(${location.latitude}, ${location.longitude})\n$address';
+            print('Location from address stored');
+          });
+        } else {
+          setState(() {
+            print('Location not found for the entered address');
+            // Handle error if location not found
+          });
+        }
+      } catch (e) {
+        print('Error getting coordinates from address: $e');
+        setState(() {
+          // Handle error
+        });
+      }
+    }
+
+    void resetLocation() {
+      setState(() {
+        controller.location.value = null;
+        locationController.text = '';
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFF769DC9), Color(0xFF769DC9)],
               end: Alignment.bottomCenter,
@@ -55,11 +132,11 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         actions: [
           ResponsiveAppBarActions(),
         ],
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
               Color(0xFF769DC9),
               Color(0xFF769DC9),
@@ -76,16 +153,16 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
               color: Colors.black.withOpacity(0.3),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Center(
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
                   Color(0xFFCBE1EE),
                   Color(0xFF769DC9),
@@ -102,7 +179,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                   color: Colors.black.withOpacity(0.3),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: Offset(0, 3),
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -112,8 +189,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 24.0),
-                    Row(
+                    const SizedBox(height: 24.0),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -127,12 +204,12 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.fullNameController,
                       maxLength: 30,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         labelText: 'Full Name',
                         counterText: '',
                         labelStyle: TextStyle(
@@ -152,12 +229,12 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.phoneNumberController,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       maxLength: 11,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Phone Number',
                         counterText: '',
                         labelStyle: TextStyle(
@@ -178,7 +255,21 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: locationController,
+                      onTap: _getCurrentLocationOnLoad,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        labelText: 'Location',
+                        labelStyle: TextStyle(
+                            fontFamily: 'outfit', color: Colors.white),
+                        prefixIcon:
+                            Icon(Icons.location_on, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.selectedDateController,
                       readOnly: true,
@@ -213,15 +304,14 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           // Parse the selected date using the correct format
                           DateTime selectedDate =
                               DateFormat('MM/dd/yyyy').parseStrict(value);
-
                         } catch (e) {
                           return 'Enter a valid date';
                         }
 
                         return null;
                       },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         labelText: 'Date',
                         labelStyle: TextStyle(
                             fontFamily: 'outfit', color: Colors.white),
@@ -230,7 +320,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             Icon(Icons.arrow_drop_down, color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.selectedTimeController,
                       readOnly: true,
@@ -252,8 +342,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           return 'Time is required';
                         }
                       },
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         labelText: 'Time',
                         labelStyle: TextStyle(
                             fontFamily: 'outfit', color: Colors.white),
@@ -263,15 +353,19 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             Icon(Icons.arrow_drop_down, color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     DropdownButtonFormField<String>(
-                      items: ['Domestic Abuse', 'Accident', 'Harassment','Other']
-                          .map((String crimeType) {
+                      items: [
+                        'Domestic Abuse',
+                        'Accident',
+                        'Harassment',
+                        'Other'
+                      ].map((String crimeType) {
                         return DropdownMenuItem<String>(
                           value: crimeType,
                           child: Text(
                             crimeType,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: 'outfit', color: Colors.white),
                           ),
                         );
@@ -279,34 +373,36 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       onChanged: (String? value) {
                         controller.crimeType.value = value ?? 'Other';
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Crime Type',
                         labelStyle: TextStyle(
                             fontFamily: 'outfit', color: Colors.white),
                         prefixIcon: Icon(Icons.category, color: Colors.white),
                       ),
-                      dropdownColor: Color(
-                          0xFF769DC9), //
-                      // Set the background color of the dropdown menu
+                      dropdownColor: const Color(0xFF769DC9),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Column(
                       children: [
                         Row(
                           children: [
                             IconButton(
-                              icon:
-                                  Icon(Icons.attach_file, color: Colors.white),
+                              icon: const Icon(Icons.attach_file,
+                                  color: Colors.white),
                               onPressed: () {
                                 _uploadCrimeAttachments(context);
                               },
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              attachmentsSelected ? 'Attachments Selected': 'Attachments',
+                              attachmentsSelected
+                                  ? 'Attachments Selected'
+                                  : 'Attachments',
                               style: TextStyle(
                                 fontFamily: 'outfit',
-                                color: attachmentsSelected ? Colors.white : Colors.red,
+                                color: attachmentsSelected
+                                    ? Colors.white
+                                    : Colors.red,
                               ),
                             ),
                           ],
@@ -316,7 +412,9 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         //   thickness: 1, // Set the thickness of the line
                         // ),
                         Divider(
-                          color: attachmentsSelected ? Color(0xFF747775) : Colors.red,
+                          color: attachmentsSelected
+                              ? const Color(0xFF747775)
+                              : Colors.red,
                           thickness: 1, // Set the thickness of the line
                         ),
                       ],
@@ -326,34 +424,39 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         Row(
                           children: [
                             IconButton(
-                              icon:
-                              Icon(Icons.mic, color: Colors.white),
+                              icon: const Icon(Icons.mic, color: Colors.white),
                               onPressed: () {
                                 _pickVoiceMessage();
                               },
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              recordingsSelected ?'Recording Selected': 'Recording',
+                              recordingsSelected
+                                  ? 'Recording Selected'
+                                  : 'Recording',
                               style: TextStyle(
                                 fontFamily: 'outfit',
-                                color: recordingsSelected ? Colors.white : Colors.red,
+                                color: recordingsSelected
+                                    ? Colors.white
+                                    : Colors.red,
                               ),
                             ),
                           ],
                         ),
                         Divider(
-                          color: recordingsSelected ? Color(0xFF747775) : Colors.red,
+                          color: recordingsSelected
+                              ? const Color(0xFF747775)
+                              : Colors.red,
                           thickness: 1,
                         ),
                       ],
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.descriptionController,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       maxLength: 150,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Description',
                         labelStyle: TextStyle(
                             fontFamily: 'outfit', color: Colors.white),
@@ -368,7 +471,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Row(
                       children: [
                         Obx(() => Checkbox(
@@ -379,20 +482,20 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                                 }
                               },
                             )),
-                        Text('Submit Anonymously',
+                        const Text('Submit Anonymously',
                             style: TextStyle(
                                 fontFamily: 'outfit', color: Colors.white)),
                       ],
                     ),
-                    SizedBox(height: 32.0),
+                    const SizedBox(height: 32.0),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // If the form is valid, submit the data
                             CrimeRegistrationController.instance
                                 .submitCrimeReport();
+                            resetLocation();
                           } else {}
                         },
                         style: ElevatedButton.styleFrom(
@@ -401,7 +504,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                               colors: [
@@ -411,9 +514,9 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 40),
-                          child: Row(
+                          child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(width: 8),
@@ -447,8 +550,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     try {
       List<XFile>? imageFiles;
 
-      final ImagePicker _picker = ImagePicker();
-      imageFiles = await _picker.pickMultiImage();
+      final ImagePicker picker = ImagePicker();
+      imageFiles = await picker.pickMultiImage();
 
       if (imageFiles != null && imageFiles.isNotEmpty) {
         List<String> imageUrls = [];
@@ -461,7 +564,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
             String imageName = DateTime.now().millisecondsSinceEpoch.toString();
 
             final metadata =
-            firebase_storage.SettableMetadata(contentType: 'image/*');
+                firebase_storage.SettableMetadata(contentType: 'image/*');
             final storageRef = firebase_storage.FirebaseStorage.instance.ref();
 
             firebase_storage.UploadTask? uploadTask;
@@ -505,8 +608,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
-              content: Text(
+              title: const Text('Error'),
+              content: const Text(
                 'Failed to upload crime attachments. Please try again.',
               ),
               actions: <Widget>[
@@ -538,9 +641,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         setState(() {
           recordingsSelected = true;
         });
-
       }
-
     } catch (e) {
       print('Error picking voice message: $e');
 
@@ -553,7 +654,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
       Uint8List data = await audioFile.readAsBytes();
       String audioName = DateTime.now().millisecondsSinceEpoch.toString();
 
-      final metadata = firebase_storage.SettableMetadata(contentType: 'audio/*');
+      final metadata =
+          firebase_storage.SettableMetadata(contentType: 'audio/*');
       final storageRef = firebase_storage.FirebaseStorage.instance.ref();
 
       firebase_storage.UploadTask? uploadTask;
@@ -575,7 +677,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
       // Handle the error as needed
     }
   }
-
 }
 
 class ResponsiveAppBarActions extends StatelessWidget {
@@ -646,7 +747,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(icon, color: Color(0xFF769DC9)),
+                icon: Icon(icon, color: const Color(0xFF769DC9)),
                 onPressed: onPressed,
                 tooltip: title,
               ),
@@ -654,7 +755,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
                 onTap: onPressed,
                 child: Text(
                   title,
-                  style: TextStyle(color: Color(0xFF769DC9)),
+                  style: const TextStyle(color: Color(0xFF769DC9)),
                 ),
               ),
             ],
@@ -676,11 +777,11 @@ class ResponsiveAppBarActions extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(icon, color: Color(0xFF769DC9)),
-                  onPressed: null, // Disable IconButton onPressed
+                  icon: Icon(icon, color: const Color(0xFF769DC9)),
+                  onPressed: null,
                   tooltip: "User Profile",
                 ),
-                Text(
+                const Text(
                   "User Profile",
                   style: TextStyle(color: Color(0xFF769DC9)),
                 ),
@@ -713,7 +814,7 @@ class ResponsiveRow extends StatelessWidget {
                       ))
                   .toList();
             },
-            icon: Icon(Icons.menu, color: Colors.white),
+            icon: const Icon(Icons.menu, color: Colors.white),
             color: Colors.white,
           ),
       ],

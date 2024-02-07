@@ -11,6 +11,7 @@ class CrimeDataModel {
   final String description;
   final bool isAnonymous;
   final String voiceMessageUrl;
+  final GeoPoint? location;
 
   CrimeDataModel({
     this.id,
@@ -23,6 +24,7 @@ class CrimeDataModel {
     required this.description,
     required this.isAnonymous,
     required this.voiceMessageUrl,
+    this.location, // Added location attribute
   });
 
   Map<String, dynamic> toMap() {
@@ -36,6 +38,9 @@ class CrimeDataModel {
       'description': description,
       'isAnonymous': isAnonymous,
       'voiceMessageUrl': voiceMessageUrl,
+      'location': location != null
+          ? {'latitude': location!.latitude, 'longitude': location!.longitude}
+          : null,
     };
   }
 
@@ -53,6 +58,9 @@ class CrimeDataModel {
       description: data['description'],
       isAnonymous: data['isAnonymous'],
       voiceMessageUrl: data['voiceMessageUrl'],
+      location: data['location'] != null
+          ? GeoPoint(data['location']['latitude'], data['location']['longitude'])
+          : null,
     );
   }
 }
