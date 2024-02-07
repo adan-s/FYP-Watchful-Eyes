@@ -66,7 +66,9 @@ class AddContact extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Emergency Contact'),
+        backgroundColor: Color(0xFF769DC9),
+        title: Text('Add Emergency Contact', style: TextStyle(color: Colors.white)),
+
       ),
       body: Container(
         decoration: BoxDecoration(

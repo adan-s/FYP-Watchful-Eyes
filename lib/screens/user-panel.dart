@@ -52,12 +52,14 @@ class _UserPanelState extends State<UserPanel>
 
     _animationController.forward();
 
-    detector = ShakeDetector.autoStart(onPhoneShake: () async {
+    detector = ShakeDetector.autoStart(
+        onPhoneShake: () async {
       // Handle phone shake
       if (currentLocation != null) {
         await _sendEmergencyMessage();
       }
-    });
+    },
+    shakeThresholdGravity: 4.0,);
     detector.startListening();
   }
   @override
