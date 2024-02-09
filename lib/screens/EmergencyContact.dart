@@ -37,6 +37,8 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF769DC9),
+
         actions: [
           IconButton(
             onPressed: () {
@@ -50,7 +52,7 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
         ],
         title: Text(
           'Emergency Contacts',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Container(
