@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,7 +7,6 @@ import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../authentication/controllers/crime_registeration_controller.dart';
@@ -55,61 +53,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
         print("Error converting coordinates to address: $e");
         return "Error fetching address";
       }
-    }
-
-    Future<void> _getCurrentLocationOnLoad() async {
-      try {
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-
-        String address = await getAddressFromCoordinates(
-            position.latitude, position.longitude);
-
-        setState(() {
-          controller.location.value =
-              GeoPoint(position.latitude, position.longitude);
-          locationController.text =
-              '(${position.latitude}, ${position.longitude})\n$address';
-          print('location stored');
-        });
-      } catch (e) {
-        print('location fetching failed');
-      }
-    }
-
-    Future<void> _getCoordinatesFromAddress(String address) async {
-      try {
-        List<Location> locations = await locationFromAddress(address);
-
-        if (locations.isNotEmpty) {
-          Location location = locations.first;
-          setState(() {
-            controller.location.value =
-                GeoPoint(location.latitude, location.longitude);
-            locationController.text =
-                '(${location.latitude}, ${location.longitude})\n$address';
-            print('Location from address stored');
-          });
-        } else {
-          setState(() {
-            print('Location not found for the entered address');
-            // Handle error if location not found
-          });
-        }
-      } catch (e) {
-        print('Error getting coordinates from address: $e');
-        setState(() {
-          // Handle error
-        });
-      }
-    }
-
-    void resetLocation() {
-      setState(() {
-        controller.location.value = null;
-        locationController.text = '';
-      });
     }
 
     return Scaffold(
@@ -256,20 +199,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    const SizedBox(height: 16.0),
-                    TextFormField(
-                      controller: locationController,
-                      onTap: _getCurrentLocationOnLoad,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Location',
-                        labelStyle: TextStyle(
-                            fontFamily: 'outfit', color: Colors.white),
-                        prefixIcon:
-                            Icon(Icons.location_on, color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.selectedDateController,
                       readOnly: true,
@@ -407,10 +336,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                             ),
                           ],
                         ),
-                        // Divider(
-                        //   color: Color(0xFF747775), // Set the color of the line
-                        //   thickness: 1, // Set the thickness of the line
-                        // ),
                         Divider(
                           color: attachmentsSelected
                               ? const Color(0xFF747775)
@@ -451,6 +376,27 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: controller.location,
+                      style: const TextStyle(color: Colors.white),
+                      maxLength: 50,
+                      decoration: const InputDecoration(
+                        labelText: 'Location',
+                        labelStyle: TextStyle(
+                            fontFamily: 'outfit', color: Colors.white),
+                        prefixIcon:
+                        Icon(Icons.location_city, color: Colors.white),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Location is required';
+                        }
+
+                        return null;
+                      },
+                    ),
+
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.descriptionController,
@@ -495,7 +441,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                           if (_formKey.currentState!.validate()) {
                             CrimeRegistrationController.instance
                                 .submitCrimeReport();
-                            resetLocation();
                           } else {}
                         },
                         style: ElevatedButton.styleFrom(
