@@ -20,7 +20,7 @@ class CrimeRegistrationController extends GetxController {
   final descriptionController = TextEditingController();
   RxBool isAnonymous = false.obs;
   RxString voiceMessageUrl = ''.obs;
-  final location = TextEditingController();
+  Rx<GeoPoint?> location = Rx<GeoPoint?>(null);
   Future<void> submitCrimeReport() async {
     try {
       // Create a CrimeDataModel instance with the collected data
@@ -34,7 +34,7 @@ class CrimeRegistrationController extends GetxController {
         description: descriptionController.text,
         isAnonymous: isAnonymous.value,
         voiceMessageUrl: voiceMessageUrl.value,
-        location: location.text,
+        location: location.value,
       );
 
       // Convert CrimeDataModel to a Map
@@ -78,6 +78,6 @@ class CrimeRegistrationController extends GetxController {
     descriptionController.clear();
     isAnonymous.value = false;
     voiceMessageUrl.value = '';
-    location.clear();
+    location.value = null;
   }
 }

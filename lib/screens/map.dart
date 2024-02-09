@@ -7,6 +7,8 @@ import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 import 'blogs.dart';
 
@@ -19,6 +21,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  Set<Marker> _markers = {};
   TextEditingController _currentLocationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   GoogleMapController? _controller;
@@ -61,28 +64,69 @@ class _MapPageState extends State<MapPage> {
       );
 
       setState(() {
-        _currentLocationController.text =
-        '${position.latitude}, ${position.longitude}';
+        _currentLocationController.text = '${position.latitude}, ${position.longitude}';
       });
 
-      _showMap(position.latitude, position.longitude);
+      List<String> crimeData = await fetchCrimeDataFromDatabase();
+
+      // Show map with crime data
+      _showMap(position.latitude, position.longitude, crimeData);
+
     } catch (e) {
       print("Error: $e");
     }
   }
 
-  Future<void> _showMap(double latitude, double longitude) async {
+  Future<List<String>> fetchCrimeDataFromDatabase() async {
+    try {
+      QuerySnapshot snapshot =
+      await FirebaseFirestore.instance.collection('crimeData').get();
+
+      List<String> crimeData = snapshot.docs.map((doc) {
+        return doc['location'] as String;
+      }).toList();
+
+      return crimeData;
+    } catch (e) {
+      print('Error fetching crime data: $e');
+      return [];
+    }
+  }
+  Future<void> _showMap(double latitude, double longitude, List<String> crimeLocations) async {
     try {
       LatLng currentLatLng = LatLng(latitude, longitude);
 
-      // Move camera to the user's current location
       _controller?.animateCamera(
         CameraUpdate.newLatLngZoom(currentLatLng, 15.0),
       );
+
+      Set<Marker> markers = crimeLocations.map((crimeLocation) {
+        List<String> locationData = crimeLocation.split(',');
+        double crimeLatitude = double.parse(locationData[0]);
+        double crimeLongitude = double.parse(locationData[1]);
+
+        return Marker(
+          markerId: MarkerId(crimeLocation),
+          position: LatLng(crimeLatitude, crimeLongitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow: InfoWindow(
+            title: 'Crime Location',
+            snippet: 'Crime occurred here',
+          ),
+        );
+      }).toSet();
+
+      // Update markers on the map
+      setState(() {
+        _markers = markers;
+      });
+
     } catch (e) {
       print('Error showing map: $e');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +253,8 @@ class _MapPageState extends State<MapPage> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: GoogleMap(
+                child:
+                GoogleMap(
                   onMapCreated: (controller) {
                     setState(() {
                       _controller = controller;
@@ -220,7 +265,10 @@ class _MapPageState extends State<MapPage> {
                     zoom: 15,
                   ),
                   myLocationEnabled: true,
+                  markers: _markers,
                 ),
+
+
               ),
             ],
           ),
