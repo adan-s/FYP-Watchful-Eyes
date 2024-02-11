@@ -6,8 +6,12 @@ import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../authentication/EmergencycontactsRepo.dart';
+import '../authentication/authentication_repo.dart';
 
+import 'AddContact.dart';
 import 'blogs.dart';
+import 'login_screen.dart';
 
 class SafetyDirectory extends StatefulWidget {
   const SafetyDirectory({Key? key}) : super(key: key);
@@ -126,6 +130,15 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
+        if (!kIsWeb) // Check if the app is not running on the web
+          _buildNavBarItem("Emergency Contact", Icons.phone, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  AddContact()),
+            );
+          }),
+
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -160,6 +173,57 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+        _buildNavBarItem("Logout", Icons.logout, () async {
+          bool confirmed = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Logout"),
+                content: Text("Are you sure you want to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (confirmed == true) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Logging out..."),
+                    ],
+                  ),
+                );
+              },
+              barrierDismissible: false,
+            );
+
+            try {
+              await AuthenticationRepository.instance.logout();
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            } catch (e) {
+              print("Logout error: $e");
+              Navigator.pop(context);
+            }
+          }
+        }),
       ],
     );
   }

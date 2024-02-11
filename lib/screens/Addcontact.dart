@@ -4,6 +4,7 @@ import 'package:fyp/authentication/EmergencycontactsRepo.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import '../authentication/models/EmergencyContact.dart';
 import 'EmergencyContact.dart';
+import 'community-forum.dart';
 
 
 class AddContact extends StatelessWidget {
@@ -67,7 +68,12 @@ class AddContact extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF769DC9),
-        title: Text('Add Emergency Contact', style: TextStyle(color: Colors.white)),
+        title: Text('Emergency Contact', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+        actions: [
+          ResponsiveAppBarActions(),
+        ],
 
       ),
       body: Container(

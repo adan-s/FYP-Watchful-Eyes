@@ -10,7 +10,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../authentication/authentication_repo.dart';
+import 'AddContact.dart';
 import 'blogs.dart';
+import 'login_screen.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -441,6 +444,15 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
+        if (!kIsWeb) // Check if the app is not running on the web
+          _buildNavBarItem("Emergency Contact", Icons.phone, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  AddContact()),
+            );
+          }),
+
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -475,62 +487,109 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+        _buildNavBarItem("Logout", Icons.logout, () async {
+          bool confirmed = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Logout"),
+                content: Text("Are you sure you want to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (confirmed == true) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Logging out..."),
+                    ],
+                  ),
+                );
+              },
+              barrierDismissible: false,
+            );
+
+            try {
+              await AuthenticationRepository.instance.logout();
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            } catch (e) {
+              print("Logout error: $e");
+              Navigator.pop(context);
+            }
+          }
+        }),
       ],
     );
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return kIsWeb
-        ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-            tooltip: title,
-          )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(icon, color: Color(0xFF769DC9)),
-                onPressed: onPressed,
-                tooltip: title,
-              ),
-              GestureDetector(
-                onTap: onPressed,
-                child: Text(
-                  title,
-                  style: TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ),
-            ],
-          );
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+      tooltip: title,
+    ): Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, color: Color(0xFF769DC9)),
+          onPressed: onPressed,
+          tooltip: title,
+        ),
+        GestureDetector(
+          onTap: onPressed,
+          child: Text(
+            title,
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return kIsWeb
-        ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-          )
-        : InkWell(
-            onTap: onPressed,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(icon, color: Color(0xFF769DC9)),
-                  onPressed: null, // Disable IconButton onPressed
-                  tooltip: "User Profile",
-                ),
-                Text(
-                  "User Profile",
-                  style: TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ],
-            ),
-          );
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+    ): InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null, // Disable IconButton onPressed
+            tooltip: "User Profile",
+          ),
+          Text(
+            "User Profile",
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

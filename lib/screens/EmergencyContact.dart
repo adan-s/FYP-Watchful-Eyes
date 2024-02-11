@@ -4,6 +4,7 @@ import 'package:fyp/authentication/EmergencycontactsRepo.dart';
 
 import '../authentication/models/EmergencyContact.dart';
 import 'AddContact.dart';
+import 'crime-registeration-form.dart';
 
 class EmergencyContactListScreen extends StatefulWidget {
   @override
@@ -40,15 +41,7 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
         backgroundColor: Color(0xFF769DC9),
 
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddContact()),
-              );
-            },
-            icon: Icon(Icons.add),
-          ),
+          ResponsiveAppBarActions(),
         ],
         title: Text(
           'Emergency Contacts',

@@ -11,11 +11,15 @@ import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../authentication/authentication_repo.dart';
 import '../authentication/controllers/crime_registeration_controller.dart';
+import 'AddContact.dart';
 import 'blogs.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 import 'package:geocoding/geocoding.dart';
+
+import 'login_screen.dart';
 
 bool attachmentsSelected = false;
 bool recordingsSelected = false;
@@ -678,7 +682,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     }
   }
 }
-
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -690,7 +693,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const UserPanel()),
           );
         }),
-        if (!kIsWeb)
+        if (!kIsWeb) // Check if the app is not running on the web
           _buildNavBarItem("Community Forum", Icons.group, () {
             Navigator.push(
               context,
@@ -698,6 +701,15 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
+        if (!kIsWeb) // Check if the app is not running on the web
+          _buildNavBarItem("Emergency Contact", Icons.phone, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  AddContact()),
+            );
+          }),
+
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -710,7 +722,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registration", Icons.report, () {
+        _buildNavBarItem("Crime Registeration", Icons.report, () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -732,62 +744,109 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+        _buildNavBarItem("Logout", Icons.logout, () async {
+          bool confirmed = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Logout"),
+                content: Text("Are you sure you want to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (confirmed == true) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Logging out..."),
+                    ],
+                  ),
+                );
+              },
+              barrierDismissible: false,
+            );
+
+            try {
+              await AuthenticationRepository.instance.logout();
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            } catch (e) {
+              print("Logout error: $e");
+              Navigator.pop(context);
+            }
+          }
+        }),
       ],
     );
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return kIsWeb
-        ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-            tooltip: title,
-          )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(icon, color: const Color(0xFF769DC9)),
-                onPressed: onPressed,
-                tooltip: title,
-              ),
-              GestureDetector(
-                onTap: onPressed,
-                child: Text(
-                  title,
-                  style: const TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ),
-            ],
-          );
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+      tooltip: title,
+    ): Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, color: Color(0xFF769DC9)),
+          onPressed: onPressed,
+          tooltip: title,
+        ),
+        GestureDetector(
+          onTap: onPressed,
+          child: Text(
+            title,
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return kIsWeb
-        ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-          )
-        : InkWell(
-            onTap: onPressed,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(icon, color: const Color(0xFF769DC9)),
-                  onPressed: null,
-                  tooltip: "User Profile",
-                ),
-                const Text(
-                  "User Profile",
-                  style: TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ],
-            ),
-          );
+    return kIsWeb ? IconButton(
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+    ): InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null, // Disable IconButton onPressed
+            tooltip: "User Profile",
+          ),
+          Text(
+            "User Profile",
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
+    );
   }
 }
 
