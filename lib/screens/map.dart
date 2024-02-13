@@ -26,6 +26,7 @@ class _MapPageState extends State<MapPage> {
   TextEditingController _currentLocationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   GoogleMapController? _controller;
+  LatLng? _selectedDestination;
 
   @override
   void initState() {
@@ -80,8 +81,9 @@ class _MapPageState extends State<MapPage> {
 
       setState(() {
         _currentLocationController.text =
-            '${position.latitude}, ${position.longitude}';
+        '${position.latitude.toStringAsFixed(7)}, ${position.longitude.toStringAsFixed(7)}';
       });
+
 
       print('i am in current location');
       _showMap(position.latitude, position.longitude);
@@ -189,12 +191,13 @@ class _MapPageState extends State<MapPage> {
             ),
           );
         } else {
-          // Destination is within 2 km, show the path
+
           _showPath(
             currentLatLng.latitude,
             currentLatLng.longitude,
-            destination,
+            destinationLatLng.latitude.toStringAsFixed(7) + ', ' + destinationLatLng.longitude.toStringAsFixed(7),
           );
+
 
           // Display crime count if crimes exist at the destination
           if (crimeCount > 0) {
@@ -411,10 +414,30 @@ class _MapPageState extends State<MapPage> {
                   },
                   initialCameraPosition: CameraPosition(
                     target: const LatLng(0, 0),
-                    zoom: 30,
+                    zoom: 15,
                   ),
                   myLocationEnabled: true,
                   polylines: _polylines,
+                  onTap: (LatLng point) {
+                    setState(() {
+                      _selectedDestination = point;
+                      _destinationController.text =
+                      '${point.latitude}, ${point.longitude}';
+                    });
+                  },
+                  markers: _selectedDestination != null
+                      ? {
+                    Marker(
+                      markerId: MarkerId('destination'),
+                      position: _selectedDestination!,
+                      icon: BitmapDescriptor.defaultMarker,
+                      infoWindow: InfoWindow(
+                        title: 'Destination',
+                        snippet: 'Selected Destination',
+                      ),
+                    ),
+                  }
+                      : {},
                 ),
               ),
             ],
