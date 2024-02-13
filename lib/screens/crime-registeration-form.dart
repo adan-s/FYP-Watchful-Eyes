@@ -65,30 +65,53 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
   }
 
 
-  Future<void> _pickLocationFromMap() async {
-    final LatLng? pickedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MapPickerScreen(initialLocation: _selectedLocation),
-      ),
-    );
-
-
-    if (pickedLocation != null) {
-      String address = await getAddressFromCoordinates(
-        pickedLocation.latitude,
-        pickedLocation.longitude,
+  Future<void> _pickLocationFromMap(bool fromIcon) async {
+    if (fromIcon) {
+      // If the location icon is clicked, open the map screen
+      final LatLng? pickedLocation = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapPickerScreen(initialLocation: _selectedLocation),
+        ),
       );
 
-      setState(() {
-        _selectedLocation = pickedLocation;
-        controller.location.value = GeoPoint(_selectedLocation!.latitude, _selectedLocation!.longitude);
-        locationController.text =
-        '(${pickedLocation.latitude}, ${pickedLocation.longitude})\n$address';
-      });
+      if (pickedLocation != null) {
+        String address = await getAddressFromCoordinates(
+          pickedLocation.latitude,
+          pickedLocation.longitude,
+        );
+
+        setState(() {
+          _selectedLocation = pickedLocation;
+          controller.location.value = GeoPoint(_selectedLocation!.latitude, _selectedLocation!.longitude);
+          locationController.text =
+          '(${pickedLocation.latitude}, ${pickedLocation.longitude})\n$address';
+        });
+      }
+    } else {
+      // If the text field is tapped, also open the map screen
+      final LatLng? pickedLocation = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapPickerScreen(initialLocation: _selectedLocation),
+        ),
+      );
+
+      if (pickedLocation != null) {
+        String address = await getAddressFromCoordinates(
+          pickedLocation.latitude,
+          pickedLocation.longitude,
+        );
+
+        setState(() {
+          _selectedLocation = pickedLocation;
+          controller.location.value = GeoPoint(_selectedLocation!.latitude, _selectedLocation!.longitude);
+          locationController.text =
+          '(${pickedLocation.latitude}, ${pickedLocation.longitude})\n$address';
+        });
+      }
     }
   }
-
 
 
   @override
@@ -249,13 +272,14 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     TextFormField(
                       controller: locationController,
                       readOnly: true,
-                      onTap: _pickLocationFromMap,
+                      onTap: () async {
+                        await _pickLocationFromMap(false);
+                      },
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'Location',
                         labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
                         prefixIcon: Icon(Icons.location_on, color: Colors.white),
-                        suffixIcon: Icon(Icons.map, color: Colors.white),
                       ),
                     ),
 

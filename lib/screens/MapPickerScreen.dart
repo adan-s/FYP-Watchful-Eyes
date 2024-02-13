@@ -15,6 +15,7 @@ class MapPickerScreen extends StatefulWidget {
 class _MapPickerScreenState extends State<MapPickerScreen> {
   late GoogleMapController _controller;
   LatLng? _selectedLocation;
+  TextEditingController _selectedLocationController = TextEditingController();
   TextEditingController _currentLocationController = TextEditingController();
 
   @override
@@ -78,26 +79,73 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick Location'),
+        title: Text(
+          'Pick Location',
+          style: TextStyle(color: Colors.white), // Set text color to white
+        ),
+        centerTitle: true, // Center the title
+        automaticallyImplyLeading: false, // Disable the back arrow
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
+              ],
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
+            ),
+          ),
+        ),
       ),
-      body: Column(
+      body:
+      Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _currentLocationController,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Current Location',
-                labelStyle: TextStyle(
-                  fontFamily: 'outfit',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF769DC9), // Set background color here
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              enabled: false, // Make the text field uneditable
+              child: TextField(
+                controller: _currentLocationController,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Current Location',
+                  labelStyle: TextStyle(
+                    fontFamily: 'outfit',
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                enabled: false,
+              ),
             ),
           ),
+          Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF769DC9), // Set background color here
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _selectedLocationController,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Selected Location',
+                  labelStyle: TextStyle(
+                    fontFamily: 'outfit',
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                enabled: false,
+              ),
+            ),
+          ),
+
           Expanded(
             child: GoogleMap(
               onMapCreated: (controller) {
@@ -113,6 +161,8 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
               onTap: (LatLng point) {
                 setState(() {
                   _selectedLocation = point;
+                  _selectedLocationController.text =
+                  '${point.latitude.toStringAsFixed(7)}, ${point.longitude.toStringAsFixed(7)}';
                 });
               },
               markers: _selectedLocation != null
@@ -132,13 +182,19 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-          Navigator.pop(context, _selectedLocation);
-        },
-        child: Icon(Icons.check),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only( bottom: 86.0,right: 20.0), // Adjust the left padding as needed
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pop(context, _selectedLocation);
+            },
+            child: Icon(Icons.check),
+          ),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }
