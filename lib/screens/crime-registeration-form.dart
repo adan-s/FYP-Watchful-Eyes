@@ -10,10 +10,12 @@ import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import '../authentication/authentication_repo.dart';
 import '../authentication/controllers/crime_registeration_controller.dart';
 import 'AddContact.dart';
+import 'MapPickerScreen.dart';
 import 'blogs.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
@@ -32,82 +34,66 @@ class CrimeRegistrationForm extends StatefulWidget {
 }
 
 class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
+
+  LatLng? _selectedLocation;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController locationController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   late TimeOfDay selectedTime;
   bool isAnonymous = false;
+  final CrimeRegistrationController controller =
+  Get.put(CrimeRegistrationController());
+
+
+
+  Future<String> getAddressFromCoordinates(
+      double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        return "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+      } else {
+        return "Address not found";
+      }
+    } catch (e) {
+      print("Error converting coordinates to address: $e");
+      return "Error fetching address";
+    }
+  }
+
+
+  Future<void> _pickLocationFromMap() async {
+    final LatLng? pickedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapPickerScreen(initialLocation: _selectedLocation),
+      ),
+    );
+
+
+    if (pickedLocation != null) {
+      String address = await getAddressFromCoordinates(
+        pickedLocation.latitude,
+        pickedLocation.longitude,
+      );
+
+      setState(() {
+        _selectedLocation = pickedLocation;
+        controller.location.value = GeoPoint(_selectedLocation!.latitude, _selectedLocation!.longitude);
+        locationController.text =
+        '(${pickedLocation.latitude}, ${pickedLocation.longitude})\n$address';
+      });
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    final CrimeRegistrationController controller =
-        Get.put(CrimeRegistrationController());
 
-    Future<String> getAddressFromCoordinates(
-        double latitude, double longitude) async {
-      try {
-        List<Placemark> placemarks =
-            await placemarkFromCoordinates(latitude, longitude);
-
-        if (placemarks.isNotEmpty) {
-          Placemark place = placemarks.first;
-          return "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-        } else {
-          return "Address not found";
-        }
-      } catch (e) {
-        print("Error converting coordinates to address: $e");
-        return "Error fetching address";
-      }
-    }
-
-    Future<void> _getCurrentLocationOnLoad() async {
-      try {
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-
-        String address = await getAddressFromCoordinates(
-            position.latitude, position.longitude);
-
-        setState(() {
-          controller.location.value =
-              GeoPoint(position.latitude, position.longitude);
-          locationController.text =
-              '(${position.latitude}, ${position.longitude})\n$address';
-          print('location stored');
-        });
-      } catch (e) {
-        print('location fetching failed');
-      }
-    }
-
-    Future<void> _getCoordinatesFromAddress(String address) async {
-      try {
-        List<Location> locations = await locationFromAddress(address);
-
-        if (locations.isNotEmpty) {
-          Location location = locations.first;
-          setState(() {
-            controller.location.value =
-                GeoPoint(location.latitude, location.longitude);
-            locationController.text =
-                '(${location.latitude}, ${location.longitude})\n$address';
-            print('Location from address stored');
-          });
-        } else {
-          setState(() {
-            print('Location not found for the entered address');
-            // Handle error if location not found
-          });
-        }
-      } catch (e) {
-        print('Error getting coordinates from address: $e');
-        setState(() {
-          // Handle error
-        });
-      }
-    }
 
     void resetLocation() {
       setState(() {
@@ -260,19 +246,19 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: locationController,
-                      onTap: _getCurrentLocationOnLoad,
+                      readOnly: true,
+                      onTap: _pickLocationFromMap,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'Location',
-                        labelStyle: TextStyle(
-                            fontFamily: 'outfit', color: Colors.white),
-                        prefixIcon:
-                            Icon(Icons.location_on, color: Colors.white),
+                        labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                        prefixIcon: Icon(Icons.location_on, color: Colors.white),
+                        suffixIcon: Icon(Icons.map, color: Colors.white),
                       ),
                     ),
+
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.selectedDateController,
