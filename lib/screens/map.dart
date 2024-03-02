@@ -27,12 +27,35 @@ class _MapPageState extends State<MapPage> {
   TextEditingController _destinationController = TextEditingController();
   GoogleMapController? _controller;
   LatLng? _selectedDestination;
+  Set<Circle> _circles = {};
+  List<Marker> _markers = [];
+  Set<Polyline> _polylines = {};
+
+
+
+  void _drawCircle(double latitude, double longitude) {
+    setState(() {
+      _circles.clear();
+      _circles.add(
+        Circle(
+          circleId: CircleId('2km_boundary'),
+          center: LatLng(latitude, longitude),
+          radius: 2000, // Radius in meters for a 2km boundary
+          fillColor: Colors.transparent,
+          strokeColor: Colors.red,
+          strokeWidth: 2,
+        ),
+      );
+    });
+  }
+
 
   @override
   void initState() {
     super.initState();
     _checkLocationPermission();
   }
+
 
   Future<void> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -84,6 +107,7 @@ class _MapPageState extends State<MapPage> {
         '${position.latitude.toStringAsFixed(7)}, ${position.longitude.toStringAsFixed(7)}';
       });
 
+      _drawCircle(position.latitude, position.longitude);
 
       print('i am in current location');
       _showMap(position.latitude, position.longitude);
@@ -96,12 +120,12 @@ class _MapPageState extends State<MapPage> {
           _destinationController.text,
         );
       }
+
     } catch (e) {
       print("Error: $e");
     }
   }
 
-  Set<Polyline> _polylines = {};
 
   Future<void> _showPath(
       double startLatitude, double startLongitude, String destination) async {
@@ -136,9 +160,26 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  void _addMarker(LatLng location, String name) {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(name),
+          position: location,
+          infoWindow: InfoWindow(
+            title: name,
+            snippet: 'Selected Place',
+          ),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
+  }
+
+
   Future<List<LatLng>> _getDirections(
       double startLatitude, double startLongitude, String destination) async {
-    final apiKey = 'AIzaSyCYjjc832cGsbdkn4Rvsfe1OEfgV5ivhhg';
+    final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
 
     final url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$startLatitude,$startLongitude&destination=$destination&key=$apiKey';
@@ -281,6 +322,139 @@ class _MapPageState extends State<MapPage> {
     return coordinates;
   }
 
+  void _displayNearbyPlacesInfo() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Fetch nearby hospitals and police stations for the current location
+      List<Place> hospitals = await _getNearbyPlaces(
+          position.latitude, position.longitude, 'hospital');
+      List<Place> policeStations = await _getNearbyPlaces(
+          position.latitude, position.longitude, 'police');
+
+      // Display the information in a styled dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFF769DC9),
+            title: Text(
+              "Nearby Emergency Places",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildCategory("Hospitals", hospitals),
+                  SizedBox(height: 16),
+                  _buildCategory("Police Stations", policeStations),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      print("Error displaying nearby places info: $e");
+    }
+  }
+
+  Widget _buildCategory(String category, List<Place> places) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          category,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        for (var place in places)
+          Column(
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.all(0),
+                title: Text(
+                  "${place.name} - ${place.vicinity}",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                subtitle: place.phone != null && place.phone!.isNotEmpty
+                    ? Text(
+                  "Phone: ${place.phone}",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )
+                    : null,
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _onLocationSelected(place);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Show on Map",
+                      style: TextStyle(
+                        fontFamily: 'outfit',
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+            ],
+          ),
+      ],
+    );
+  }
+
+  void _onLocationSelected(Place selectedPlace) {
+    setState(() {
+      _destinationController.text =
+      '${selectedPlace.location.latitude}, ${selectedPlace.location.longitude}';
+      _selectedDestination = selectedPlace.location;
+    });
+
+    _addMarker(_selectedDestination!, selectedPlace.name);
+    _showPathFromCurrentToDestination();
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -405,6 +579,20 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
               const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _displayNearbyPlacesInfo();
+                },
+                child: Text(
+                  "Show Nearby Places Info",
+                  style: TextStyle(
+                    fontFamily: 'outfit',
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               Expanded(
                 child: GoogleMap(
                   onMapCreated: (controller) {
@@ -418,6 +606,7 @@ class _MapPageState extends State<MapPage> {
                   ),
                   myLocationEnabled: true,
                   polylines: _polylines,
+                  circles: _circles,
                   onTap: (LatLng point) {
                     setState(() {
                       _selectedDestination = point;
@@ -437,8 +626,9 @@ class _MapPageState extends State<MapPage> {
                       ),
                     ),
                   }
-                      : {},
+                      : Set<Marker>.from(_markers),
                 ),
+
               ),
             ],
           ),
@@ -645,4 +835,48 @@ class ResponsiveRow extends StatelessWidget {
       ],
     );
   }
+}
+
+Future<List<Place>> _getNearbyPlaces(double latitude, double longitude, String type) async {
+  final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U'; // Replace with your API key
+  final radius = 2000;
+
+  final url =
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&type=$type&key=$apiKey';
+
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final decoded = json.decode(response.body);
+    List<Place> places = _parsePlaces(decoded['results']);
+    print('Nearby Places: $places');
+    return places;
+  } else {
+    throw Exception('Failed to load nearby places');
+  }
+}
+
+
+List<Place> _parsePlaces(List<dynamic> results) {
+  return results.map((place) {
+    return Place(
+      name: place['name'],
+      vicinity: place['vicinity'],
+      phone: place['formatted_phone_number'] ?? '',
+      location: LatLng(
+        place['geometry']['location']['lat'],
+        place['geometry']['location']['lng'],
+      ),
+    );
+  }).toList();
+}
+
+
+class Place {
+  final String name;
+  final String vicinity;
+  final String? phone;
+  final LatLng location;
+
+  Place({required this.name, required this.vicinity, this.phone, required this.location});
 }
