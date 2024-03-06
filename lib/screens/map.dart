@@ -112,15 +112,26 @@ class _MapPageState extends State<MapPage> {
       print('i am in current location');
       _showMap(position.latitude, position.longitude);
 
-      // If destination is set, show path
+      // If destination is set, show path and crime information
       if (_destinationController.text.isNotEmpty) {
         _showPath(
           position.latitude,
           position.longitude,
           _destinationController.text,
         );
-      }
 
+        // Fetch crime data for the current location
+        int crimeCount = await _fetchCrimeData(LatLng(position.latitude, position.longitude));
+
+        // Display crime count for the current location
+        if (crimeCount > 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Crime count at current location: $crimeCount'),
+            ),
+          );
+        }
+      }
     } catch (e) {
       print("Error: $e");
     }
@@ -160,7 +171,7 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  void _addMarker(LatLng location, String name) {
+  void _addMarker(LatLng location, String name, int crimeCount) {
     setState(() {
       _markers.add(
         Marker(
@@ -168,7 +179,7 @@ class _MapPageState extends State<MapPage> {
           position: location,
           infoWindow: InfoWindow(
             title: name,
-            snippet: 'Selected Place',
+            snippet: 'Crime Count: $crimeCount',
           ),
           icon: BitmapDescriptor.defaultMarker,
         ),
@@ -228,20 +239,23 @@ class _MapPageState extends State<MapPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                  'Oops! Destination is out of bounds. Enter a destination within 2 km.'),
+                'Oops! Destination is out of bounds. Enter a destination within 2 km.',
+              ),
             ),
           );
         } else {
-
           _showPath(
             currentLatLng.latitude,
             currentLatLng.longitude,
-            destinationLatLng.latitude.toStringAsFixed(7) + ', ' + destinationLatLng.longitude.toStringAsFixed(7),
+            destinationLatLng.latitude.toStringAsFixed(7) +
+                ', ' +
+                destinationLatLng.longitude.toStringAsFixed(7),
           );
-
 
           // Display crime count if crimes exist at the destination
           if (crimeCount > 0) {
+            // Display crime information using an info window on the map
+            _controller?.showMarkerInfoWindow(MarkerId('destination'));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Crime count at destination: $crimeCount'),
@@ -261,19 +275,19 @@ class _MapPageState extends State<MapPage> {
       // Create a GeoPoint from destinationLatLng
       GeoPoint geoPoint = GeoPoint(destinationLatLng.latitude, destinationLatLng.longitude);
 
-      // Make a query to the 'crimeData' collection based on the location
+
       QuerySnapshot querySnapshot = await firestore
           .collection('crimeData')
           .where('location', isLessThan: geoPoint, isGreaterThan: geoPoint)
           .get();
-      
+
       print('size:');
       print(querySnapshot.size);
-      // Return the count of documents (crimes) found at the location
+
       return querySnapshot.size;
     } catch (e) {
       print("Error fetching crime data: $e");
-      
+
       return 0;
     }
   }
@@ -447,7 +461,10 @@ class _MapPageState extends State<MapPage> {
       _selectedDestination = selectedPlace.location;
     });
 
-    _addMarker(_selectedDestination!, selectedPlace.name);
+    Future<int> crimeCount =  _fetchCrimeData(selectedPlace.location);
+
+    _addMarker(selectedPlace.location, selectedPlace.name, crimeCount as int);
+
     _showPathFromCurrentToDestination();
   }
 
@@ -527,8 +544,7 @@ class _MapPageState extends State<MapPage> {
                 style: TextStyle(fontFamily: 'outfit', color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Destination',
-                  labelStyle:
-                      TextStyle(fontFamily: 'outfit', color: Colors.white),
+                  labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
                   ),
@@ -536,7 +552,13 @@ class _MapPageState extends State<MapPage> {
                     borderSide: BorderSide(color: Colors.white),
                   ),
                 ),
+                enabled: false,
               ),
+              if (_selectedDestination == null)
+                Text(
+                  'Select dest through marker on map',
+                  style: TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
@@ -574,6 +596,7 @@ class _MapPageState extends State<MapPage> {
                         Icons.arrow_forward,
                         color: Colors.black,
                       ),
+
                     ],
                   ),
                 ),
