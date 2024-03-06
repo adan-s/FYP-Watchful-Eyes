@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/login_screen.dart';
+import 'package:fyp/screens/signup.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
 

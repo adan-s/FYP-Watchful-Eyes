@@ -80,4 +80,6 @@ class CrimeRegistrationController extends GetxController {
     voiceMessageUrl.value = '';
     location.value = null;
   }
+
+
 }
