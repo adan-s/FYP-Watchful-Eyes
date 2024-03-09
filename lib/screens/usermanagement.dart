@@ -10,8 +10,8 @@ import 'CrimeDataPage.dart';
 import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
-  final _mailerUsername = 'your_email@example.com'; // Update with your email
-  final _mailerPassword = 'your_email_password'; // Update with your email password
+  final _mailerUsername = 'watchfuleyesmanager@gmail.com'; // Update with your email
+  final _mailerPassword = 'asusBOOKfat@123'; // Update with your email password
   @override
 
 
