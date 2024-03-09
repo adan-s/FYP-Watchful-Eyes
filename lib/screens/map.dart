@@ -31,8 +31,6 @@ class _MapPageState extends State<MapPage> {
   List<Marker> _markers = [];
   Set<Polyline> _polylines = {};
 
-
-
   void _drawCircle(double latitude, double longitude) {
     setState(() {
       _circles.clear();
@@ -40,7 +38,8 @@ class _MapPageState extends State<MapPage> {
         Circle(
           circleId: CircleId('2km_boundary'),
           center: LatLng(latitude, longitude),
-          radius: 2000, // Radius in meters for a 2km boundary
+          radius: 2000,
+          // Radius in meters for a 2km boundary
           fillColor: Colors.transparent,
           strokeColor: Colors.red,
           strokeWidth: 2,
@@ -49,13 +48,11 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
     _checkLocationPermission();
   }
-
 
   Future<void> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -104,7 +101,7 @@ class _MapPageState extends State<MapPage> {
 
       setState(() {
         _currentLocationController.text =
-        '${position.latitude.toStringAsFixed(7)}, ${position.longitude.toStringAsFixed(7)}';
+            '${position.latitude.toStringAsFixed(7)}, ${position.longitude.toStringAsFixed(7)}';
       });
 
       _drawCircle(position.latitude, position.longitude);
@@ -119,24 +116,11 @@ class _MapPageState extends State<MapPage> {
           position.longitude,
           _destinationController.text,
         );
-
-        // Fetch crime data for the current location
-        int crimeCount = await _fetchCrimeData(LatLng(position.latitude, position.longitude));
-
-        // Display crime count for the current location
-        if (crimeCount > 0) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Crime count at current location: $crimeCount'),
-            ),
-          );
-        }
       }
     } catch (e) {
       print("Error: $e");
     }
   }
-
 
   Future<void> _showPath(
       double startLatitude, double startLongitude, String destination) async {
@@ -187,7 +171,6 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-
   Future<List<LatLng>> _getDirections(
       double startLatitude, double startLongitude, String destination) async {
     final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
@@ -223,72 +206,69 @@ class _MapPageState extends State<MapPage> {
           double.parse(destination.split(', ')[1]),
         );
 
-        // Fetch crime data for the destination
-        int crimeCount = await _fetchCrimeData(destinationLatLng);
+        // Fetch all crime data
+        List<CrimeData?> crimeDataList = await _fetchAllCrimeData();
+        print(crimeDataList);
 
-        // Calculate distance between current location and destination
-        double distance = Geolocator.distanceBetween(
-          currentLatLng.latitude,
-          currentLatLng.longitude,
-          destinationLatLng.latitude,
-          destinationLatLng.longitude,
-        );
-
-        if (distance > 2000) {
-          _destinationController.text = ' ';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Oops! Destination is out of bounds. Enter a destination within 2 km.',
-              ),
-            ),
-          );
-        } else {
-          _showPath(
-            currentLatLng.latitude,
-            currentLatLng.longitude,
-            destinationLatLng.latitude.toStringAsFixed(7) +
-                ', ' +
-                destinationLatLng.longitude.toStringAsFixed(7),
-          );
-
-          // Display crime count if crimes exist at the destination
-          if (crimeCount > 0) {
-            // Display crime information using an info window on the map
-            _controller?.showMarkerInfoWindow(MarkerId('destination'));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Crime count at destination: $crimeCount'),
-              ),
+        // Display markers for each crime location on the map
+        for (CrimeData? crimeData in crimeDataList) {
+          if (crimeData != null) {
+            _addMarker(
+              LatLng(crimeData.location.latitude, crimeData.location.longitude),
+              'Crime',
+              1,
             );
           }
         }
+
+        _showPath(
+          currentLatLng.latitude,
+          currentLatLng.longitude,
+          '${destinationLatLng.latitude.toStringAsFixed(7)}, ${destinationLatLng.longitude.toStringAsFixed(7)}',
+        );
       }
     }
   }
 
-  Future<int> _fetchCrimeData(LatLng destinationLatLng) async {
+  Future<List<CrimeData?>> _fetchAllCrimeData() async {
     try {
       // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Create a GeoPoint from destinationLatLng
-      GeoPoint geoPoint = GeoPoint(destinationLatLng.latitude, destinationLatLng.longitude);
+      // Fetch all crime data
+      QuerySnapshot querySnapshot =
+          await firestore.collection('crimeData').get();
 
+      // Convert query snapshot to a list of CrimeData objects
+      List<CrimeData?> crimeDataList = querySnapshot.docs
+          .map((doc) {
+            Map<String, dynamic> crimeDataMap =
+                doc.data() as Map<String, dynamic>;
 
-      QuerySnapshot querySnapshot = await firestore
-          .collection('crimeData')
-          .where('location', isLessThan: geoPoint, isGreaterThan: geoPoint)
-          .get();
+            // Check if the 'location' map is present and not null
+            if (crimeDataMap.containsKey('location') &&
+                crimeDataMap['location'] != null) {
+              // Extract individual latitude and longitude from the map
+              double latitude = crimeDataMap['location']['latitude'];
+              double longitude = crimeDataMap['location']['longitude'];
 
-      print('size:');
-      print(querySnapshot.size);
+              return CrimeData(
+                latitude: latitude,
+                longitude: longitude,
+              );
+            } else {
+              // Handle the case where 'location' map is missing or null
+              print("Warning: 'location' map is missing or null in crime data");
+              return null;
+            }
+          })
+          .where((crimeData) => crimeData != null)
+          .toList();
 
-      return querySnapshot.size;
+      return crimeDataList;
     } catch (e) {
-      print("Error fetching crime data: $e");
-
-      return 0;
+      print("Error fetching all crime data: $e");
+      return [];
     }
   }
 
@@ -421,11 +401,11 @@ class _MapPageState extends State<MapPage> {
                 ),
                 subtitle: place.phone != null && place.phone!.isNotEmpty
                     ? Text(
-                  "Phone: ${place.phone}",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                )
+                        "Phone: ${place.phone}",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )
                     : null,
               ),
               SizedBox(height: 8),
@@ -457,20 +437,12 @@ class _MapPageState extends State<MapPage> {
   void _onLocationSelected(Place selectedPlace) {
     setState(() {
       _destinationController.text =
-      '${selectedPlace.location.latitude}, ${selectedPlace.location.longitude}';
+          '${selectedPlace.location.latitude}, ${selectedPlace.location.longitude}';
       _selectedDestination = selectedPlace.location;
     });
 
-    Future<int> crimeCount =  _fetchCrimeData(selectedPlace.location);
-
-    _addMarker(selectedPlace.location, selectedPlace.name, crimeCount as int);
-
     _showPathFromCurrentToDestination();
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -544,7 +516,8 @@ class _MapPageState extends State<MapPage> {
                 style: TextStyle(fontFamily: 'outfit', color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Destination',
-                  labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                  labelStyle:
+                      TextStyle(fontFamily: 'outfit', color: Colors.white),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
                   ),
@@ -596,7 +569,6 @@ class _MapPageState extends State<MapPage> {
                         Icons.arrow_forward,
                         color: Colors.black,
                       ),
-
                     ],
                   ),
                 ),
@@ -634,24 +606,23 @@ class _MapPageState extends State<MapPage> {
                     setState(() {
                       _selectedDestination = point;
                       _destinationController.text =
-                      '${point.latitude}, ${point.longitude}';
+                          '${point.latitude}, ${point.longitude}';
                     });
                   },
                   markers: _selectedDestination != null
                       ? {
-                    Marker(
-                      markerId: MarkerId('destination'),
-                      position: _selectedDestination!,
-                      icon: BitmapDescriptor.defaultMarker,
-                      infoWindow: InfoWindow(
-                        title: 'Destination',
-                        snippet: 'Selected Destination',
-                      ),
-                    ),
-                  }
+                          Marker(
+                            markerId: MarkerId('destination'),
+                            position: _selectedDestination!,
+                            icon: BitmapDescriptor.defaultMarker,
+                            infoWindow: InfoWindow(
+                              title: 'Destination',
+                              snippet: 'Selected Destination',
+                            ),
+                          ),
+                        }
                       : Set<Marker>.from(_markers),
                 ),
-
               ),
             ],
           ),
@@ -684,11 +655,9 @@ class ResponsiveAppBarActions extends StatelessWidget {
           _buildNavBarItem("Emergency Contact", Icons.phone, () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>  AddContact()),
+              MaterialPageRoute(builder: (context) => AddContact()),
             );
           }),
-
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -779,53 +748,57 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
-    ): Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(icon, color: Color(0xFF769DC9)),
-          onPressed: onPressed,
-          tooltip: title,
-        ),
-        GestureDetector(
-          onTap: onPressed,
-          child: Text(
-            title,
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ),
-      ],
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+            tooltip: title,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(icon, color: Color(0xFF769DC9)),
+                onPressed: onPressed,
+                tooltip: title,
+              ),
+              GestureDetector(
+                onTap: onPressed,
+                child: Text(
+                  title,
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ),
+            ],
+          );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-    ): InkWell(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(icon, color: Color(0xFF769DC9)),
-            onPressed: null, // Disable IconButton onPressed
-            tooltip: "User Profile",
-          ),
-          Text(
-            "User Profile",
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ],
-      ),
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+          )
+        : InkWell(
+            onTap: onPressed,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(icon, color: Color(0xFF769DC9)),
+                  onPressed: null, // Disable IconButton onPressed
+                  tooltip: "User Profile",
+                ),
+                Text(
+                  "User Profile",
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ],
+            ),
+          );
   }
 }
 
@@ -860,8 +833,10 @@ class ResponsiveRow extends StatelessWidget {
   }
 }
 
-Future<List<Place>> _getNearbyPlaces(double latitude, double longitude, String type) async {
-  final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U'; // Replace with your API key
+Future<List<Place>> _getNearbyPlaces(
+    double latitude, double longitude, String type) async {
+  final apiKey =
+      'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U'; // Replace with your API key
   final radius = 2000;
 
   final url =
@@ -879,7 +854,6 @@ Future<List<Place>> _getNearbyPlaces(double latitude, double longitude, String t
   }
 }
 
-
 List<Place> _parsePlaces(List<dynamic> results) {
   return results.map((place) {
     return Place(
@@ -894,12 +868,25 @@ List<Place> _parsePlaces(List<dynamic> results) {
   }).toList();
 }
 
-
 class Place {
   final String name;
   final String vicinity;
   final String? phone;
   final LatLng location;
 
-  Place({required this.name, required this.vicinity, this.phone, required this.location});
+  Place(
+      {required this.name,
+      required this.vicinity,
+      this.phone,
+      required this.location});
+}
+
+class CrimeData {
+  final double latitude;
+  final double longitude;
+
+  // Constructor
+  CrimeData({required this.latitude, required this.longitude});
+
+  LatLng get location => LatLng(latitude, longitude);
 }
