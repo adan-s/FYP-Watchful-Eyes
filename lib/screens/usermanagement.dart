@@ -9,6 +9,7 @@ import 'CrimeDataPage.dart';
 import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -16,14 +17,9 @@ class UserManagement extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF769DC9),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'User Management',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
+        title: Text(
+          'User Management',
+          style: TextStyle(color: Colors.white),
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),
@@ -115,7 +111,7 @@ class UserManagement extends StatelessWidget {
               ),
               ListTile(
                 leading:
-                    Icon(Icons.supervised_user_circle, color: Colors.white),
+                Icon(Icons.supervised_user_circle, color: Colors.white),
                 title: Text(
                   'User Management',
                   style: TextStyle(
@@ -181,7 +177,7 @@ class UserManagement extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
-                      await _showLogoutConfirmationDialog(context);
+                  await _showLogoutConfirmationDialog(context);
 
                   if (confirmLogout) {
                     await AuthenticationRepository.instance.logout();
@@ -244,14 +240,14 @@ class UserManagement extends StatelessWidget {
                               if (email.isNotEmpty) {
                                 try {
                                   final userSnapshot =
-                                      await getUserByUsername(email);
+                                  await getUserByUsername(email);
                                   showDialog(
                                     context: context,
                                     builder: (context) {
                                       return Dialog(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(12.0),
+                                          BorderRadius.circular(12.0),
                                         ),
                                         child: Container(
                                           width: 300,
@@ -271,13 +267,13 @@ class UserManagement extends StatelessWidget {
                                               end: Alignment.bottomCenter,
                                             ),
                                             borderRadius:
-                                                BorderRadius.circular(12.0),
+                                            BorderRadius.circular(12.0),
                                           ),
                                           padding: const EdgeInsets.all(16.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 '           User Data Found',
@@ -294,7 +290,7 @@ class UserManagement extends StatelessWidget {
                                               SizedBox(height: 16),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                                MainAxisAlignment.end,
                                                 children: [
                                                   TextButton(
                                                     onPressed: () {
@@ -440,7 +436,7 @@ class UserManagement extends StatelessWidget {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream:
-                    FirebaseFirestore.instance.collection('Users').snapshots(),
+                FirebaseFirestore.instance.collection('Users').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -492,6 +488,20 @@ class UserManagement extends StatelessWidget {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              GestureDetector(
+                                onTap: () {
+                                  _showStatusUpdateDialog(context);
+                                },
+                                child: Text(
+                                  'Update Status',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w300,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10), // Add some space between Update Status and Delete icon
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () async {
@@ -586,103 +596,148 @@ class UserManagement extends StatelessWidget {
 
     return userData != null
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Email: ${userData['Email']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                'First Name: ${userData['FirstName']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                'Last Name: ${userData['LastName']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                'UserName: ${userData['UserName']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                'Contact No: ${userData['ContactNo']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                'Dob: ${userData['DOB']}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          )
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Email: ${userData['Email']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'First Name: ${userData['FirstName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Last Name: ${userData['LastName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'UserName: ${userData['UserName']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Contact No: ${userData['ContactNo']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Text(
+          'Dob: ${userData['DOB']}',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    )
         : Text('User data not available');
   }
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Logout Confirmation'),
-              content: Text('Are you sure you want to logout?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false); // No, do not logout
-                  },
-                  child: Text('No'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop(true); // Yes, logout
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout Confirmation'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // No, do not logout
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(true); // Yes, logout
 
-                    // Perform logout
-                    await AuthenticationRepository.instance.logout();
+                // Perform logout
+                await AuthenticationRepository.instance.logout();
 
-                    // Redirect to the login screen
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                  child: Text('Yes'),
-                ),
-              ],
-            );
-          },
-        ) ??
+                // Redirect to the login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    ) ??
         false;
+  }
+
+  void _showStatusUpdateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Status'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildStatusItem(context, 'Received'),
+              _buildStatusItem(context, 'Being Investigated'),
+              _buildStatusItem(context, 'Case Closed'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStatusItem(BuildContext context, String status) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        // Perform action based on selected status
+        switch (status) {
+          case 'Received':
+          // Update status as received
+            break;
+          case 'Being Investigated':
+          // Update status as being investigated
+            break;
+          case 'Case Closed':
+          // Update status as case closed
+            break;
+          default:
+            break;
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(status),
+      ),
+    );
   }
 }
