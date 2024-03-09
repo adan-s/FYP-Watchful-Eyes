@@ -40,27 +40,6 @@ class _CnicInputFormatter extends TextInputFormatter {
   }
 }
 
-class _PhoneNumberInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final StringBuffer newText = StringBuffer();
-
-    for (int i = 0; i < newValue.text.length; i++) {
-      if (i == 6) {
-        newText.write('-');
-      }
-      newText.write(newValue.text[i]);
-    }
-
-    return TextEditingValue(
-      text: newText.toString(),
-      selection: TextSelection.collapsed(
-        offset: newText.length,
-      ),
-    );
-  }
-}
 
 class _MaskedTextInputFormatter extends TextInputFormatter {
   final String mask;
@@ -314,12 +293,12 @@ class _SignupState extends State<Signup> {
 
     final contactNoField = TextFormField(
       autofocus: false,
-      maxLength: 14,
+      maxLength: 13,
       controller: controller.contactNo,
       keyboardType: TextInputType.phone,
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-        _PhoneNumberInputFormatter(),
+
       ],
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -343,7 +322,7 @@ class _SignupState extends State<Signup> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone, color: Colors.white),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Contact No (+92321-5722553)",
+        hintText: "Contact No (+923215722553)",
         counterText: '',
         hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
         border: OutlineInputBorder(

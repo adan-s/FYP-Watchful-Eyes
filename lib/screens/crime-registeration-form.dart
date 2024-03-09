@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/map.dart';
 import 'package:fyp/screens/safety-directory.dart';
@@ -246,28 +247,30 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                     TextFormField(
                       controller: controller.phoneNumberController,
                       style: const TextStyle(color: Colors.white),
-                      maxLength: 11,
+                      maxLength: 13,
                       decoration: const InputDecoration(
                         labelText: 'Phone Number',
                         counterText: '',
-                        labelStyle: TextStyle(
-                            fontFamily: 'outfit', color: Colors.white),
+                        labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
                         prefixIcon: Icon(Icons.phone, color: Colors.white),
                       ),
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Phone Number is required';
                         }
-                        if (value.length > 11) {
-                          return 'Phone Number should not exceed 11 characters';
-                        }
-                        if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                          return 'Phone Number can only contain numbers';
-                        }
+                        final cleanedPhoneNumber = value.replaceAll(RegExp(r'\D'), '');
+                        // if (cleanedPhoneNumber.length == 13) {
+                        //   return 'Enter a valid phone number';
+                        // }
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: locationController,

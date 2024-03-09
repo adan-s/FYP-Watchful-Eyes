@@ -10,8 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../authentication/EmergencycontactsRepo.dart';
 import '../authentication/authentication_repo.dart';
 
-
-
 class JourneyTracker extends StatefulWidget {
   @override
   _JourneyTrackerState createState() => _JourneyTrackerState();

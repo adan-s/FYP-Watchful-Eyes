@@ -78,18 +78,45 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
                       icon: Icon(Icons.edit),
                       onPressed: () {
                         // Handle edit action
-                        // You can navigate to the edit screen or perform other actions
-                        print('Edit button pressed for ${contact.name}');
+                        editEmergencyContact(contact);
                       },
                     ),
+
                     IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        // Handle delete action
-                        // You can show a confirmation dialog before deleting
-                        print('Delete button pressed for ${contact.name}');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Delete Contact'),
+                              content: Text('Are you sure you want to delete contact ?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close the dialog
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    User? user = FirebaseAuth.instance.currentUser;
+                                    if (user != null) {
+                                      var userEmail = user.email;
+                                      await _contactRepository.deleteEmergencyContact(userEmail!, contact.name);
+                                      loadEmergencyContacts();
+                                    }
+                                    Navigator.of(context).pop(); // Close the dialog
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
+
                   ],
                 ),
               ),
@@ -99,4 +126,56 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
       ),
     );
   }
+
+  void editEmergencyContact(EmergencyContact contact) async {
+    EmergencyContact originalContact = EmergencyContact(name: contact.name, phoneNumber: contact.phoneNumber);
+
+    final updatedContact = await showDialog<EmergencyContact>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit Contact'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: TextEditingController(text: contact.name),
+                onChanged: (value) {
+                  originalContact.name = value;
+                },
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: TextEditingController(text: contact.phoneNumber),
+                onChanged: (value) {
+                  originalContact.phoneNumber = value;
+                },
+                decoration: InputDecoration(labelText: 'Phone Number'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(originalContact);
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (updatedContact != null) {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        var userEmail = user.email;
+        await _contactRepository.updateEmergencyContact(userEmail!, contact.name, updatedContact);
+        loadEmergencyContacts();
+      }
+    }
+  }
+
+
 }
