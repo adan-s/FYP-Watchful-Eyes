@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fyp/screens/Addcontact.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
+import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/safety-directory.dart';
 
@@ -525,6 +526,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const BlogPage()),
+          );
+        }),
+        _buildNavBarItem("JournyTracker", Icons.newspaper, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>  JourneyTracker()),
           );
         }),
         _buildIconButton(

@@ -19,6 +19,8 @@ class _JourneyTrackerState extends State<JourneyTracker> {
   late LocationData? currentLocation;
   Timer? alarmTimer;
   Duration customAlarmDuration = Duration(minutes: 30);
+  late String selectedReason = ''; // Add selectedReason variable
+  late TextEditingController otherReasonController = TextEditingController();
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _JourneyTrackerState extends State<JourneyTracker> {
   void dispose() {
     super.dispose();
     alarmTimer?.cancel(); // Cancel timer when disposing the widget
+    otherReasonController.dispose();
   }
 
   Future<void> _startJourneyTracking() async {
@@ -47,10 +50,11 @@ class _JourneyTrackerState extends State<JourneyTracker> {
 
   void _setAlarm(Duration duration, String reason) {
     alarmTimer = Timer(duration, () {
-      _sendEmergencyNotification();
+      _sendEmergencyNotification(reason); // Pass the reason to the method
     });
     print('Alarm set for $reason after ${duration.inMinutes} minutes');
   }
+
 
   void _turnOffAlarm() {
     if (alarmTimer != null && alarmTimer!.isActive) {
@@ -61,18 +65,20 @@ class _JourneyTrackerState extends State<JourneyTracker> {
     }
   }
 
-  Future<void> _sendEmergencyNotification() async {
+  Future<void> _sendEmergencyNotification(String reason) async {
     try {
       User? user = AuthenticationRepository.instance.firebaseUser.value;
       if (user != null) {
         var userEmail = user.email;
         print('User Email: $userEmail');
 
-        var contacts = await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
+        var contacts = await EmergencycontactsRepo().getEmergencyContacts(
+            userEmail!);
 
         var locationLink =
-            'https://maps.google.com/?q=${currentLocation!.latitude},${currentLocation!.longitude}';
-        var message = 'Emergency! User has not turned off the alarm. Current location: $locationLink';
+            'https://maps.google.com/?q=${currentLocation!
+            .latitude},${currentLocation!.longitude}';
+        var message = 'Emergency! User has not turned off the alarm. Current location: $locationLink. Reason: $reason';
 
         // Send messages to emergency contacts
         for (var contact in contacts) {
@@ -112,106 +118,216 @@ class _JourneyTrackerState extends State<JourneyTracker> {
       Fluttertoast.showToast(msg: 'Error sending SMS: $e');
     }
   }
-  Future<void> _showCustomAlarmDialog() async {
-    TimeOfDay? selectedTime;
 
-    final newDuration = await showDialog<Duration>(
+  void _showCustomAlarmDialog() async {
+    TimeOfDay? selectedTime = await showTimePicker(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Set Custom Alarm'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  selectedTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                  );
-                },
-                child: Text(
-                  selectedTime != null
-                      ? 'Selected Time: ${selectedTime!.hour}:${selectedTime!.minute}'
-                      : 'Select Time',
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (selectedTime != null) {
-                    final now = DateTime.now();
-                    final selectedDateTime = DateTime(
-                      now.year,
-                      now.month,
-                      now.day,
-                      selectedTime!.hour,
-                      selectedTime!.minute,
-                    );
-
-                    final difference = selectedDateTime.difference(now);
-                    final newDuration = Duration(
-                      hours: difference.inHours,
-                      minutes: difference.inMinutes.remainder(60),
-                    );
-
-                    Navigator.of(context).pop(newDuration);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Please select a time.'),
-                      ),
-                    );
-                  }
-                },
-                child: Text('Set'),
-              ),
-            ],
-          ),
-        );
-      },
+      initialTime: TimeOfDay.now(),
     );
-
-    if (newDuration != null) {
+    if (selectedTime != null) {
+      final now = DateTime.now();
+      final selectedDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+      final difference = selectedDateTime.difference(now);
+      final newDuration = Duration(
+        hours: difference.inHours,
+        minutes: difference.inMinutes.remainder(60),
+      );
       setState(() {
         customAlarmDuration = newDuration;
       });
-      _turnOffAlarm(); // Turn off existing alarm
-      _setAlarm(customAlarmDuration, 'custom duration');
+
+      // Show reason selection dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text('Select or Write Reason'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildReasonButton('Walking Alone'),
+                _buildReasonButton('Going for a Run'),
+                _buildReasonButton('Taking Transportation'),
+                _buildReasonButton('Hiking'),
+                _buildReasonButton('Write My Own'),
+              ],
+            ),
+          );
+        },
+      ).then((selected) {
+        if (selected != null) {
+          if (selected == 'Write My Own') {
+            _showWriteReasonDialog();
+          } else {
+            _turnOffAlarm();
+            _setAlarm(customAlarmDuration, selected);
+          }
+        }
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('please select a time'),),
+      );
     }
   }
+
 
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF769DC9), // Set Scaffold background color
       appBar: AppBar(
-        title: Text('Journey Tracker'),
+        title: Text(
+          'Journey Tracker',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Color(0xFF769DC9), // Set app bar background color
+        elevation: 0,
       ),
-      body: Center(
+
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Tracking user\'s journey...',
-              style: TextStyle(fontSize: 20),
+            Center(
+              child: Image.asset(
+                'assets/safety.jpg',
+                width: 250,
+                height: 250,
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _turnOffAlarm();
-              },
-              child: Text('Turn off Alarm'),
+            SizedBox(height: 60),
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Container(
+                width: 300,
+                padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white,
+                ),
+                child: TextFormField(
+                  readOnly: true,
+                  controller: TextEditingController(text: selectedReason),
+                  decoration: InputDecoration(
+                    hintText: 'Reason',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onTap: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context){
+                        return AlertDialog(
+                          title: Text('Select Reason'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildReasonButton('Walking Alone'),
+                              _buildReasonButton('Going for a Run'),
+                              _buildReasonButton('Taking Transportation'),
+                              _buildReasonButton('Hiking'),
+                              _buildReasonButton('Write My Own'),
+                            ],
+                          ),
+                        );
+                      },
+                    ).then((selected) {
+                      if (selected != null) {
+                        setState(() {
+                          if (selected == 'Write My Own') {
+                            _showWriteReasonDialog();
+                          } else {
+                            selectedReason = selected;
+                          }
+                        });
+                      }
+                    });
+                  },
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _showCustomAlarmDialog,
-              child: Text('Set Custom Alarm'),
-            ),
+            SizedBox(height: 60),
+            Padding(
+              padding: EdgeInsets.only(left: 20.5),
+              child: Container(
+                width: 300,
+                padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white,
+                ),
+                child: GestureDetector(
+                  onTap: _showCustomAlarmDialog,
+
+                    child: Text(
+                      'Set Alarm',
+                      style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+
           ],
         ),
       ),
     );
   }
+
+
+  void _showWriteReasonDialog() {
+    TextEditingController reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Write Your Own Reason'),
+          content: TextField(
+            controller: reasonController,
+            decoration: InputDecoration(
+              hintText: 'Enter your reason',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (reasonController.text.isNotEmpty) {
+                  setState(() {
+                    selectedReason = reasonController.text;
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+  Widget _buildReasonButton(String reason){
+    return TextButton(
+      onPressed:(){
+        Navigator.of(context).pop(reason);
+      },
+      child: Text(
+        reason,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+
 }
