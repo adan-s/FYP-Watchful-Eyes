@@ -4,35 +4,38 @@ import 'package:fyp/screens/admindashboard.dart';
 import 'package:get/get.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:sendgrid_mailer/sendgrid_mailer.dart';
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
 import 'CrimeDataPage.dart';
 import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
-  final _mailerUsername = 'watchfuleyesmanager@gmail.com'; // Update with your email
-  final _mailerPassword = 'asusBOOKfat@123'; // Update with your email password
+  final _sendGridApiKey = 'YOUR_SENDGRID_API_KEY'; // Replace with your SendGrid API key
   @override
 
 
   Widget build(BuildContext context) {
 
-    void _sendEmail(String userEmail, String subject, String body) async {
-      final smtpServer = gmail(_mailerUsername, _mailerPassword);
+    //void _sendEmail(String userEmail, String subject, String body) async {
+      //final mailer = Mailer(
+     //   SendGridApi(_sendGridApiKey), // Initialize SendGrid mailer with API key
+     // );
 
-      final message = Message()
-        ..from = Address(_mailerUsername, 'Admin')
-        ..recipients.add(userEmail)
-        ..subject = subject
-        ..text = body;
+      //final email = Email(
+       // from: Address('watchfuleyesmanager@gmail.com', 'Admin'), // Update with your email
+        //to: [userEmail],
+        //subject: subject,
+        //text: body,
+      //);
 
-      try {
-        final sendReport = await send(message, smtpServer);
-        print('Message sent: ' + sendReport.toString());
-      } catch (e) {
-        print('Error occurred while sending email: $e');
-      }
-    }
+      //try {
+        //await mailer.send(email);
+        //print('Email sent successfully');
+      //} catch (e) {
+        //print('Error occurred while sending email: $e');
+      //}
+    //}
 
     Widget _buildStatusItem(BuildContext context, String status, String userEmail) {
       return InkWell(
@@ -41,13 +44,13 @@ class UserManagement extends StatelessWidget {
           // Perform action based on selected status
           switch (status) {
             case 'Received':
-              _sendEmail(userEmail, 'Your Report Has Been Received', 'Your report has been received. We will review it shortly.');
+             // _sendEmail(userEmail, 'Case Registered', 'Your report has been received. We will review it shortly.');
               break;
             case 'Being Investigated':
-              _sendEmail(userEmail, 'Your Report is being currently investigated', 'Your report is currently being investigated. We will update you with any progress.');
+              //_sendEmail(userEmail, 'Case Being Investigated', 'Your report is currently being investigated. We will update you with any progress.');
               break;
             case 'Case Closed':
-              _sendEmail(userEmail, 'Your Report Has Now Been Closed', 'Your report has been closed. Thank you for your cooperation.');
+              //_sendEmail(userEmail, 'Case Closed', 'Your report has been closed. Thank you for your cooperation.');
               break;
             default:
               break;
@@ -59,6 +62,7 @@ class UserManagement extends StatelessWidget {
         ),
       );
     }
+
 
     void _showStatusUpdateDialog(BuildContext context, String userEmail) {
       showDialog(
@@ -789,4 +793,7 @@ class UserManagement extends StatelessWidget {
       ),
     );
   }
+}
+
+class SendGridApi {
 }

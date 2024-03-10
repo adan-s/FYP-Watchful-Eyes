@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/CommunityForumPostsAdmin.dart';
+import 'package:fyp/screens/analyticsandreports.dart';
 import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/home.dart';
@@ -151,8 +152,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
                 onTap: () {
-                  // ... (Handle Analytics and Reports action)
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                  );
                 },
               ),
               Divider(
