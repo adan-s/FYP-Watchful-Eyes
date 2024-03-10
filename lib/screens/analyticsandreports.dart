@@ -8,7 +8,8 @@ import 'package:fyp/screens/home.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/usermanagement.dart';
-
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:intl/intl.dart';
 import '../authentication/authentication_repo.dart';
 import 'Addcontact.dart';
 import 'CrimeDataPage.dart';
@@ -58,8 +59,16 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 }
-
 class AnalyticsAndReports extends StatelessWidget {
+  // Function to fetch crime data from Firestore
+  Future<List<Map<String, dynamic>>> fetchCrimeData() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance.collection('crimeData').get();
+    List<Map<String, dynamic>> crimeData = querySnapshot.docs.map((doc) =>
+        doc.data()).toList();
+    return crimeData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,12 +162,14 @@ class AnalyticsAndReports extends StatelessWidget {
                   Navigator.pop(context); // Close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AdminDashboard()),
+                    MaterialPageRoute(
+                        builder: (context) => AdminDashboard()),
                   );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.supervised_user_circle, color: Colors.white),
+                leading: Icon(
+                    Icons.supervised_user_circle, color: Colors.white),
                 title: Text(
                   'User Management',
                   style: TextStyle(
@@ -169,7 +180,8 @@ class AnalyticsAndReports extends StatelessWidget {
                   Navigator.pop(context); // Close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UserManagement()),
+                    MaterialPageRoute(
+                        builder: (context) => UserManagement()),
                   );
                 },
               ),
@@ -185,7 +197,8 @@ class AnalyticsAndReports extends StatelessWidget {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                    MaterialPageRoute(
+                        builder: (context) => AnalyticsAndReports()),
                   );
                 },
               ),
@@ -204,7 +217,8 @@ class AnalyticsAndReports extends StatelessWidget {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CommunityForumPostsAdmin()),
+                    MaterialPageRoute(
+                        builder: (context) => CommunityForumPostsAdmin()),
                   );
                 },
               ),
@@ -219,7 +233,8 @@ class AnalyticsAndReports extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
+                    MaterialPageRoute(
+                        builder: (context) => CrimeDataPage()),
                   );
                 },
               ),
@@ -235,7 +250,8 @@ class AnalyticsAndReports extends StatelessWidget {
                     await AuthenticationRepository.instance.logout();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => LoginScreen()),
                     );
                   }
                 },
@@ -267,18 +283,110 @@ class AnalyticsAndReports extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: Text(
-            'Analytics and Reports',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Text(
+                'Crime Report Graph',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: fetchCrimeData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else {
+                      List<Map<String, dynamic>> crimeData = snapshot.data!;
+                      // Process crimeData to generate chart data
+                      List<charts.Series<MapEntry<DateTime, int>, DateTime>> seriesList = [
+                        charts.Series<MapEntry<DateTime, int>, DateTime>(
+                          id: 'CrimeReport',
+                          colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+                          domainFn: (entry, _) => entry.key,
+                          measureFn: (entry, _) => entry.value,
+                          data: _calculateDailyCrimeCounts(crimeData),
+                        )
+                      ];
+
+                      return charts.TimeSeriesChart(
+                        seriesList,
+                        animate: true,
+                        dateTimeFactory: const charts.LocalDateTimeFactory(),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
+  List<MapEntry<DateTime, int>> _calculateDailyCrimeCounts(
+      List<Map<String, dynamic>> crimeData) {
+    Map<DateTime, int> dailyCounts = {};
+
+    for (var data in crimeData) {
+      if (data['date'] != null && data['time'] != null) {
+        String dateString = data['date'];
+        String timeString = data['time'];
+
+        // Extract hour and minute from the time string
+        List<String> parts = timeString
+            .replaceAll("TimeOfDay(", "")
+            .replaceAll(")", "")
+            .split(":");
+        int hour = int.parse(parts[0]);
+        int minute = int.parse(parts[1]);
+
+        // Create a TimeOfDay object
+        TimeOfDay timeOfDay = TimeOfDay(hour: hour, minute: minute);
+
+        // Parse the date
+        List<String> dateParts = dateString.split('/');
+        int month = int.parse(dateParts[0]);
+        int day = int.parse(dateParts[1]);
+        int year = int.parse(dateParts[2]);
+        DateTime date = DateTime(year, month, day);
+
+        // Combine date and time
+        DateTime dateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          timeOfDay.hour,
+          timeOfDay.minute,
+        );
+
+        // Increment count for the date
+        if (dailyCounts.containsKey(dateTime)) {
+          dailyCounts[dateTime] = dailyCounts[dateTime]! + 1;
+        } else {
+          dailyCounts[dateTime] = 1;
+        }
+      }
+    }
+
+    return dailyCounts.entries.toList();
+  }
+
+
+
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(
