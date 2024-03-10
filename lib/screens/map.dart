@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:fyp/screens/user-profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../authentication/authentication_repo.dart';
 import 'AddContact.dart';
@@ -31,22 +34,27 @@ class _MapPageState extends State<MapPage> {
   List<Marker> _markers = [];
   Set<Polyline> _polylines = {};
   List<CrimeData?> crimeDataList = [];
+  late Position position;
+
   Future<void> _fetchCrimeData() async {
     crimeDataList = await _fetchAllCrimeData();
+     position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
     setState(() {
     });
   }
 
-  Set<Marker> _getMarkers()  {
+  Set<Marker> _getMarkers() {
     Set<Marker> markers = Set<Marker>.from(_markers);
 
-    // Add crime markers
+    // Add destination marker
     if (_selectedDestination != null) {
       markers.add(
         Marker(
           markerId: MarkerId('destination'),
           position: _selectedDestination!,
-          icon: BitmapDescriptor.defaultMarker,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           infoWindow: InfoWindow(
             title: 'Destination',
             snippet: 'Selected Destination',
@@ -55,15 +63,47 @@ class _MapPageState extends State<MapPage> {
       );
     }
 
-
     _fetchCrimeData();
-    // Add crime data markers
-    for (CrimeData? crimeData in crimeDataList) {
-      if (crimeData != null) {
-        _addMarker(crimeData);
+
+    if (position != null) {
+      for (CrimeData? crimeData in crimeDataList) {
+        if (crimeData != null) {
+          double distance = _calculateDistance(
+            LatLng(position.latitude!, position.longitude!),
+            LatLng(crimeData.latitude, crimeData.longitude),
+          );
+
+          if (distance <= 2.0) {
+            _addMarker(crimeData);
+          }
+        }
       }
-      }
+    }
+
     return markers;
+  }
+
+  double _calculateDistance(LatLng point1, LatLng point2) {
+    const int radiusOfEarth = 6371;
+
+    double lat1 = point1.latitude;
+    double lon1 = point1.longitude;
+    double lat2 = point2.latitude;
+    double lon2 = point2.longitude;
+
+    double dLat = _degreesToRadians(lat2 - lat1);
+    double dLon = _degreesToRadians(lon2 - lon1);
+
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degreesToRadians(lat1)) * cos(_degreesToRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return radiusOfEarth * c;
+  }
+
+  double _degreesToRadians(double degrees) {
+    return degrees * (pi / 180);
   }
 
 
@@ -83,7 +123,7 @@ class _MapPageState extends State<MapPage> {
       Marker newMarker = Marker(
         markerId: MarkerId(markerId),
         position: LatLng(crimeData.latitude, crimeData.longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         onTap: () {
           _showCustomInfoWindow(crimeData);
         },
@@ -100,12 +140,31 @@ class _MapPageState extends State<MapPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Crime Type: ${crimeData.crimeType}', style: TextStyle(color: Colors.white)),
-          content: Text(
-            crimeData.isAnonymous
-                ? 'Anonymous Case'
-                : 'Reported by: ${crimeData.fullName}',
+          title: Text(
+            'Crime Type: ${crimeData.crimeType}',
             style: TextStyle(color: Colors.white),
+          ),
+          content: Container(
+            height: 100,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  crimeData.isAnonymous
+                      ? 'Anonymous Case'
+                      : 'Reported by: ${crimeData.fullName}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Date: ${crimeData.date}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Time: ${crimeData.time}',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
           ),
           backgroundColor: Colors.red,
           actions: <Widget>[
@@ -300,28 +359,21 @@ class _MapPageState extends State<MapPage> {
 
   Future<List<CrimeData?>> _fetchAllCrimeData() async {
     try {
-      // Access Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot = await firestore.collection('crimeData').get();
 
-      // Fetch all crime data
-      QuerySnapshot querySnapshot =
-      await firestore.collection('crimeData').get();
-
-      // Convert query snapshot to a list of CrimeData objects
       List<CrimeData?> crimeDataList = querySnapshot.docs
           .map((doc) {
         Map<String, dynamic> crimeDataMap = doc.data() as Map<String, dynamic>;
 
-        // Check if the 'location' map is present and not null
         if (crimeDataMap.containsKey('location') && crimeDataMap['location'] != null) {
-          // Extract individual latitude and longitude from the map
           double latitude = crimeDataMap['location']['latitude'];
           double longitude = crimeDataMap['location']['longitude'];
-
-          // Extract additional information
           String crimeType = crimeDataMap['crimeType'];
           String fullName = crimeDataMap['fullName'];
           bool isAnonymous = crimeDataMap['isAnonymous'] ?? false;
+          String date = crimeDataMap['date'];
+          String time = crimeDataMap['time'];
 
           return CrimeData(
             latitude: latitude,
@@ -329,9 +381,10 @@ class _MapPageState extends State<MapPage> {
             crimeType: crimeType,
             fullName: fullName,
             isAnonymous: isAnonymous,
+            date: date,
+            time: time,
           );
         } else {
-          // Handle the case where 'location' map is missing or null
           print("Warning: 'location' map is missing or null in crime data");
           return null;
         }
@@ -427,18 +480,17 @@ class _MapPageState extends State<MapPage> {
                 ],
               ),
             ),
-            actions: [
-              TextButton(
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white, // Background color
+                ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Text(
-                  "Close",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  'Close',
+                  style: TextStyle(color: Colors.red, fontSize: 12),
                 ),
               ),
             ],
@@ -945,12 +997,16 @@ class Place {
       this.phone,
       required this.location});
 }
+
+
 class CrimeData {
   double latitude;
   double longitude;
   String crimeType;
   String fullName;
   bool isAnonymous;
+  String date;
+  String time;
 
   CrimeData({
     required this.latitude,
@@ -958,5 +1014,7 @@ class CrimeData {
     required this.crimeType,
     required this.fullName,
     required this.isAnonymous,
+    required this.date,
+    required this.time,
   });
 }
