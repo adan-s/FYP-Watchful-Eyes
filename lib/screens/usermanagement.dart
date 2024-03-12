@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
+import 'package:fyp/screens/analyticsandreports.dart';
 import 'package:get/get.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -202,8 +203,11 @@ class UserManagement extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // ... (Handle Analytics and Reports action)
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                  );
                 },
               ),
               Divider(

@@ -6,6 +6,7 @@ import 'package:fyp/screens/usermanagement.dart';
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
 import 'CrimeDetailPage.dart';
+import 'analyticsandreports.dart';
 import 'login_screen.dart';
 
 class CrimeDataPage extends StatelessWidget {
@@ -134,8 +135,11 @@ class CrimeDataPage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // ... (Handle Analytics and Reports action)
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                  );
                 },
               ),
               Divider(

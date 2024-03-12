@@ -10,6 +10,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../authentication/authentication_repo.dart';
 import 'CrimeDataPage.dart';
 import 'admindashboard.dart';
+import 'analyticsandreports.dart';
 import 'login_screen.dart';
 
 class CommunityForumPostsAdmin extends StatelessWidget {
@@ -146,8 +147,10 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    // ... (Handle Analytics and Reports action)
-                    Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                      );
                   },
                 ),
                 Divider(
