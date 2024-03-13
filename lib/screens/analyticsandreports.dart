@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:fyp/screens/usermanagement.dart';
-
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
 import 'CrimeDataPage.dart';
 import 'admindashboard.dart';
 import 'login_screen.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class AnalyticsAndReports extends StatefulWidget {
   @override
@@ -16,11 +16,16 @@ class AnalyticsAndReports extends StatefulWidget {
 
 class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
   List<Map<String, dynamic>> _crimeData = [];
+  Map<String, dynamic> dataMap = {};
+  Map<String, dynamic> dataMap2 = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchCrimeData();
+    _fetchCrimeData().then((_) {
+      _preparePieChartData();
+      _preparePieChartData2();
+    });
   }
 
   Future<void> _fetchCrimeData() async {
@@ -49,7 +54,8 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
         data: chartData,
         domainFn: (datum, _) => datum['type'],
         measureFn: (datum, _) => datum['count'].toDouble(),
-        insideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(fontSize: 0), // Empty TextStyleSpec to remove labels
+        insideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(
+            fontSize: 0), // Empty TextStyleSpec to remove labels
       ),
     ];
   }
@@ -104,9 +110,105 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
     }
   }
 
+  void _preparePieChartData() {
+    Map<String, int> crimeCountByCategory = {};
+
+    _crimeData.forEach((crime) {
+      final category = crime['crimeType'];
+      crimeCountByCategory[category] =
+          (crimeCountByCategory[category] ?? 0) + 1;
+    });
+
+    List<Map<String, dynamic>> chartData = [];
+    crimeCountByCategory.forEach((category, count) {
+      chartData.add({'crimeType': category, 'count': count});
+    });
+
+    dataMap = {};
+    chartData.forEach((data) {
+      dataMap[data['crimeType']] = data['count'].toDouble();
+    });
+  }
+
+  void _preparePieChartData2() {
+    Map<int, int> crimeCountByMonth = {};
+
+    _crimeData.forEach((crime) {
+      final dateString = crime['date'];
+      final parsedDate = _parseDate(dateString);
+      if (parsedDate != null) {
+        final month = parsedDate.month;
+        crimeCountByMonth[month] = (crimeCountByMonth[month] ?? 0) + 1;
+      }
+    });
+
+    List<Map<String, dynamic>> chartData = [];
+    crimeCountByMonth.forEach((month, count) {
+      // Convert month integer to month name
+      final monthName = _getMonthName(month);
+      chartData.add({'month': monthName, 'count': count});
+    });
+
+    dataMap2 = {};
+    chartData.forEach((data) {
+      dataMap2[data['month']] = data['count'].toDouble();
+    });
+  }
+
+  String _getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  List<Color> _getColorList(int length) {
+    List<Color> colors = [];
+    int normalColorsCount = length - 1;
+    for (int i = 0; i < normalColorsCount; i++) {
+      final palette = charts.MaterialPalette.getOrderedPalettes(normalColorsCount)[i];
+      colors.add(Color.fromRGBO(palette.shadeDefault.r, palette.shadeDefault.g, palette.shadeDefault.b, 1));
+    }
+    colors.add(Colors.green);
+    return colors;
+  }
+
+  List<Color> _getColorList2(int length) {
+    List<Color> colors = [];
+    for (int i = 0; i < length; i++) {
+      double hue = (i / length) * 360;
+      colors.add(HSLColor.fromAHSL(1.0, hue, 0.75, 0.5).toColor());
+    }
+    return colors;
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Color> _monthColors = _getColorList2(dataMap2.length);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF769DC9),
@@ -297,74 +399,339 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
         ),
       ),
       body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF769DC9),
-                Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
+              Color(0xFFCBE1EE),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
+        ),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            if (constraints.maxWidth > 600) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            height: 400,
+                            child: charts.BarChart(
+                              _prepareData(),
+                              animate: true,
+                              vertical: true,
+                              barRendererDecorator:
+                                  charts.BarLabelDecorator<String>(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            height: 400,
+                            child: charts.TimeSeriesChart(
+                              _prepareData2(),
+                              animate: true,
+                              defaultRenderer:
+                                  charts.BarRendererConfig<DateTime>(),
+                              domainAxis: charts.DateTimeAxisSpec(
+                                renderSpec: charts.SmallTickRendererSpec(
+                                    labelRotation: 0),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    height: 400,
-                    child: charts.BarChart(
-                      _prepareData(),
-                      animate: true,
-                      vertical: true,
-                      barRendererDecorator: charts.BarLabelDecorator<String>(),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0), // Add padding here
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              height: 400,
+                              child: PieChart(
+                                dataMap: dataMap.map((key, value) =>
+                                    MapEntry(key, value.toDouble())),
+                                animationDuration: Duration(milliseconds: 800),
+                                chartLegendSpacing: 32,
+                                chartRadius:
+                                    MediaQuery.of(context).size.width / 3.2,
+                                colorList: _getColorList(dataMap.length),
+                                chartType: ChartType.ring,
+                                centerText: "HYBRID",
+                                legendOptions: LegendOptions(
+                                  showLegendsInRow: false,
+                                  legendPosition: LegendPosition.right,
+                                  showLegends: true,
+                                  legendShape: BoxShape.circle,
+                                  legendTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValueBackground: true,
+                                  showChartValues: true,
+                                  showChartValuesInPercentage: false,
+                                  showChartValuesOutside: false,
+                                  decimalPlaces: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0), // Add padding here
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              height: 400,
+                              child: PieChart(
+                                dataMap: dataMap2.map((key, value) =>
+                                    MapEntry(key, value.toDouble())),
+                                animationDuration: Duration(milliseconds: 800),
+                                chartLegendSpacing: 32,
+                                chartRadius:
+                                    MediaQuery.of(context).size.width / 3.2,
+                                colorList: _monthColors,
+                                chartType: ChartType.ring,
+                                centerText: "HYBRID",
+                                legendOptions: LegendOptions(
+                                  showLegendsInRow: false,
+                                  legendPosition: LegendPosition.right,
+                                  showLegends: true,
+                                  legendShape: BoxShape.circle,
+                                  legendTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValueBackground: true,
+                                  showChartValues: true,
+                                  showChartValuesInPercentage: false,
+                                  showChartValuesOutside: false,
+                                  decimalPlaces: 1,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
-                    ),
-                    height: 400,
-                    child: charts.TimeSeriesChart(
-                      _prepareData2(),
-                      animate: true,
-                      defaultRenderer: charts.BarRendererConfig<DateTime>(),
-                      domainAxis: charts.DateTimeAxisSpec(
-                        renderSpec:
-                            charts.SmallTickRendererSpec(labelRotation: 0),
+                    )
+                  ]),
+                ),
+              );
+            } else {
+              // For mobile devices
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        child: charts.BarChart(
+                          _prepareData(),
+                          animate: true,
+                          vertical: true,
+                          barRendererDecorator:
+                              charts.BarLabelDecorator<String>(),
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        child: charts.TimeSeriesChart(
+                          _prepareData2(),
+                          animate: true,
+                          defaultRenderer: charts.BarRendererConfig<DateTime>(),
+                          domainAxis: charts.DateTimeAxisSpec(
+                            renderSpec:
+                                charts.SmallTickRendererSpec(labelRotation: 0),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        child: PieChart(
+                          dataMap: dataMap.map(
+                              (key, value) => MapEntry(key, value.toDouble())),
+                          animationDuration: Duration(milliseconds: 800),
+                          chartLegendSpacing: 32,
+                          chartRadius: MediaQuery.of(context).size.width / 3.2,
+                          colorList: _getColorList(dataMap.length),
+                          chartType: ChartType.ring,
+                          centerText: "HYBRID",
+                          legendOptions: LegendOptions(
+                            showLegendsInRow: false,
+                            legendPosition: LegendPosition.right,
+                            showLegends: true,
+                            legendShape: BoxShape.circle,
+                            legendTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          chartValuesOptions: ChartValuesOptions(
+                            showChartValueBackground: true,
+                            showChartValues: true,
+                            showChartValuesInPercentage: false,
+                            showChartValuesOutside: false,
+                            decimalPlaces: 1,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        child: PieChart(
+                          dataMap: dataMap2.map(
+                              (key, value) => MapEntry(key, value.toDouble())),
+                          animationDuration: Duration(milliseconds: 800),
+                          chartLegendSpacing: 32,
+                          chartRadius: MediaQuery.of(context).size.width / 3.2,
+                          colorList: _monthColors,
+                          chartType: ChartType.ring,
+                          centerText: "HYBRID",
+                          legendOptions: LegendOptions(
+                            showLegendsInRow: false,
+                            legendPosition: LegendPosition.right,
+                            showLegends: true,
+                            legendShape: BoxShape.circle,
+                            legendTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          chartValuesOptions: ChartValuesOptions(
+                            showChartValueBackground: true,
+                            showChartValues: true,
+                            showChartValuesInPercentage: false,
+                            showChartValuesOutside: false,
+                            decimalPlaces: 1,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          )),
+                ),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }
@@ -379,13 +746,13 @@ Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(false); // No, do not logout
+                  Navigator.of(context).pop(false);
                 },
                 child: Text('No'),
               ),
               TextButton(
                 onPressed: () async {
-                  Navigator.of(context).pop(true); // Yes, logout
+                  Navigator.of(context).pop(true);
 
                   // Perform logout
                   await AuthenticationRepository.instance.logout();
