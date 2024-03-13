@@ -20,8 +20,8 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     try {
-      if (kIsWeb && email.text.trim() == 'admin123@gmail.com' && password.text.trim() == 'admin123') {
-        // Admin login successful on the web
+      if (email.text.trim() == 'admin123@gmail.com' && password.text.trim() == 'admin123') {
+        // Admin login successful
         onLoginSuccess(); // Call the callback
         Get.offAll(() => AdminDashboard());
         Get.snackbar(
@@ -32,14 +32,13 @@ class LoginController extends GetxController {
           colorText: Colors.white,
         );
       } else {
-        // For regular users or non-web admin login, perform Firebase authentication
+        // For regular users, perform Firebase authentication
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text.trim(),
           password: password.text.trim(),
         );
         // Check if the user is a regular user
         if (userCredential.user?.uid != null) {
-
           if (userCredential.user?.emailVerified == true) {
             // Email is verified, proceed with login
             onLoginSuccess(); // Call the callback
@@ -68,7 +67,6 @@ class LoginController extends GetxController {
     } catch (e) {
       // Handle login errors
       print('Login error: $e');
-
       if (e is FirebaseAuthException) {
         if (e.code == 'user-not-found') {
           errorMessage.value = 'Incorrect email';
@@ -83,4 +81,5 @@ class LoginController extends GetxController {
       rethrow;
     }
   }
+
 }
