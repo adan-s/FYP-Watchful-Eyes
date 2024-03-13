@@ -1,89 +1,17 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/analyticsandreports.dart';
 import 'package:get/get.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
-import 'package:sendgrid_mailer/sendgrid_mailer.dart';
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
 import 'CrimeDataPage.dart';
 import 'login_screen.dart';
 
 class UserManagement extends StatelessWidget {
-  final _sendGridApiKey = 'YOUR_SENDGRID_API_KEY'; // Replace with your SendGrid API key
   @override
-
-
   Widget build(BuildContext context) {
-
-    //void _sendEmail(String userEmail, String subject, String body) async {
-      //final mailer = Mailer(
-     //   SendGridApi(_sendGridApiKey), // Initialize SendGrid mailer with API key
-     // );
-
-      //final email = Email(
-       // from: Address('watchfuleyesmanager@gmail.com', 'Admin'), // Update with your email
-        //to: [userEmail],
-        //subject: subject,
-        //text: body,
-      //);
-
-      //try {
-        //await mailer.send(email);
-        //print('Email sent successfully');
-      //} catch (e) {
-        //print('Error occurred while sending email: $e');
-      //}
-    //}
-
-    Widget _buildStatusItem(BuildContext context, String status, String userEmail) {
-      return InkWell(
-        onTap: () {
-          Navigator.of(context).pop();
-          // Perform action based on selected status
-          switch (status) {
-            case 'Received':
-             // _sendEmail(userEmail, 'Case Registered', 'Your report has been received. We will review it shortly.');
-              break;
-            case 'Being Investigated':
-              //_sendEmail(userEmail, 'Case Being Investigated', 'Your report is currently being investigated. We will update you with any progress.');
-              break;
-            case 'Case Closed':
-              //_sendEmail(userEmail, 'Case Closed', 'Your report has been closed. Thank you for your cooperation.');
-              break;
-            default:
-              break;
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(status),
-        ),
-      );
-    }
-
-
-    void _showStatusUpdateDialog(BuildContext context, String userEmail) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Update Status'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildStatusItem(context, 'Received', userEmail),
-                _buildStatusItem(context, 'Being Investigated', userEmail),
-                _buildStatusItem(context, 'Case Closed', userEmail),
-              ],
-            ),
-          );
-        },
-      );
-    }
-
     double screenWidth = MediaQuery.of(context).size.width;
     TextEditingController _searchController = TextEditingController();
     return Scaffold(
@@ -357,6 +285,8 @@ class UserManagement extends StatelessWidget {
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors
                                                       .white, // Add text color as needed
+
+
                                                 ),
                                               ),
                                               SizedBox(height: 16),
@@ -560,83 +490,64 @@ class UserManagement extends StatelessWidget {
                               ),
                             ],
                           ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  _showStatusUpdateDialog(context, user['Email']);
-                                },
-                                child: Text(
-                                  'Update Status',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.w300,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10), // Add some space between Update Status and Delete icon
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () async {
-                                  // Show confirmation dialog before deleting
-                                  bool confirmDelete = await showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text('Confirmation'),
-                                        content: Text(
-                                            'Are you sure you want to delete this user?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .pop(true); // Yes, delete
-                                            },
-                                            child: Text('Yes',
-                                                style: TextStyle(
-                                                    color: Colors.white)),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop(
-                                                  false); // No, don't delete
-                                            },
-                                            child: Text('No',
-                                                style: TextStyle(
-                                                    color: Colors.white)),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              // Show confirmation dialog before deleting
+                              bool confirmDelete = await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Confirmation'),
+                                    content: Text(
+                                        'Are you sure you want to delete this user?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(true); // Yes, delete
+                                        },
+                                        child: Text('Yes',
+                                            style: TextStyle(
+                                                color: Colors.white)),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(
+                                              false); // No, don't delete
+                                        },
+                                        child: Text('No',
+                                            style: TextStyle(
+                                                color: Colors.white)),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      ),
+                                    ],
                                   );
-
-                                  if (confirmDelete == true) {
-                                    // User confirmed to delete
-                                    String userId = users[index].id;
-                                    await FirebaseFirestore.instance
-                                        .collection('Users')
-                                        .doc(userId)
-                                        .delete();
-                                    // Show Snackbar
-                                    Get.snackbar(
-                                      "Congratulations",
-                                      "User deleted successfully.",
-                                      backgroundColor: Colors.green,
-                                      colorText: Colors.white,
-                                      snackPosition: SnackPosition.BOTTOM,
-                                    );
-                                  }
                                 },
-                              ),
-                            ],
+                              );
+
+                              if (confirmDelete == true) {
+                                // User confirmed to delete
+                                String userId = users[index].id;
+                                await FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(userId)
+                                    .delete();
+                                // Show Snackbar
+                                Get.snackbar(
+                                  "Congratulations",
+                                  "User deleted successfully.",
+                                  backgroundColor: Colors.green,
+                                  colorText: Colors.white,
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              }
+                            },
                           ),
                         ),
                       );
@@ -676,7 +587,9 @@ class UserManagement extends StatelessWidget {
         Text(
           'Email: ${userData['Email']}',
           style: TextStyle(
-            color: Colors.white,
+            color
+
+                : Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -771,33 +684,4 @@ class UserManagement extends StatelessWidget {
         false;
   }
 
-
-  Widget _buildStatusItem(BuildContext context, String status) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pop();
-        // Perform action based on selected status
-        switch (status) {
-          case 'Received':
-          // Update status as received
-            break;
-          case 'Being Investigated':
-          // Update status as being investigated
-            break;
-          case 'Case Closed':
-          // Update status as case closed
-            break;
-          default:
-            break;
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Text(status),
-      ),
-    );
-  }
-}
-
-class SendGridApi {
 }

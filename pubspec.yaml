@@ -78,6 +78,7 @@ dependencies:
   charts_flutter: ^0.12.0
   pie_chart: ^5.4.0
   pdf: ^3.8.4
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
