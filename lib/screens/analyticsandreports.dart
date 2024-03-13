@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fyp/screens/usermanagement.dart';
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
@@ -100,8 +104,8 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
   DateTime? _parseDate(String dateString) {
     try {
       final parts = dateString.split('/');
-      final day = int.parse(parts[0]);
-      final month = int.parse(parts[1]);
+      final day = int.parse(parts[1]);
+      final month = int.parse(parts[0]);
       final year = int.parse(parts[2]);
       return DateTime(year, month, day);
     } catch (e) {
@@ -144,7 +148,6 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
 
     List<Map<String, dynamic>> chartData = [];
     crimeCountByMonth.forEach((month, count) {
-      // Convert month integer to month name
       final monthName = _getMonthName(month);
       chartData.add({'month': monthName, 'count': count});
     });
@@ -190,8 +193,10 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
     List<Color> colors = [];
     int normalColorsCount = length - 1;
     for (int i = 0; i < normalColorsCount; i++) {
-      final palette = charts.MaterialPalette.getOrderedPalettes(normalColorsCount)[i];
-      colors.add(Color.fromRGBO(palette.shadeDefault.r, palette.shadeDefault.g, palette.shadeDefault.b, 1));
+      final palette =
+          charts.MaterialPalette.getOrderedPalettes(normalColorsCount)[i];
+      colors.add(Color.fromRGBO(palette.shadeDefault.r, palette.shadeDefault.g,
+          palette.shadeDefault.b, 1));
     }
     colors.add(Colors.green);
     return colors;
@@ -445,7 +450,7 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 30),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
@@ -527,9 +532,7 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                        SizedBox(width: 15),
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.all(8.0), // Add padding here
@@ -578,7 +581,131 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              height: 400,
+                              width: 800,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: DataTable(
+                                  columns: [
+                                    DataColumn(
+                                      label: Text(
+                                        'Crime Type',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    DataColumn(
+                                      label: Text(
+                                        'Count',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                  rows: dataMap.entries.map((entry) {
+                                    return DataRow(cells: [
+                                      DataCell(
+                                        Text(
+                                          entry.key,
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          entry.value.toString(),
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                      ),
+                                    ]);
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              height: 400,
+                              width: 800,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: DataTable(
+                                  columns: [
+                                    DataColumn(
+                                      label: Text(
+                                        'Months',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    DataColumn(
+                                      label: Text(
+                                        'Count',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                  rows: dataMap2.entries.map((entry) {
+                                    return DataRow(cells: [
+                                      DataCell(
+                                        Text(
+                                          entry.key,
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          entry.value.toString(),
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                      ),
+                                    ]);
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ]),
                 ),
               );
@@ -721,6 +848,112 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
                             showChartValuesInPercentage: false,
                             showChartValuesOutside: false,
                             decimalPlaces: 1,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        width: 800,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: DataTable(
+                            columns: [
+                              DataColumn(
+                                label: Text(
+                                  'Crime Type',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Count',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                            rows: dataMap.entries.map((entry) {
+                              return DataRow(cells: [
+                                DataCell(
+                                  Text(
+                                    entry.key,
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    entry.value.toString(),
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ),
+                              ]);
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        height: 400,
+                        width: 800,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: DataTable(
+                            columns: [
+                              DataColumn(
+                                label: Text(
+                                  'Months',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Count',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                            rows: dataMap2.entries.map((entry) {
+                              return DataRow(cells: [
+                                DataCell(
+                                  Text(
+                                    entry.key,
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    entry.value.toString(),
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ),
+                              ]);
+                            }).toList(),
                           ),
                         ),
                       ),

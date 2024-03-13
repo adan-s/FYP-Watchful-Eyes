@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       home: Obx(
             () {
           var user = authRepository.firebaseUser.value;
-          return user == null ? AnalyticsAndReports() : UserPanel();
+          return user == null ? LoginScreen() : UserPanel();
         },
       ),
       debugShowCheckedModeBanner: false,
