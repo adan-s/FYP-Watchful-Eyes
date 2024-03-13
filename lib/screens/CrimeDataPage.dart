@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
 import 'package:fyp/screens/usermanagement.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../authentication/authentication_repo.dart';
 import 'CommunityForumPostsAdmin.dart';
 import 'CrimeDetailPage.dart';
@@ -241,7 +241,7 @@ class CrimeDataPage extends StatelessWidget {
               itemCount: crimeDataList.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> crimeData = crimeDataList[index];
-                return CrimeDataCard(crimeData: crimeData);
+                return CrimeDataCard(crimeData: crimeData, userEmail: '',);
               },
             );
           },
@@ -296,27 +296,120 @@ class CrimeDataPage extends StatelessWidget {
 
 class CrimeDataCard extends StatelessWidget {
   final Map<String, dynamic> crimeData;
+  final String userEmail;
 
-  const CrimeDataCard({Key? key, required this.crimeData}) : super(key: key);
+  const CrimeDataCard({Key? key, required this.crimeData, required this.userEmail}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text('Full Name: ${crimeData['fullName']}'),
-        subtitle: Text('Crime Type: ${crimeData['crimeType']}'),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CrimeDetailPage(crimeData: crimeData),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            title: Text('Full Name: ${crimeData['fullName']}'),
+            subtitle: Text('Crime Type: ${crimeData['crimeType']}'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CrimeDetailPage(crimeData: crimeData),
+                ),
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: GestureDetector(
+              onTap: () => _showStatusUpdateDialog(context),
+              child: Text(
+                'Update Status',
+                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+              ),
             ),
-          );
-        },
+          ),
+          SizedBox(height: 8),
+        ],
       ),
     );
   }
 
+  void _showStatusUpdateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String selectedStatus = '';
+        return AlertDialog(
+          title: Text('Update Status'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: Text('Received'),
+                value: 'Received',
+                groupValue: selectedStatus,
+                onChanged: (value) {
+                  selectedStatus = value!;
+                  _sendWhatsAppMessage(selectedStatus);
+                  Navigator.of(context).pop();
+                },
+              ),
+              RadioListTile<String>(
+                title: Text('Being Investigated'),
+                value: 'Being Investigated',
+                groupValue: selectedStatus,
+                onChanged: (value) {
+                  selectedStatus = value!;
+                  _sendWhatsAppMessage(selectedStatus);
+                  Navigator.of(context).pop();
+                },
+              ),
+              RadioListTile<String>(
+                title: Text('Case Closed'),
+                value: 'Case Closed',
+                groupValue: selectedStatus,
+                onChanged: (value) {
+                  selectedStatus = value!;
+                  _sendWhatsAppMessage(selectedStatus);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
+  void _sendWhatsAppMessage(String status) async {
+    String phoneNumber = crimeData['phoneNumber']; // Assuming you have 'phoneNumber' in crimeData
+
+    if (phoneNumber.isNotEmpty) {
+      String formattedPhoneNumber = '+92${phoneNumber.substring(1)}'; // Remove the first zero and add +92
+      String message = _constructMessage(status);
+      String encodedMessage = Uri.encodeComponent(message);
+      String url = 'whatsapp://send?phone=$formattedPhoneNumber&text=$encodedMessage';
+
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+  }
+
+  String _constructMessage(String status) {
+    String crimeType = crimeData['crimeType'];
+    switch (status) {
+      case 'Received':
+        return 'Your crime report of $crimeType was received. We will keep you updated.';
+      case 'Being Investigated':
+        return 'Your crime report of $crimeType was received and is currently being investigated. Please cooperate for the time being. We will keep you updated.';
+      case 'Case Closed':
+        return 'Your crime report of $crimeType was investigated and the case is closed now. Thank you for your cooperation, hope you had a pleasant experience with us.';
+      default:
+        return '';
+    }
+  }
 }
