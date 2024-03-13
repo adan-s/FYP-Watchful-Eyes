@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
-import 'package:fyp/screens/analyticsandreports.dart';
 import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:fyp/screens/signup.dart';
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
       home: Obx(
             () {
           var user = authRepository.firebaseUser.value;
-          return user == null ? AnalyticsAndReports() : UserPanel();
+          return user == null ? LoginScreen() : UserPanel();
         },
       ),
       debugShowCheckedModeBanner: false,
