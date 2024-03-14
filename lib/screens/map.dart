@@ -38,11 +38,10 @@ class _MapPageState extends State<MapPage> {
 
   Future<void> _fetchCrimeData() async {
     crimeDataList = await _fetchAllCrimeData();
-     position = await Geolocator.getCurrentPosition(
+    position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
-    setState(() {
-    });
+    setState(() {});
   }
 
   Set<Marker> _getMarkers() {
@@ -95,7 +94,10 @@ class _MapPageState extends State<MapPage> {
     double dLon = _degreesToRadians(lon2 - lon1);
 
     double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_degreesToRadians(lat1)) * cos(_degreesToRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+        cos(_degreesToRadians(lat1)) *
+            cos(_degreesToRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
 
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
@@ -105,7 +107,6 @@ class _MapPageState extends State<MapPage> {
   double _degreesToRadians(double degrees) {
     return degrees * (pi / 180);
   }
-
 
   void _addMarker(CrimeData? crimeData) {
     if (crimeData != null) {
@@ -120,10 +121,34 @@ class _MapPageState extends State<MapPage> {
         snippetContent = 'Reported by: ${crimeData.fullName}';
       }
 
+      BitmapDescriptor markerIcon;
+
+      // Choose marker color based on crime type
+      switch (crimeData.crimeType) {
+        case "Other":
+          markerIcon =
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+          break;
+        case "Domestic Abuse":
+          markerIcon =
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose);
+          break;
+        case "Harrasement":
+          markerIcon =
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+          break;
+        case "Accident":
+          markerIcon =
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
+          break;
+        default:
+          markerIcon = BitmapDescriptor.defaultMarker;
+      }
+
       Marker newMarker = Marker(
         markerId: MarkerId(markerId),
         position: LatLng(crimeData.latitude, crimeData.longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        icon: markerIcon,
         onTap: () {
           _showCustomInfoWindow(crimeData);
         },
@@ -307,8 +332,6 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-
-
   Future<List<LatLng>> _getDirections(
       double startLatitude, double startLongitude, String destination) async {
     final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
@@ -329,8 +352,6 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _showPathFromCurrentToDestination() async {
-
-
     if (_controller != null) {
       final currentLocation = _currentLocationController.text;
       final destination = _destinationController.text;
@@ -346,7 +367,6 @@ class _MapPageState extends State<MapPage> {
           double.parse(destination.split(', ')[1]),
         );
 
-
         _showPath(
           currentLatLng.latitude,
           currentLatLng.longitude,
@@ -356,39 +376,41 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-
   Future<List<CrimeData?>> _fetchAllCrimeData() async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      QuerySnapshot querySnapshot = await firestore.collection('crimeData').get();
+      QuerySnapshot querySnapshot =
+          await firestore.collection('crimeData').get();
 
       List<CrimeData?> crimeDataList = querySnapshot.docs
           .map((doc) {
-        Map<String, dynamic> crimeDataMap = doc.data() as Map<String, dynamic>;
+            Map<String, dynamic> crimeDataMap =
+                doc.data() as Map<String, dynamic>;
 
-        if (crimeDataMap.containsKey('location') && crimeDataMap['location'] != null) {
-          double latitude = crimeDataMap['location']['latitude'];
-          double longitude = crimeDataMap['location']['longitude'];
-          String crimeType = crimeDataMap['crimeType'];
-          String fullName = crimeDataMap['fullName'];
-          bool isAnonymous = crimeDataMap['isAnonymous'] ?? false;
-          String date = crimeDataMap['date'];
-          String time = crimeDataMap['time'];
+            if (crimeDataMap.containsKey('location') &&
+                crimeDataMap['location'] != null) {
+              double latitude = crimeDataMap['location']['latitude'];
+              double longitude = crimeDataMap['location']['longitude'];
+              String crimeType = crimeDataMap['crimeType'];
+              String fullName = crimeDataMap['fullName'];
+              bool isAnonymous = crimeDataMap['isAnonymous'] ?? false;
+              String date = crimeDataMap['date'];
+              String time = crimeDataMap['time'];
 
-          return CrimeData(
-            latitude: latitude,
-            longitude: longitude,
-            crimeType: crimeType,
-            fullName: fullName,
-            isAnonymous: isAnonymous,
-            date: date,
-            time: time,
-          );
-        } else {
-          print("Warning: 'location' map is missing or null in crime data");
-          return null;
-        }
-      })
+              return CrimeData(
+                latitude: latitude,
+                longitude: longitude,
+                crimeType: crimeType,
+                fullName: fullName,
+                isAnonymous: isAnonymous,
+                date: date,
+                time: time,
+              );
+            } else {
+              print("Warning: 'location' map is missing or null in crime data");
+              return null;
+            }
+          })
           .where((crimeData) => crimeData != null)
           .toList();
 
@@ -483,7 +505,7 @@ class _MapPageState extends State<MapPage> {
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.white, // Background color
+                  backgroundColor: Colors.white,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -572,182 +594,187 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                end: Alignment.topCenter,
+                begin: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                ],
+              ),
+            ),
+          ),
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Map',
+                style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+              ),
+            ],
+          ),
+          centerTitle: true,
+          actions: [
+            ResponsiveAppBarActions(),
+          ],
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              end: Alignment.topCenter,
-              begin: Alignment.bottomCenter,
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
               colors: [
                 Color(0xFF769DC9),
                 Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
+                Color(0xFF769DC9),
+                Color(0xFFCBE1EE),
               ],
             ),
           ),
-        ),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Map',
-              style: TextStyle(fontFamily: 'outfit', color: Colors.white),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        actions: [
-          ResponsiveAppBarActions(),
-        ],
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            end: Alignment.bottomCenter,
-            begin: Alignment.topCenter,
-            colors: [
-              Color(0xFF769DC9),
-              Color(0xFF769DC9),
-              Color(0xFF7EA3CA),
-              Color(0xFF769DC9),
-              Color(0xFFCBE1EE),
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: _currentLocationController,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Current Location',
-                  labelStyle: TextStyle(
-                      fontFamily: 'outfit', fontSize: 24, color: Colors.white),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: _currentLocationController,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Current Location',
+                    labelStyle: TextStyle(
+                        fontFamily: 'outfit',
+                        fontSize: 24,
+                        color: Colors.white),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
+                  enabled: false, // Make the text field uneditable
                 ),
-                enabled: false, // Make the text field uneditable
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _destinationController,
-                style: TextStyle(fontFamily: 'outfit', color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Destination',
-                  labelStyle:
-                      TextStyle(fontFamily: 'outfit', color: Colors.white),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _destinationController,
+                  style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Destination',
+                    labelStyle:
+                        TextStyle(fontFamily: 'outfit', color: Colors.white),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                  enabled: false,
+                ),
+                if (_selectedDestination == null)
+                  Text(
+                    'Select dest through marker on map',
+                    style: TextStyle(color: Colors.red),
                   ),
-                ),
-                enabled: false,
-              ),
-              if (_selectedDestination == null)
-                Text(
-                  'Select dest through marker on map',
-                  style: TextStyle(color: Colors.red),
-                ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_destinationController.text.isNotEmpty) {
-                    _showPathFromCurrentToDestination();
-                  } else {
-                    _getCurrentLocation();
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xFFFFFF),
-                        Color(0xFFFFFF),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_destinationController.text.isNotEmpty) {
+                      _showPathFromCurrentToDestination();
+                    } else {
+                      _getCurrentLocation();
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color(0xFFFFFF),
+                          Color(0xFFFFFF),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(width: 8),
+                        Text(
+                          "Show Map",
+                          style: TextStyle(
+                              fontFamily: 'outfit',
+                              fontSize: 16,
+                              color: Colors.black),
+                        ),
+                        Icon(
+                          Icons.arrow_forward,
+                          color: Colors.black,
+                        ),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 8),
-                      Text(
-                        "Show Map",
-                        style: TextStyle(
-                            fontFamily: 'outfit',
-                            fontSize: 16,
-                            color: Colors.black),
-                      ),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.black,
-                      ),
-                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  _displayNearbyPlacesInfo();
-                },
-                child: Text(
-                  "Show Nearby Places Info",
-                  style: TextStyle(
-                    fontFamily: 'outfit',
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GoogleMap(
-                  onMapCreated: (controller) {
-                    setState(() {
-                      _controller = controller;
-                    });
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    _displayNearbyPlacesInfo();
                   },
-                  initialCameraPosition: CameraPosition(
-                    target: const LatLng(0, 0),
-                    zoom: 15,
+                  child: Text(
+                    "Show Nearby Places Info",
+                    style: TextStyle(
+                      fontFamily: 'outfit',
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
                   ),
-                  myLocationEnabled: true,
-                  polylines: _polylines,
-                  circles: _circles,
-                  onTap: (LatLng point) {
-                    setState(() {
-                      _selectedDestination = point;
-                      _destinationController.text =
-                      '${point.latitude}, ${point.longitude}';
-                    });
-                  },
-                  markers: _getMarkers(),
                 ),
-              ),
-
-            ],
+                const SizedBox(height: 16),
+                Expanded(
+                  child: GoogleMap(
+                    onMapCreated: (controller) {
+                      setState(() {
+                        _controller = controller;
+                      });
+                    },
+                    initialCameraPosition: CameraPosition(
+                      target: const LatLng(0, 0),
+                      zoom: 15,
+                    ),
+                    myLocationEnabled: true,
+                    polylines: _polylines,
+                    circles: _circles,
+                    onTap: (LatLng point) {
+                      setState(() {
+                        _selectedDestination = point;
+                        _destinationController.text =
+                            '${point.latitude}, ${point.longitude}';
+                      });
+                    },
+                    markers: _getMarkers(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-
 
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
@@ -997,7 +1024,6 @@ class Place {
       this.phone,
       required this.location});
 }
-
 
 class CrimeData {
   double latitude;

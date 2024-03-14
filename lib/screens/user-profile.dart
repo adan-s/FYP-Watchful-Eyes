@@ -12,13 +12,10 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'map.dart';
 
-
-
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
 
   @override
-
   _UserProfilePageState createState() => _UserProfilePageState();
 }
 
@@ -28,7 +25,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     super.initState();
     fetchProfileImage();
   }
-
 
   // Fetch profile image URL from the database
   Future<void> fetchProfileImage() async {
@@ -51,145 +47,145 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                end: Alignment.topCenter,
+                begin: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF769DC9),
+                  Color(0xFF7EA3CA),
+                ],
+              ),
+            ),
+          ),
+          title: const Text(
+            'User Profile',
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
+          actions: [
+            ResponsiveAppBarActions(),
+          ],
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              end: Alignment.topCenter,
-              begin: Alignment.bottomCenter,
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
               colors: [
                 Color(0xFF769DC9),
                 Color(0xFF7EA3CA),
+                Color(0xFF7EA3CA),
+                Color(0xFFCBE1EE),
+                Color(0xFFCBE1EE),
               ],
             ),
           ),
-        ),
-        title: const Text(
-          'User Profile',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        actions: [
-          ResponsiveAppBarActions(),
-        ],
-        iconTheme: IconThemeData(color: Colors.white),
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: FutureBuilder<usermodel>(
+                  future: controller.getUserData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else if (!snapshot.hasData) {
+                      return Center(child: Text('User data not found.'));
+                    }
 
-      ),
-
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            end: Alignment.bottomCenter,
-            begin: Alignment.topCenter,
-            colors: [
-              Color(0xFF769DC9),
-              Color(0xFF7EA3CA),
-              Color(0xFF7EA3CA),
-              Color(0xFFCBE1EE),
-              Color(0xFFCBE1EE),
-            ],
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
-            child: Center(
-              child: FutureBuilder<usermodel>(
-                future: controller.getUserData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text(snapshot.error.toString()));
-                  } else if (!snapshot.hasData) {
-                    return Center(child: Text('User data not found.'));
-                  }
-
-                  final user = snapshot.data!;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(profileImageUrl),
-
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Username: ${user.username}',
-                        style: const TextStyle(
-                          fontFamily: 'outfit',
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    final user = snapshot.data!;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(profileImageUrl),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Email: ${user.email}',
-                        style: const TextStyle(
-                          fontFamily: 'outfit',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      ElevatedButton(
-                        onPressed: () {
-                          _showEditProfileDialog(context, user.email, snapshot);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Username: ${user.username}',
+                          style: const TextStyle(
+                            fontFamily: 'outfit',
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          primary: Colors.transparent,
-                          elevation: 0,
                         ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                Color(0xFF7EA3CA),
-                                Color(0xFF7EA3CA),
-                              ],
+                        const SizedBox(height: 16),
+                        Text(
+                          'Email: ${user.email}',
+                          style: const TextStyle(
+                            fontFamily: 'outfit',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        ElevatedButton(
+                          onPressed: () {
+                            _showEditProfileDialog(
+                                context, user.email, snapshot);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            primary: Colors.transparent,
+                            elevation: 0,
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 20,
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(width: 8),
-                              Text(
-                                "Edit Profile",
-                                style: TextStyle(
-                                  fontFamily: 'outfit',
-                                  fontSize: 16,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Color(0xFF7EA3CA),
+                                  Color(0xFF7EA3CA),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(width: 8),
+                                Text(
+                                  "Edit Profile",
+                                  style: TextStyle(
+                                    fontFamily: 'outfit',
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.edit,
                                   color: Colors.white,
                                 ),
-                              ),
-                              Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -197,7 +193,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
-
 
   Future<void> _handleUpdateProfile(String username, String contactNo,
       AsyncSnapshot<usermodel> snapshot) async {
@@ -229,7 +224,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-
   void _showEditProfileDialog(BuildContext context, String userEmail,
       AsyncSnapshot<usermodel> snapshot) {
     showDialog(
@@ -256,7 +250,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  void _showEditNameDialog(BuildContext context, AsyncSnapshot<usermodel> snapshot) {
+  void _showEditNameDialog(
+      BuildContext context, AsyncSnapshot<usermodel> snapshot) {
     TextEditingController nameController = TextEditingController();
     TextEditingController contactNoController = TextEditingController();
 
@@ -299,7 +294,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               onPressed: () async {
                 bool confirmUpdate = await _showConfirmationDialog(context);
                 if (confirmUpdate) {
-                  if (contactNoController.text.length == 11 && nameController.text.isNotEmpty) {
+                  if (contactNoController.text.length == 11 &&
+                      nameController.text.isNotEmpty) {
                     await _handleUpdateProfile(
                       nameController.text,
                       contactNoController.text,
@@ -326,7 +322,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
@@ -337,7 +334,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-
   Future<bool> _showConfirmationDialog(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -346,14 +342,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
           title: Text('Confirmation'),
           content: Text('Are you sure you want to update?'),
           actions: <Widget>[
-
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(true); // Confirm update
               },
               child: const Text('Yes', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Choose your desired button color
+                backgroundColor:
+                    Colors.green, // Choose your desired button color
               ),
             ),
             TextButton(
@@ -371,8 +367,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-
-  Future<void> _updateProfileImage(BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
+  Future<void> _updateProfileImage(
+      BuildContext context, AsyncSnapshot<usermodel> snapshot) async {
     try {
       dynamic imageFile;
 
@@ -400,11 +396,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
           firebase_storage.UploadTask? uploadTask;
 
-          uploadTask = storageRef.child("uploadImage/$userEmail.jpeg").putData(data, metadata);
+          uploadTask = storageRef
+              .child("uploadImage/$userEmail.jpeg")
+              .putData(data, metadata);
 
           await uploadTask!.whenComplete(() async {
-            imageUrl = await storageRef.child("uploadImage/$userEmail.jpeg").getDownloadURL();
-            await controller.updateProfileImage(email: userEmail, imageUrl: imageUrl);
+            imageUrl = await storageRef
+                .child("uploadImage/$userEmail.jpeg")
+                .getDownloadURL();
+            await controller.updateProfileImage(
+                email: userEmail, imageUrl: imageUrl);
             setState(() {
               profileImageUrl = imageUrl;
               print(profileImageUrl);
@@ -437,6 +438,4 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
     }
   }
-
-
 }

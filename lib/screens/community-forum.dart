@@ -22,56 +22,63 @@ class CommunityForumPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors:
-                [ Color(0xFF769DC9),
-                  Color(0xFF769DC9),
-                 ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF769DC9),
+                    Color(0xFF769DC9),
+                  ],
+                ),
               ),
             ),
-          ),
-          title: Text(
-            'Community Forum',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
-          ),
-          centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              end: Alignment.bottomCenter,
-              begin: Alignment.topCenter,
-              colors: [
-                Color(0xFF769DC9),
-                Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
-              ],
+            title: Text(
+              'Community Forum',
+              style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+
             ),
+            centerTitle: true,
+            iconTheme: IconThemeData(color: Colors.white),
+            actions: [
+              ResponsiveAppBarActions(),
+            ],
           ),
-          child: HomeTab(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PostNewItemPage()),
-            );
-          },
-          child: Icon(Icons.add),
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                end: Alignment.bottomCenter,
+                begin: Alignment.topCenter,
+                colors: [
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                  Color(0xFF7EA3CA),
+                  Color(0xFF769DC9),
+                  Color(0xFFCBE1EE),
+                ],
+              ),
+            ),
+            child: HomeTab(),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PostNewItemPage()),
+              );
+            },
+            child: Icon(Icons.add),
+          ),
         ),
       ),
     );
@@ -81,8 +88,8 @@ class CommunityForumPage extends StatelessWidget {
 //HomeTab
 Future<List<Post>> fetchPosts() async {
   List<Post> posts = [];
-  QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('items').get();
-
+  QuerySnapshot snapshot =
+      await FirebaseFirestore.instance.collection('items').get();
 
   for (QueryDocumentSnapshot doc in snapshot.docs) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -102,6 +109,7 @@ Future<List<Post>> fetchPosts() async {
 
   return posts;
 }
+
 Future<List<Comment>> fetchComments(String postId) async {
   print("Fetching comments for post with ID: $postId");
   QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
@@ -113,15 +121,16 @@ Future<List<Comment>> fetchComments(String postId) async {
   print("Fetched ${commentSnapshot.docs.length} comments");
 
   return commentSnapshot.docs.map((commentDoc) {
-    Map<String, dynamic> commentData = commentDoc.data() as Map<String, dynamic>;
+    Map<String, dynamic> commentData =
+        commentDoc.data() as Map<String, dynamic>;
     return Comment(
       username: commentData['username'] ?? '',
       text: commentData['text'] ?? '',
     );
   }).toList();
 }
-class HomeTab extends StatelessWidget {
 
+class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Post>>(
@@ -151,6 +160,7 @@ class HomeTab extends StatelessWidget {
     );
   }
 }
+
 class Post {
   final String postId;
   final String username;
@@ -168,6 +178,7 @@ class Post {
     required this.comments,
   });
 }
+
 class Comment {
   final String username;
   final String text;
@@ -177,6 +188,7 @@ class Comment {
     required this.text,
   });
 }
+
 class PostCard extends StatefulWidget {
   final Post post;
 
@@ -185,6 +197,7 @@ class PostCard extends StatefulWidget {
   @override
   _PostCardState createState() => _PostCardState();
 }
+
 class _PostCardState extends State<PostCard> {
   bool isLiked = false;
   TextEditingController commentController = TextEditingController();
@@ -196,7 +209,8 @@ class _PostCardState extends State<PostCard> {
 
     return Center(
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 28.0, horizontal: marginHorizontal),
+        margin:
+            EdgeInsets.symmetric(vertical: 28.0, horizontal: marginHorizontal),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -238,7 +252,8 @@ class _PostCardState extends State<PostCard> {
                           handleLikeButton();
                         },
                       ),
-                      Text('${widget.post.likes} Likes'), // Display fetched likes count
+                      Text('${widget.post.likes} Likes'),
+                      // Display fetched likes count
                     ],
                   ),
                   Row(
@@ -286,7 +301,11 @@ class _PostCardState extends State<PostCard> {
   }
 
   void addLike(String postId) {
-    FirebaseFirestore.instance.collection('items').where('id', isEqualTo: postId).get().then((QuerySnapshot querySnapshot) {
+    FirebaseFirestore.instance
+        .collection('items')
+        .where('id', isEqualTo: postId)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         doc.reference.update({'likes': FieldValue.increment(1)});
       });
@@ -294,16 +313,16 @@ class _PostCardState extends State<PostCard> {
   }
 
   void removeLike(String postId) {
-    FirebaseFirestore.instance.collection('items').where('id', isEqualTo: postId).get().then((QuerySnapshot querySnapshot) {
+    FirebaseFirestore.instance
+        .collection('items')
+        .where('id', isEqualTo: postId)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         doc.reference.update({'likes': FieldValue.increment(-1)});
       });
     });
   }
-
-
-
-
 
   // Function to show comments in a dialog with a text field for adding a comment
   void showCommentsDialog(BuildContext context) {
@@ -344,7 +363,8 @@ class _PostCardState extends State<PostCard> {
                     widget.post.comments.add(newComment);
                   });
 
-                  final ProfileController userController = Get.put(ProfileController());
+                  final ProfileController userController =
+                      Get.put(ProfileController());
                   saveComment(widget.post.postId, newComment, userController);
                   commentController.clear();
                 }
@@ -358,7 +378,8 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void saveComment(String postId, Comment comment, ProfileController userController) async {
+  void saveComment(
+      String postId, Comment comment, ProfileController userController) async {
     try {
       usermodel currentUser = await userController.getUserData();
       FirebaseFirestore.instance
@@ -373,9 +394,8 @@ class _PostCardState extends State<PostCard> {
       print('Error saving comment: $error');
     }
   }
-
-
 }
+
 class CommentSection extends StatelessWidget {
   final List<Comment> comments;
 
@@ -386,7 +406,6 @@ class CommentSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-
         Divider(),
         for (var comment in comments)
           CommentTile(username: comment.username, comment: comment.text),
@@ -394,6 +413,7 @@ class CommentSection extends StatelessWidget {
     );
   }
 }
+
 class CommentTile extends StatelessWidget {
   final String username;
   final String comment;
@@ -409,8 +429,6 @@ class CommentTile extends StatelessWidget {
     );
   }
 }
-
-
 
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
@@ -435,11 +453,9 @@ class ResponsiveAppBarActions extends StatelessWidget {
           _buildNavBarItem("Emergency Contact", Icons.phone, () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>  AddContact()),
+              MaterialPageRoute(builder: (context) => AddContact()),
             );
           }),
-
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -530,53 +546,57 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }
 
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-      tooltip: title,
-    ): Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(icon, color: Color(0xFF769DC9)),
-          onPressed: onPressed,
-          tooltip: title,
-        ),
-        GestureDetector(
-          onTap: onPressed,
-          child: Text(
-            title,
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ),
-      ],
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+            tooltip: title,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(icon, color: Color(0xFF769DC9)),
+                onPressed: onPressed,
+                tooltip: title,
+              ),
+              GestureDetector(
+                onTap: onPressed,
+                child: Text(
+                  title,
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ),
+            ],
+          );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
-    return kIsWeb ? IconButton(
-      icon: Icon(icon, color: Colors.white),
-      onPressed: onPressed,
-    ): InkWell(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(icon, color: Color(0xFF769DC9)),
-            onPressed: null, // Disable IconButton onPressed
-            tooltip: "User Profile",
-          ),
-          Text(
-            "User Profile",
-            style: TextStyle(color: Color(0xFF769DC9)),
-          ),
-        ],
-      ),
-    );
+    return kIsWeb
+        ? IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: onPressed,
+          )
+        : InkWell(
+            onTap: onPressed,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(icon, color: Color(0xFF769DC9)),
+                  onPressed: null, // Disable IconButton onPressed
+                  tooltip: "User Profile",
+                ),
+                Text(
+                  "User Profile",
+                  style: TextStyle(color: Color(0xFF769DC9)),
+                ),
+              ],
+            ),
+          );
   }
 }
 
@@ -591,16 +611,16 @@ class ResponsiveRow extends StatelessWidget {
       children: [
         if (MediaQuery.of(context).size.width > 600)
           ...children.map((child) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: child,
-          )),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: child,
+              )),
         if (MediaQuery.of(context).size.width <= 600)
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return children
                   .map((child) => PopupMenuItem(
-                child: child,
-              ))
+                        child: child,
+                      ))
                   .toList();
             },
             icon: Icon(Icons.menu, color: Colors.white),
