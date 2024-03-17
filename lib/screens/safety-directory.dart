@@ -50,9 +50,7 @@ class _SafetyDirectoryState extends State<SafetyDirectory> {
               ),
               centerTitle: true,
               iconTheme: IconThemeData(color: Colors.white),
-              actions: [
-                ResponsiveAppBarActions(),
-              ],
+              leading: ResponsiveAppBarActions(),
               bottom: TabBar(
                 tabs: [
                   Tab(

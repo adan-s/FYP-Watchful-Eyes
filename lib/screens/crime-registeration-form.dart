@@ -145,9 +145,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
             style: TextStyle(fontFamily: 'outfit', color: Colors.white),
           ),
           centerTitle: true,
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
+          leading: ResponsiveAppBarActions(),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Container(

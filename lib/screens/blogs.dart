@@ -81,9 +81,7 @@ class _BlogPageState extends State<BlogPage> {
                 ),
               ),
             ),
-            actions: [
-              ResponsiveAppBarActions(),
-            ],
+            leading: ResponsiveAppBarActions(),
             iconTheme: IconThemeData(color: Colors.white),
             centerTitle: true,
           ),

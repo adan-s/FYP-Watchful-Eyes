@@ -36,11 +36,18 @@ class _MapPageState extends State<MapPage> {
   List<CrimeData?> crimeDataList = [];
   late Position position;
 
+  @override
+  void initState() {
+    super.initState();
+    _checkLocationPermission();
+    _fetchCrimeData();
+  }
+
   Future<void> _fetchCrimeData() async {
-    crimeDataList = await _fetchAllCrimeData();
     position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+    crimeDataList = await _fetchAllCrimeData();
     setState(() {});
   }
 
@@ -65,6 +72,7 @@ class _MapPageState extends State<MapPage> {
     _fetchCrimeData();
 
     if (position != null) {
+      // Check if position is not null
       for (CrimeData? crimeData in crimeDataList) {
         if (crimeData != null) {
           double distance = _calculateDistance(
@@ -77,6 +85,8 @@ class _MapPageState extends State<MapPage> {
           }
         }
       }
+    } else {
+      print('Position is null. Crime data cannot be fetched.');
     }
 
     return markers;
@@ -160,6 +170,37 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  Widget _getMap() {
+    if (position == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return GoogleMap(
+        onMapCreated: (controller) {
+          setState(() {
+            _controller = controller;
+          });
+        },
+        initialCameraPosition: CameraPosition(
+          target: const LatLng(0, 0),
+          zoom: 15,
+        ),
+        myLocationEnabled: true,
+        polylines: _polylines,
+        circles: _circles,
+        onTap: (LatLng point) {
+          setState(() {
+            _selectedDestination = point;
+            _destinationController.text =
+                '${point.latitude}, ${point.longitude}';
+          });
+        },
+        markers: _getMarkers(),
+      );
+    }
+  }
+
   void _showCustomInfoWindow(CrimeData crimeData) {
     showDialog(
       context: context,
@@ -223,12 +264,6 @@ class _MapPageState extends State<MapPage> {
         ),
       );
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _checkLocationPermission();
   }
 
   Future<void> _checkLocationPermission() async {
@@ -367,11 +402,36 @@ class _MapPageState extends State<MapPage> {
           double.parse(destination.split(', ')[1]),
         );
 
-        _showPath(
-          currentLatLng.latitude,
-          currentLatLng.longitude,
-          '${destinationLatLng.latitude.toStringAsFixed(7)}, ${destinationLatLng.longitude.toStringAsFixed(7)}',
-        );
+        double distance = _calculateDistance(currentLatLng, destinationLatLng);
+
+        if (distance <= 2.0) {
+          _showPath(
+            currentLatLng.latitude,
+            currentLatLng.longitude,
+            '${destinationLatLng.latitude.toStringAsFixed(7)}, ${destinationLatLng.longitude.toStringAsFixed(7)}',
+          );
+        } else {
+          _showPath(
+            currentLatLng.latitude,
+            currentLatLng.longitude,
+            '${currentLatLng.latitude.toStringAsFixed(7)}, ${currentLatLng.longitude.toStringAsFixed(7)}',
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Oops! Destination is out of bounds (2km).',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              margin: EdgeInsets.only(left: 20, right: 20),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
       }
     }
   }
@@ -623,157 +683,246 @@ class _MapPageState extends State<MapPage> {
             ],
           ),
           centerTitle: true,
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
+          leading: ResponsiveAppBarActions(),
           iconTheme: IconThemeData(color: Colors.white),
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              end: Alignment.bottomCenter,
-              begin: Alignment.topCenter,
-              colors: [
-                Color(0xFF769DC9),
-                Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _currentLocationController,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: 'Current Location',
-                    labelStyle: TextStyle(
-                        fontFamily: 'outfit',
-                        fontSize: 24,
-                        color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  enabled: false, // Make the text field uneditable
+        body: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  end: Alignment.bottomCenter,
+                  begin: Alignment.topCenter,
+                  colors: [
+                    Color(0xFF769DC9),
+                    Color(0xFF769DC9),
+                    Color(0xFF7EA3CA),
+                    Color(0xFF769DC9),
+                    Color(0xFFCBE1EE),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _destinationController,
-                  style: TextStyle(fontFamily: 'outfit', color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: 'Destination',
-                    labelStyle:
-                        TextStyle(fontFamily: 'outfit', color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  enabled: false,
-                ),
-                if (_selectedDestination == null)
-                  Text(
-                    'Select dest through marker on map',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_destinationController.text.isNotEmpty) {
-                      _showPathFromCurrentToDestination();
-                    } else {
-                      _getCurrentLocation();
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFFFFFF),
-                          Color(0xFFFFFF),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 8),
-                        Text(
-                          "Show Map",
+                        TextField(
+                          controller: _currentLocationController,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Current Location',
+                            labelStyle: TextStyle(
+                                fontFamily: 'outfit',
+                                fontSize: 24,
+                                color: Colors.white),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                          ),
+                          enabled: false, // Make the text field uneditable
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _destinationController,
                           style: TextStyle(
+                              fontFamily: 'outfit', color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Destination',
+                            labelStyle: TextStyle(
+                                fontFamily: 'outfit', color: Colors.white),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                          ),
+                          enabled: false,
+                        ),
+                        if (_selectedDestination == null)
+                          Text(
+                            'Select dest through marker on map',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_destinationController.text.isNotEmpty) {
+                              _showPathFromCurrentToDestination();
+                            } else {
+                              _getCurrentLocation();
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Color(0xFFFFFF),
+                                  Color(0xFFFFFF),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(width: 8),
+                                Text(
+                                  "Show Map",
+                                  style: TextStyle(
+                                      fontFamily: 'outfit',
+                                      fontSize: 16,
+                                      color: Colors.black),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            _displayNearbyPlacesInfo();
+                          },
+                          child: Text(
+                            "Show Nearby Places Info",
+                            style: TextStyle(
                               fontFamily: 'outfit',
                               fontSize: 16,
-                              color: Colors.black),
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.black,
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: _getMap(),
                         ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    _displayNearbyPlacesInfo();
-                  },
-                  child: Text(
-                    "Show Nearby Places Info",
-                    style: TextStyle(
-                      fontFamily: 'outfit',
-                      fontSize: 16,
-                      color: Colors.black,
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text("Marker Color Explanations"),
+                                  ),
+                                ],
+                              ),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    "Destination",
+                                    "Blue Marker",
+                                  ),
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    "Other Crimes",
+                                    "Yellow Markers",
+                                  ),
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    "Domestic Abuse",
+                                    "Pink Markers",
+                                  ),
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    "Harassment",
+                                    "Red Markers",
+                                  ),
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    "Accident",
+                                    "Red Markers",
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(
+                                        'Close',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Icon(
+                        Icons.info_outline,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: GoogleMap(
-                    onMapCreated: (controller) {
-                      setState(() {
-                        _controller = controller;
-                      });
-                    },
-                    initialCameraPosition: CameraPosition(
-                      target: const LatLng(0, 0),
-                      zoom: 15,
-                    ),
-                    myLocationEnabled: true,
-                    polylines: _polylines,
-                    circles: _circles,
-                    onTap: (LatLng point) {
-                      setState(() {
-                        _selectedDestination = point;
-                        _destinationController.text =
-                            '${point.latitude}, ${point.longitude}';
-                      });
-                    },
-                    markers: _getMarkers(),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
+}
+
+Widget _buildInfoRow(IconData icon, String title, String description) {
+  return Row(
+    children: [
+      Icon(
+        icon,
+        color: Colors.black,
+      ),
+      SizedBox(width: 8),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            description,
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 class ResponsiveAppBarActions extends StatelessWidget {

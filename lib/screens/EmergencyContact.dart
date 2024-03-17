@@ -13,7 +13,7 @@ class EmergencyContactListScreen extends StatefulWidget {
 
 class _EmergencyContactListScreenState extends State<EmergencyContactListScreen> {
   final EmergencycontactsRepo _contactRepository = EmergencycontactsRepo();
-  late List<EmergencyContact> emergencyContacts = []; // Initialize with an empty list
+  late List<EmergencyContact> emergencyContacts = [];
 
   @override
   void initState() {
@@ -39,10 +39,7 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF769DC9),
-
-        actions: [
-          ResponsiveAppBarActions(),
-        ],
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Emergency Contacts',
           style: TextStyle(color: Colors.white),
@@ -52,11 +49,11 @@ class _EmergencyContactListScreenState extends State<EmergencyContactListScreen>
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
+              Color(0xFF769DC9),
+              Color(0xFF7EA3CA),
+              Color(0xFF7EA3CA),
+              Color(0xFF769DC9),
               Color(0xFFCBE1EE),
-              Color(0xFF769DC9),
-              Color(0xFF7EA3CA),
-              Color(0xFF7EA3CA),
-              Color(0xFF769DC9),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

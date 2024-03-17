@@ -71,11 +71,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
+          leading: ResponsiveAppBarActions(),
           iconTheme: IconThemeData(color: Colors.white),
         ),
+
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

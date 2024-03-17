@@ -50,9 +50,7 @@ class CommunityForumPage extends StatelessWidget {
             ),
             centerTitle: true,
             iconTheme: IconThemeData(color: Colors.white),
-            actions: [
-              ResponsiveAppBarActions(),
-            ],
+            leading: ResponsiveAppBarActions(),
           ),
           body: Container(
             decoration: BoxDecoration(

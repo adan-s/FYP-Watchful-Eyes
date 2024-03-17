@@ -75,9 +75,7 @@ class AddContact extends StatelessWidget {
               Text('Emergency Contact', style: TextStyle(color: Colors.white)),
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
-          actions: [
-            ResponsiveAppBarActions(),
-          ],
+          leading: ResponsiveAppBarActions(),
         ),
         body: Container(
           decoration: BoxDecoration(
