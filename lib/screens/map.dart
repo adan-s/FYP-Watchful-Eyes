@@ -751,60 +751,68 @@ class _MapPageState extends State<MapPage> {
                             style: TextStyle(color: Colors.red),
                           ),
                         const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_destinationController.text.isNotEmpty) {
-                              _showPathFromCurrentToDestination();
-                            } else {
-                              _getCurrentLocation();
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFFFFFF),
-                                  Color(0xFFFFFF),
-                                ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (_destinationController.text.isNotEmpty) {
+                                  _showPathFromCurrentToDestination();
+                                } else {
+                                  _getCurrentLocation();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.black,
                               ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(width: 8),
-                                Text(
-                                  "Show Map",
-                                  style: TextStyle(
-                                      fontFamily: 'outfit',
-                                      fontSize: 16,
-                                      color: Colors.black),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Show Map",
+                                      style: TextStyle(
+                                        fontFamily: 'outfit',
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.map,
+                                    ),
+                                  ],
                                 ),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.black,
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _displayNearbyPlacesInfo();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.black,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Nearby Places",
+                                      style: TextStyle(
+                                        fontFamily: 'outfit',
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.place,
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            _displayNearbyPlacesInfo();
-                          },
-                          child: Text(
-                            "Show Nearby Places Info",
-                            style: TextStyle(
-                              fontFamily: 'outfit',
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         Expanded(
