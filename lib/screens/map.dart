@@ -41,6 +41,7 @@ class _MapPageState extends State<MapPage> {
     super.initState();
     _checkLocationPermission();
     _fetchCrimeData();
+    _getCurrentLocation();
   }
 
   Future<void> _fetchCrimeData() async {
@@ -624,12 +625,26 @@ class _MapPageState extends State<MapPage> {
                       _onLocationSelected(place);
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      "Show on Map",
-                      style: TextStyle(
-                        fontFamily: 'outfit',
-                        fontSize: 16,
-                        color: Colors.black,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      onPrimary: Colors.black,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Show Map",
+                            style: TextStyle(
+                              fontFamily: 'outfit',
+                              fontSize: 14,
+                            ),
+                          ),
+                          Icon(
+                            Icons.map,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -767,7 +782,8 @@ class _MapPageState extends State<MapPage> {
                                 onPrimary: Colors.black,
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 6),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -794,7 +810,8 @@ class _MapPageState extends State<MapPage> {
                                 onPrimary: Colors.black,
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 4),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
