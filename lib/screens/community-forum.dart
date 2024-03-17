@@ -46,7 +46,6 @@ class CommunityForumPage extends StatelessWidget {
             title: Text(
               'Community Forum',
               style: TextStyle(fontFamily: 'outfit', color: Colors.white),
-
             ),
             centerTitle: true,
             iconTheme: IconThemeData(color: Colors.white),
@@ -75,7 +74,8 @@ class CommunityForumPage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => PostNewItemPage()),
               );
             },
-            child: Icon(Icons.add),
+            backgroundColor: Colors.white,
+            child: Icon(Icons.add, color: Colors.black),
           ),
         ),
       ),

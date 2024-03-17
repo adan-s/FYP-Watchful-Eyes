@@ -81,11 +81,11 @@ class AddContact extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
+                Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
+                Color(0xFF7EA3CA),
+                Color(0xFF769DC9),
                 Color(0xFFCBE1EE),
-                Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -140,6 +140,10 @@ class AddContact extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.black,
+                      ),
                       onPressed: () {
                         if (_nameController.text.isNotEmpty &&
                             _phoneNumberController.text.isNotEmpty) {
@@ -149,7 +153,7 @@ class AddContact extends StatelessWidget {
                             // Handle the case when userEmail is null
                           }
                         } else {
-                          // Show an error message for incomplete form
+
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
@@ -168,9 +172,28 @@ class AddContact extends StatelessWidget {
                           );
                         }
                       },
-                      child: Text('Add Contact'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.add_call,
+                          ),
+                          Text(
+                            "Add Contact",
+                            style: TextStyle(
+                              fontFamily: 'outfit',
+                              fontSize: 14,
+                            ),
+                          ),
+
+                        ],
+                      ),
                     ),
                     ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black,
+                        ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -179,7 +202,22 @@ class AddContact extends StatelessWidget {
                                   EmergencyContactListScreen()),
                         );
                       },
-                      child: Text('Show Contacts'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.contacts_outlined,
+                          ),
+                          Text(
+                            "Show Contacts",
+                            style: TextStyle(
+                              fontFamily: 'outfit',
+                              fontSize: 14,
+                            ),
+                          ),
+
+                        ],
+                      ),
                     ),
                   ],
                 ),

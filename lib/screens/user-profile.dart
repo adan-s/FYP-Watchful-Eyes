@@ -139,43 +139,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 context, user.email, snapshot);
                           },
                           style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            primary: Colors.transparent,
-                            elevation: 0,
+                            primary: Colors.white,
+                            onPrimary: Colors.black,
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF7EA3CA),
-                                  Color(0xFF7EA3CA),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 20,
-                            ),
-                            child: const Row(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 4),
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SizedBox(width: 8),
                                 Text(
                                   "Edit Profile",
                                   style: TextStyle(
                                     fontFamily: 'outfit',
-                                    fontSize: 16,
-                                    color: Colors.white,
+                                    fontSize: 14,
                                   ),
                                 ),
                                 Icon(
                                   Icons.edit,
-                                  color: Colors.white,
                                 ),
                               ],
                             ),

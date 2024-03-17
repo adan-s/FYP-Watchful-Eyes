@@ -127,7 +127,7 @@ class _BlogPageState extends State<BlogPage> {
                               fontFamily: 'outfit',
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: Colors.white, // Text color
+                              color: Colors.white,
                             ),
                           ),
                         ),
