@@ -19,74 +19,81 @@ class _JourneyTrackerState extends State<JourneyTracker> {
   late LocationData? currentLocation;
   Timer? alarmTimer;
   Duration customAlarmDuration = Duration(minutes: 30);
-  late String selectedReason = ''; // Add selectedReason variable
+  late String selectedReason = '';
   late TextEditingController otherReasonController = TextEditingController();
+  late Duration remainingTime = Duration();
 
   @override
   void initState() {
     super.initState();
-    _startJourneyTracking();
+    _fetchCurrentLocation();
+  }
+
+  Future<void> _fetchCurrentLocation() async {
+    Location location = Location();
+    currentLocation = await location.getLocation();
   }
 
   @override
   void dispose() {
     super.dispose();
-    alarmTimer?.cancel(); // Cancel timer when disposing the widget
+    alarmTimer?.cancel();
     otherReasonController.dispose();
   }
 
-  Future<void> _startJourneyTracking() async {
-    try {
-      var location = Location();
-      LocationData userLocation = await location.getLocation();
-      print("User Location: $userLocation");
+  Future<void> _setAlarm(Duration duration, String reason) async {
+    remainingTime = duration;
+    alarmTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        currentLocation = userLocation;
+        if (remainingTime.inSeconds > 0) {
+          remainingTime -= Duration(seconds: 1);
+        } else {
+          timer.cancel();
+          _sendEmergencyNotification(reason);
+        }
       });
-    } catch (e) {
-      print("Error getting location: $e");
-    }
-  }
-
-  void _setAlarm(Duration duration, String reason) {
-    alarmTimer = Timer(duration, () {
-      _sendEmergencyNotification(reason); // Pass the reason to the method
     });
-    print('Alarm set for $reason after ${duration.inMinutes} minutes');
-  }
-
-
-  void _turnOffAlarm() {
-    if (alarmTimer != null && alarmTimer!.isActive) {
-      alarmTimer!.cancel(); // Turn off the alarm timer
-      print('Alarm turned off');
-    } else {
-      print('No active alarm to turn off');
-    }
   }
 
   Future<void> _sendEmergencyNotification(String reason) async {
     try {
-      User? user = AuthenticationRepository.instance.firebaseUser.value;
-      if (user != null) {
-        var userEmail = user.email;
-        print('User Email: $userEmail');
+      // Check SMS permission before sending
+      if (await _isPermissionGranted()) {
+        User? user = AuthenticationRepository.instance.firebaseUser.value;
+        if (user != null) {
+          var userEmail = user.email;
+          print('User Email: $userEmail');
 
-        var contacts = await EmergencycontactsRepo().getEmergencyContacts(
-            userEmail!);
+          // Get emergency contacts
+          var contacts =
+          await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
 
-        var locationLink =
-            'https://maps.google.com/?q=${currentLocation!
-            .latitude},${currentLocation!.longitude}';
-        var message = 'Emergency! User has not turned off the alarm. Current location: $locationLink. Reason: $reason';
+          // Check if current location is available
+          if (currentLocation != null) {
+            var locationLink =
+                'https://maps.google.com/?q=${currentLocation!.latitude},${currentLocation!.longitude}';
+            var message =
+                'Emergency! User has not turned off the alarm. Current location: $locationLink. Reason: $reason';
 
-        // Send messages to emergency contacts
-        for (var contact in contacts) {
-          await _sendSMS(contact.phoneNumber, message);
+            // Send messages to emergency contacts
+            for (var contact in contacts) {
+              await _sendSMS(contact.phoneNumber, message);
+            }
+          } else {
+            print('Current location is null');
+            Fluttertoast.showToast(msg: 'Failed to fetch location');
+          }
+        } else {
+          print('User is not authenticated');
+          Fluttertoast.showToast(msg: 'User is not authenticated');
         }
+      } else {
+        print('SMS permission not granted');
+        Fluttertoast.showToast(msg: 'SMS permission not granted');
       }
     } catch (e) {
       print('Error sending emergency message: $e');
+      Fluttertoast.showToast(msg: 'Error sending emergency message: $e');
     }
   }
 
@@ -95,27 +102,18 @@ class _JourneyTrackerState extends State<JourneyTracker> {
   }
 
   Future<void> _sendSMS(String phoneNumber, String message) async {
-    try {
-      if (await _isPermissionGranted()) {
-        SmsStatus result = await BackgroundSms.sendMessage(
-          phoneNumber: phoneNumber,
-          message: message,
-          simSlot: 1,
-        );
+    SmsStatus result = await BackgroundSms.sendMessage(
+      phoneNumber: phoneNumber,
+      message: message,
+      simSlot: 1,
+    );
 
-        if (result == SmsStatus.sent) {
-          print('Message sent successfully');
-          Fluttertoast.showToast(msg: 'Message sent successfully');
-        } else {
-          print('Failed to send message');
-          Fluttertoast.showToast(msg: 'Failed to send message');
-        }
-      } else {
-        Fluttertoast.showToast(msg: 'SMS permission not granted');
-      }
-    } catch (e) {
-      print('Error sending SMS: $e');
-      Fluttertoast.showToast(msg: 'Error sending SMS: $e');
+    if (result == SmsStatus.sent) {
+      print('Message sent successfully');
+      Fluttertoast.showToast(msg: 'Message sent successfully');
+    } else {
+      print('Failed to send message');
+      Fluttertoast.showToast(msg: 'Failed to send message');
     }
   }
 
@@ -142,74 +140,90 @@ class _JourneyTrackerState extends State<JourneyTracker> {
         customAlarmDuration = newDuration;
       });
 
-      // Show reason selection dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Text('Select or Write Reason'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildReasonButton('Walking Alone'),
-                _buildReasonButton('Going for a Run'),
-                _buildReasonButton('Taking Transportation'),
-                _buildReasonButton('Hiking'),
-                _buildReasonButton('Write My Own'),
-              ],
-            ),
-          );
-        },
-      ).then((selected) {
-        if (selected != null) {
-          if (selected == 'Write My Own') {
+      // Show reason selection dialog only if the reason is not set
+      if (selectedReason.isEmpty) {
+        String? reason = await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Select or Write Reason'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildReasonButton('Walking Alone'),
+                  _buildReasonButton('Going for a Run'),
+                  _buildReasonButton('Taking Transportation'),
+                  _buildReasonButton('Hiking'),
+                  _buildReasonButton('Write My Own'),
+                ],
+              ),
+            );
+          },
+        );
+
+        if (reason != null) {
+          if (reason == 'Write My Own') {
             _showWriteReasonDialog();
           } else {
-            _turnOffAlarm();
-            _setAlarm(customAlarmDuration, selected);
+            selectedReason = reason;
           }
         }
-      });
+      }
+
+      // Set the alarm if the reason is already set
+      if (selectedReason.isNotEmpty) {
+        _setAlarm(customAlarmDuration, selectedReason);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('please select a time'),),
+        SnackBar(
+          content: Text('please select a time'),
+        ),
       );
     }
   }
 
-
-
+  void _stopAlarm() {
+    if (alarmTimer != null) {
+      alarmTimer!.cancel();
+      setState(() {
+        remainingTime = Duration();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF769DC9), // Set Scaffold background color
+      backgroundColor: Color(0xFF769DC9),
       appBar: AppBar(
         title: Text(
           'Journey Tracker',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color(0xFF769DC9), // Set app bar background color
+        backgroundColor: Color(0xFF769DC9),
         elevation: 0,
       ),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
+              child : ClipOval(
               child: Image.asset(
                 'assets/safety.jpg',
                 width: 250,
                 height: 250,
               ),
+              ),
             ),
-            SizedBox(height: 60),
+            SizedBox(height: 40),
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Container(
                 width: 300,
-                padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                padding:
+                EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: Colors.white,
@@ -221,12 +235,16 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                     hintText: 'Reason',
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
+
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 16, right: 8), // Adjust left padding as needed
+                      child: Icon(Icons.info_outline, color: Colors.grey),
+                    ),
                   ),
-                  onTap: (){
+                  onTap: () {
                     showDialog(
                       context: context,
-                      builder: (BuildContext context){
+                      builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Select Reason'),
                           content: Column(
@@ -256,26 +274,67 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                 ),
               ),
             ),
-            SizedBox(height: 60),
+            SizedBox(height: 40),
             Padding(
               padding: EdgeInsets.only(left: 20.5),
               child: Container(
                 width: 300,
-                padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
+                padding:
+                EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: Colors.white,
                 ),
                 child: GestureDetector(
                   onTap: _showCustomAlarmDialog,
-
-                    child: Text(
-                      'Set Alarm',
-                      style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),
-                    ),
+                  child: Row(
+                    children: [
+                      Padding(padding: const EdgeInsets.only(left: 8,right: 12),
+                      child: Icon(Icons.alarm,color: Colors.grey,),
+                      ),
+                      Text('Set Alarm',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),)
+                    ],
+                  )
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+            child: Text(
+              'Remaining Time: ${_formatDuration(remainingTime)}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16), // Adjust the padding as needed
+                child: ElevatedButton(
+                  onPressed: _stopAlarm,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 2), // Adjust the vertical padding as needed
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.alarm_off, color: Colors.grey), // Icon on the left side
+                      SizedBox(width: 4), // Adjust the width as needed
+                      Text(
+                        'Stop Alarm',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
                   ),
                 ),
               ),
+            ),
+
 
           ],
         ),
@@ -283,12 +342,11 @@ class _JourneyTrackerState extends State<JourneyTracker> {
     );
   }
 
-
   void _showWriteReasonDialog() {
     TextEditingController reasonController = TextEditingController();
     showDialog(
       context: context,
-      builder: (BuildContext context){
+      builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Write Your Own Reason'),
           content: TextField(
@@ -315,11 +373,9 @@ class _JourneyTrackerState extends State<JourneyTracker> {
     );
   }
 
-
-
-  Widget _buildReasonButton(String reason){
+  Widget _buildReasonButton(String reason) {
     return TextButton(
-      onPressed:(){
+      onPressed: () {
         Navigator.of(context).pop(reason);
       },
       child: Text(
@@ -329,5 +385,10 @@ class _JourneyTrackerState extends State<JourneyTracker> {
     );
   }
 
-
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
+  }
 }

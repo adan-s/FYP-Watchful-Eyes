@@ -538,7 +538,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
-        _buildNavBarItem("JournyTracker", Icons.newspaper, () {
+        _buildNavBarItem("JournyTracker", Icons.directions, () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => JourneyTracker()),
