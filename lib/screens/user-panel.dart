@@ -7,6 +7,7 @@ import 'package:fyp/screens/Addcontact.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
 import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/login_screen.dart';
+import 'package:fyp/screens/panicButton.dart';
 import 'package:fyp/screens/safety-directory.dart';
 
 import 'package:location/location.dart';
@@ -40,6 +41,9 @@ class _UserPanelState extends State<UserPanel>
     super.initState();
     _getCurrentLocation();
     _getPermission();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _showEmergencyDialog();
+    });
 
     _animationController = AnimationController(
       vsync: this,
@@ -69,7 +73,25 @@ class _UserPanelState extends State<UserPanel>
     detector.stopListening();
     super.dispose();
   }
-
+  void _showEmergencyDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Emergency Instructions"),
+          content: Text("In case of an emergency, shake your mobile device to send your location to your emergency contacts."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
   Future<void> _getPermission() async {
     await [Permission.sms].request();
   }
@@ -90,6 +112,7 @@ class _UserPanelState extends State<UserPanel>
       print("Error getting location: $e");
     }
   }
+  bool isSending = false;
 
   Future<void> _sendEmergencyMessage() async {
     try {
@@ -113,6 +136,8 @@ class _UserPanelState extends State<UserPanel>
       }
     } catch (e) {
       print('Error sending emergency message: $e');
+    }finally{
+      isSending = false;
     }
   }
 
@@ -536,6 +561,12 @@ class ResponsiveAppBarActions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const BlogPage()),
+          );
+        }),
+        _buildNavBarItem("panic", Icons.newspaper, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PanicButton()),
           );
         }),
         _buildNavBarItem("JournyTracker", Icons.directions, () {
