@@ -105,8 +105,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                   ),
                 ),
                 ListTile(
-                  leading:
-                  Icon(Icons.dashboard, color: Colors.white),
+                  leading: Icon(Icons.dashboard, color: Colors.white),
                   title: Text(
                     'Dashboard',
                     style: TextStyle(
@@ -123,7 +122,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                 ),
                 ListTile(
                   leading:
-                  Icon(Icons.supervised_user_circle, color: Colors.white),
+                      Icon(Icons.supervised_user_circle, color: Colors.white),
                   title: Text(
                     'User Management',
                     style: TextStyle(
@@ -147,10 +146,11 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
-                      );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AnalyticsAndReports()),
+                    );
                   },
                 ),
                 Divider(
@@ -166,7 +166,6 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context);
-
                   },
                 ),
                 ListTile(
@@ -180,8 +179,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => CrimeDataPage()),
+                      MaterialPageRoute(builder: (context) => CrimeDataPage()),
                     );
                   },
                 ),
@@ -191,7 +189,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     bool confirmLogout =
-                    await _showLogoutConfirmationDialog(context);
+                        await _showLogoutConfirmationDialog(context);
 
                     if (confirmLogout) {
                       await AuthenticationRepository.instance.logout();
@@ -237,37 +235,37 @@ class CommunityForumPostsAdmin extends StatelessWidget {
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Logout Confirmation'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // No, do not logout
-              },
-              child: Text('No'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(true); // Yes, logout
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Logout Confirmation'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // No, do not logout
+                  },
+                  child: Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(true); // Yes, logout
 
-                // Perform logout
-                await AuthenticationRepository.instance.logout();
+                    // Perform logout
+                    await AuthenticationRepository.instance.logout();
 
-                // Redirect to the login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        );
-      },
-    ) ??
+                    // Redirect to the login screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text('Yes'),
+                ),
+              ],
+            );
+          },
+        ) ??
         false;
   }
 }
@@ -391,16 +389,13 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double marginHorizontal = screenWidth > 600 ? 106.0 : 16.0;
 
     return Center(
       child: Card(
         margin:
-        EdgeInsets.symmetric(vertical: 28.0, horizontal: marginHorizontal),
+            EdgeInsets.symmetric(vertical: 28.0, horizontal: marginHorizontal),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -416,16 +411,18 @@ class _PostCardState extends State<PostCard> {
                 double postWidth = maxWidth > 600 ? 400 : maxWidth;
 
                 return Container(
-                  width: postWidth,
-                  child: Image.network(
-                    widget.post.imageUrl,
-                    fit: BoxFit.cover,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.4,
-                  ),
-                );
+                    width: postWidth,
+                    child: kIsWeb
+                        ? Image.network(
+                            widget.post.imageUrl,
+                            fit: BoxFit.cover,
+                            height: MediaQuery.of(context).size.height * 0.4,
+                          )
+                        : Image.network(
+                            widget.post.imageUrl,
+                            fit: BoxFit.cover,
+                            height: MediaQuery.of(context).size.height * 0.4,
+                          ));
               },
             ),
             Padding(
@@ -538,7 +535,6 @@ class _PostCardState extends State<PostCard> {
     });
   }
 
-
   // Function to show comments in a dialog
   void showCommentsDialog(BuildContext context) {
     showDialog(
@@ -603,4 +599,3 @@ class CommentTile extends StatelessWidget {
     );
   }
 }
-
