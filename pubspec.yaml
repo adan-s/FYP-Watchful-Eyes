@@ -80,6 +80,9 @@ dependencies:
   pdf: ^3.8.4
   flutter_dotenv: ^5.1.0
   twilio_flutter: ^0.0.9
+  volume_watcher: ^2.0.1
+  firebase: ^9.0.0
+  android_physical_buttons: ^0.1.0
 
 
 dev_dependencies:

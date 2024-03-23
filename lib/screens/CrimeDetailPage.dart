@@ -24,37 +24,60 @@ class CrimeDetailPage extends StatelessWidget {
         ),
         title: Text(
           'Crime Details',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'outfit'),
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'outfit',
+          ),
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFFCFCFC),
+              Color(0xFFFCFCFC),
+              Color(0xFFFCFCFC),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Full Name: ${crimeData['fullName']}'),
-              Text('Phone Number: ${crimeData['phoneNumber']}'),
-              Text('Date: ${crimeData['date']}'),
-              Text('Time: ${crimeData['time']}'),
-              Text('Crime Type: ${crimeData['crimeType']}'),
-              Text('Description: ${crimeData['description']}'),
-              SizedBox(height: 16),
-              Text(
-                'Attachments:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              _buildImageWidgets(crimeData['attachments']),
-              SizedBox(height: 36),
-              if (crimeData['voiceMessageUrl'] != null && crimeData['voiceMessageUrl'] != "")
-                ElevatedButton(
-                  onPressed: () {
-                    downloadRecording(crimeData['voiceMessageUrl']);
-                  },
-                  child: Text('Download Recording'),
+              Padding(
+                padding: const EdgeInsets.all(26.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Full Name: ${crimeData['fullName']}', style: TextStyle(color: Colors.black)),
+                    Text('Phone Number: ${crimeData['phoneNumber']}', style: TextStyle(color: Colors.black)),
+                    Text('Date: ${crimeData['date']}', style: TextStyle(color: Colors.black)),
+                    Text('Time: ${crimeData['time']}', style: TextStyle(color: Colors.black)),
+                    Text('Crime Type: ${crimeData['crimeType']}', style: TextStyle(color: Colors.black)),
+                    Text('Description: ${crimeData['description']}', style: TextStyle(color: Colors.black)),
+                    SizedBox(height: 16),
+                    Text(
+                      'Attachments:',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    _buildImageWidgets(crimeData['attachments']),
+                    SizedBox(height: 36),
+                    if (crimeData['voiceMessageUrl'] != null &&
+                        crimeData['voiceMessageUrl'] != "")
+                      ElevatedButton(
+                        onPressed: () {
+                          downloadRecording(crimeData['voiceMessageUrl']);
+                        },
+                        child: Text('Download Recording'),
+                      ),
+                  ],
                 ),
+              ),
             ],
           ),
         ),
@@ -64,7 +87,7 @@ class CrimeDetailPage extends StatelessWidget {
 
   Widget _buildImageWidgets(dynamic attachments) {
     if (attachments == null || attachments.isEmpty) {
-      return Text('No attachments available.');
+      return Text('No attachments available.', style: TextStyle(color: Colors.black));
     }
 
     if (attachments is String) {
@@ -98,7 +121,7 @@ class CrimeDetailPage extends StatelessWidget {
             .toList(),
       );
     } else {
-      return Text('Invalid attachment format.');
+      return Text('Invalid attachment format.', style: TextStyle(color: Colors.black));
     }
   }
 
