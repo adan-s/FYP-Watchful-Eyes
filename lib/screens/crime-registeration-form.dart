@@ -48,12 +48,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
 
 
   void registerCrime() {
-    // Assuming you have validated the form data
-    // Get the user's location from the form
-    String userLocation = controller.location.value!.latitude.toString() + ', ' + controller.location.value!.longitude.toString();
-
-    // Call the NotificationService to send notifications
-    NotificationService(userLocation: userLocation).sendNotifications();
+    NotificationService(userLocation: _selectedLocation).sendNotifications();
   }
 
 
