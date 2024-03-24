@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:volume_watcher/volume_watcher.dart';
 import '../authentication/EmergencycontactsRepo.dart';
 import '../authentication/authentication_repo.dart';
+import 'blogs.dart';
 
 class PanicButton extends StatefulWidget {
   @override
@@ -18,79 +19,83 @@ class _PanicButtonState extends State<PanicButton> {
   int volumeUpCount = 0;
   double _previousVolume = 0.0;
 
-
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF769DC9),
-        title: Text(
-          'Panic Button',
-          style: TextStyle(color: Colors.white), // White color for the text
-        ),
-        centerTitle: true,
-      ),
-      body: VolumeWatcher(
-        onVolumeChangeListener: (volume) {
-          if (volume >= _previousVolume) {
-            volumeUpCount++;
-            if (volumeUpCount == 3) {
-              _handlePanicButtonPress();
-              volumeUpCount = 0;
-            }
-          }
-          _previousVolume = volume;
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF769DC9),
-                Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
-              ],
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF769DC9),
+          title: Text(
+            'Panic Button',
+            style: TextStyle(color: Colors.white), // White color for the text
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:[
-              Padding(
-                padding: EdgeInsets.only(bottom: 20), // Adjusted padding
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(150),
-                  child: Container(
-                    width: 250,
-                    height: 250,
-                    child: Image.asset(
-                      'assets/panic button.jpeg',
-                      fit: BoxFit.cover,
+          centerTitle: true,
+          leading: ResponsiveAppBarActions(),
+        ),
+        body: VolumeWatcher(
+          onVolumeChangeListener: (volume) {
+            if (volume >= _previousVolume) {
+              volumeUpCount++;
+              if (volumeUpCount == 3) {
+                _handlePanicButtonPress();
+                volumeUpCount = 0;
+              }
+            }
+            _previousVolume = volume;
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                  Color(0xFF7EA3CA),
+                  Color(0xFF769DC9),
+                  Color(0xFFCBE1EE),
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20), // Adjusted padding
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(150),
+                    child: Container(
+                      width: 250,
+                      height: 250,
+                      child: Image.asset(
+                        'assets/panic button.jpeg',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Text(
-                  'In case of emergency, press the volume button three times to send the message to your emergency contacts along with your current location.',
-                  textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  //fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                Padding(
+                  padding: EdgeInsets.only(left: 20,right: 20), // Adjusted padding
+                  child: Text(
+                    'In case of emergency, press the volume button three times to send the message to your emergency contacts along with your current location.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      //fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
 
   Future<bool> _isLocationPermissionGranted() async {
     return await Permission.location.status.isGranted;
@@ -117,7 +122,7 @@ class _PanicButtonState extends State<PanicButton> {
         print('User Email: $userEmail');
 
         var contacts =
-        await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
+            await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
 
         var locationLink =
             'https://maps.google.com/?q=${currentLocation!.latitude},${currentLocation!.longitude}';
@@ -134,8 +139,7 @@ class _PanicButtonState extends State<PanicButton> {
     }
   }
 
-  Future<void> _simulateSendMessage(
-      String phoneNumber, String message) async {
+  Future<void> _simulateSendMessage(String phoneNumber, String message) async {
     try {
       if (await _isPermissionGranted()) {
         SmsStatus result = await BackgroundSms.sendMessage(

@@ -1,4 +1,4 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
@@ -111,7 +111,7 @@ class UserManagement extends StatelessWidget {
               ),
               ListTile(
                 leading:
-                Icon(Icons.supervised_user_circle, color: Colors.white),
+                    Icon(Icons.supervised_user_circle, color: Colors.white),
                 title: Text(
                   'User Management',
                   style: TextStyle(
@@ -134,7 +134,8 @@ class UserManagement extends StatelessWidget {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                    MaterialPageRoute(
+                        builder: (context) => AnalyticsAndReports()),
                   );
                 },
               ),
@@ -169,8 +170,7 @@ class UserManagement extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => CrimeDataPage()),
+                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
                   );
                 },
               ),
@@ -180,7 +180,7 @@ class UserManagement extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
-                  await _showLogoutConfirmationDialog(context);
+                      await _showLogoutConfirmationDialog(context);
 
                   if (confirmLogout) {
                     await AuthenticationRepository.instance.logout();
@@ -243,14 +243,14 @@ class UserManagement extends StatelessWidget {
                               if (email.isNotEmpty) {
                                 try {
                                   final userSnapshot =
-                                  await getUserByUsername(email);
+                                      await getUserByUsername(email);
                                   showDialog(
                                     context: context,
                                     builder: (context) {
                                       return Dialog(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(12.0),
+                                              BorderRadius.circular(12.0),
                                         ),
                                         child: Container(
                                           width: 300,
@@ -270,13 +270,13 @@ class UserManagement extends StatelessWidget {
                                               end: Alignment.bottomCenter,
                                             ),
                                             borderRadius:
-                                            BorderRadius.circular(12.0),
+                                                BorderRadius.circular(12.0),
                                           ),
                                           padding: const EdgeInsets.all(16.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 '           User Data Found',
@@ -285,8 +285,6 @@ class UserManagement extends StatelessWidget {
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors
                                                       .white, // Add text color as needed
-
-
                                                 ),
                                               ),
                                               SizedBox(height: 16),
@@ -295,7 +293,7 @@ class UserManagement extends StatelessWidget {
                                               SizedBox(height: 16),
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   TextButton(
                                                     onPressed: () {
@@ -441,7 +439,7 @@ class UserManagement extends StatelessWidget {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream:
-                FirebaseFirestore.instance.collection('Users').snapshots(),
+                    FirebaseFirestore.instance.collection('Users').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -508,20 +506,20 @@ class UserManagement extends StatelessWidget {
                                               .pop(true); // Yes, delete
                                         },
                                         child: Text('Yes',
-                                            style: TextStyle(
-                                                color: Colors.white)),
+                                            style:
+                                                TextStyle(color: Colors.white)),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.green,
                                         ),
                                       ),
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.of(context).pop(
-                                              false); // No, don't delete
+                                          Navigator.of(context)
+                                              .pop(false); // No, don't delete
                                         },
                                         child: Text('No',
-                                            style: TextStyle(
-                                                color: Colors.white)),
+                                            style:
+                                                TextStyle(color: Colors.white)),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red,
                                         ),
@@ -532,12 +530,15 @@ class UserManagement extends StatelessWidget {
                               );
 
                               if (confirmDelete == true) {
-                                // User confirmed to delete
+                                // Delete the user from Firebase Authentication
+                                await deleteUserFromAuth(user['Email']);
                                 String userId = users[index].id;
+                                // User confirmed to delete
                                 await FirebaseFirestore.instance
                                     .collection('Users')
                                     .doc(userId)
                                     .delete();
+
                                 // Show Snackbar
                                 Get.snackbar(
                                   "Congratulations",
@@ -576,112 +577,141 @@ class UserManagement extends StatelessWidget {
     }
   }
 
+  Future<void> deleteUserFromAuth(String userEmail) async {
+    try {
+      // Check if user email is provided
+      if (userEmail.isNotEmpty) {
+        // Check if the user exists in Firestore
+        var userQuerySnapshot = await FirebaseFirestore.instance
+            .collection('Users')
+            .where('Email', isEqualTo: userEmail)
+            .get();
+
+        if (userQuerySnapshot.docs.isNotEmpty) {
+          var user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+
+            await user.delete();
+            print('User with email $userEmail deleted from Firebase Authentication');
+          } else {
+            print('No user is currently signed in.');
+          }
+        } else {
+          print('User with email $userEmail not found in Firestore.');
+        }
+      } else {
+        print('User email is empty');
+      }
+    } catch (error) {
+      print('Error deleting user from Firebase Authentication: $error');
+      // Handle error as needed
+    }
+  }
+
+
   Widget UserDataDisplay(
       {required DocumentSnapshot<Map<String, dynamic>> userSnapshot}) {
     final userData = userSnapshot.data();
 
     return userData != null
         ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Email: ${userData['Email']}',
-          style: TextStyle(
-            color
-
-                : Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 2,
-        ),
-        Text(
-          'First Name: ${userData['FirstName']}',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 2,
-        ),
-        Text(
-          'Last Name: ${userData['LastName']}',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 2,
-        ),
-        Text(
-          'UserName: ${userData['UserName']}',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 2,
-        ),
-        Text(
-          'Contact No: ${userData['ContactNo']}',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 2,
-        ),
-        Text(
-          'Dob: ${userData['DOB']}',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    )
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Email: ${userData['Email']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'First Name: ${userData['FirstName']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'Last Name: ${userData['LastName']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'UserName: ${userData['UserName']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'Contact No: ${userData['ContactNo']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                'Dob: ${userData['DOB']}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          )
         : Text('User data not available');
   }
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Logout Confirmation'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // No, do not logout
-              },
-              child: Text('No'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(true); // Yes, logout
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Logout Confirmation'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // No, do not logout
+                  },
+                  child: Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(true); // Yes, logout
 
-                // Perform logout
-                await AuthenticationRepository.instance.logout();
+                    // Perform logout
+                    await AuthenticationRepository.instance.logout();
 
-                // Redirect to the login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        );
-      },
-    ) ??
+                    // Redirect to the login screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text('Yes'),
+                ),
+              ],
+            );
+          },
+        ) ??
         false;
   }
-
 }

@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/screens/community-forum.dart';
 import 'package:fyp/screens/crime-registeration-form.dart';
+import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/map.dart';
+import 'package:fyp/screens/panicButton.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
@@ -1704,6 +1706,18 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
+        _buildNavBarItem("panic", Icons.emergency_outlined, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PanicButton()),
+          );
+        }),
+        _buildNavBarItem("JournyTracker", Icons.directions, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => JourneyTracker()),
+          );
+        }),
         _buildNavBarItem("Logout", Icons.logout, () async {
           bool confirmed = await showDialog(
             context: context,

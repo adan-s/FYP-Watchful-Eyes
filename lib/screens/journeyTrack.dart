@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../authentication/EmergencycontactsRepo.dart';
 import '../authentication/authentication_repo.dart';
+import 'blogs.dart';
 
 class JourneyTracker extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _JourneyTrackerState extends State<JourneyTracker> {
 
           // Get emergency contacts
           var contacts =
-          await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
+              await EmergencycontactsRepo().getEmergencyContacts(userEmail!);
 
           // Check if current location is available
           if (currentLocation != null) {
@@ -194,58 +195,45 @@ class _JourneyTrackerState extends State<JourneyTracker> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF769DC9),
-      appBar: AppBar(
-        title: Text(
-          'Journey Tracker',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: Color(0xFF769DC9),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child : ClipOval(
-              child: Image.asset(
-                'assets/safety.jpg',
-                width: 250,
-                height: 250,
-              ),
-              ),
-            ),
-            SizedBox(height: 40),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Container(
-                width: 300,
-                padding:
-                EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.white,
-                ),
-                child: TextFormField(
-                  readOnly: true,
-                  controller: TextEditingController(text: selectedReason),
-                  decoration: InputDecoration(
-                    hintText: 'Reason',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 16, right: 8), // Adjust left padding as needed
-                      child: Icon(Icons.info_outline, color: Colors.grey),
+        appBar: AppBar(
+          title: Text(
+            'Journey Tracker',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Color(0xFF769DC9),
+          elevation: 0,
+          centerTitle: true,
+          leading: ResponsiveAppBarActions(),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/safety.jpg',
+                      width: 250,
+                      height: 250,
                     ),
                   ),
-                  onTap: () {
+                ),
+                SizedBox(height: 60),
+                ElevatedButton(
+                  onPressed: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                          backgroundColor: Colors.white,
                           title: Text('Select Reason'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -271,73 +259,97 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                       }
                     });
                   },
-                ),
-              ),
-            ),
-            SizedBox(height: 40),
-            Padding(
-              padding: EdgeInsets.only(left: 20.5),
-              child: Container(
-                width: 300,
-                padding:
-                EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.white,
-                ),
-                child: GestureDetector(
-                  onTap: _showCustomAlarmDialog,
-                  child: Row(
-                    children: [
-                      Padding(padding: const EdgeInsets.only(left: 8,right: 12),
-                      child: Icon(Icons.alarm,color: Colors.grey,),
-                      ),
-                      Text('Set Alarm',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),)
-                    ],
-                  )
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-            child: Text(
-              'Remaining Time: ${_formatDuration(remainingTime)}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16), // Adjust the padding as needed
-                child: ElevatedButton(
-                  onPressed: _stopAlarm,
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 2), // Adjust the vertical padding as needed
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: Colors.grey),
+                    ),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.alarm_off, color: Colors.grey), // Icon on the left side
-                      SizedBox(width: 4), // Adjust the width as needed
+                      Padding(
+                        padding: EdgeInsets.only(left: 16, right: 8),
+                        child: Icon(Icons.info_outline, color: Colors.grey),
+                      ),
                       Text(
-                        'Stop Alarm',
-                        style: TextStyle(color: Colors.black),
+                        'Select Reason',
+                        style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
-              ),
+                SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: _showCustomAlarmDialog,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: Colors.grey),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 16, right: 8),
+                        child: Icon(
+                          Icons.alarm,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        'Set Alarm',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    'Remaining Time: ${_formatDuration(remainingTime)}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 40),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    // Adjust the padding as needed
+                    child: ElevatedButton(
+                      onPressed: _stopAlarm,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.alarm_off, color: Colors.grey),
+                          // Icon on the left side
+                          SizedBox(width: 4),
+                          // Adjust the width as needed
+                          Text(
+                            'Stop Alarm',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-
-
-          ],
+          ),
         ),
+
       ),
     );
   }
@@ -380,7 +392,7 @@ class _JourneyTrackerState extends State<JourneyTracker> {
       },
       child: Text(
         reason,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.black),
       ),
     );
   }
