@@ -4,13 +4,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fyp/screens/blogs.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fyp/authentication/controllers/profile_controller.dart';
 import 'package:fyp/authentication/models/user_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
-import 'map.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key}) : super(key: key);
@@ -68,13 +67,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
           title: const Text(
             'User Profile',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontFamily: 'outfit',
+            ),
           ),
-          centerTitle: true,
-          leading: ResponsiveAppBarActions(),
+          centerTitle: kIsWeb ? null : true,
+          leading: kIsWeb ? null : ResponsiveAppBarActions(),
+          actions: kIsWeb ? [ResponsiveAppBarActions()] : null,
           iconTheme: IconThemeData(color: Colors.white),
         ),
-
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

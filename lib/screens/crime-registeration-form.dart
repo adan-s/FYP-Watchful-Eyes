@@ -147,10 +147,16 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
           ),
           title: const Text(
             'Crime Registration',
-            style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontFamily: 'outfit',
+            ),
           ),
-          centerTitle: true,
-          leading: ResponsiveAppBarActions(),
+          centerTitle: kIsWeb ? null : true,
+          leading: kIsWeb ? null : ResponsiveAppBarActions(),
+          actions: kIsWeb ? [ResponsiveAppBarActions()] : null,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Container(
@@ -701,6 +707,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
   }
 }
 
+
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -720,13 +727,14 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
-        if (!kIsWeb) // Check if the app is not running on the web
+        if (!kIsWeb)
           _buildNavBarItem("Emergency Contact", Icons.phone, () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddContact()),
             );
           }),
+        if (!kIsWeb)
         _buildNavBarItem("Map", Icons.map, () {
           Navigator.push(
             context,
@@ -739,19 +747,34 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registeration", Icons.report, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const CrimeRegistrationForm()),
-          );
-        }),
+        if (!kIsWeb)
+          _buildNavBarItem("Crime Registeration", Icons.report, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CrimeRegistrationForm()),
+            );
+          }),
         _buildNavBarItem("Blogs", Icons.newspaper, () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
+        if (!kIsWeb)
+          _buildNavBarItem("panic", Icons.emergency_outlined, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PanicButton()),
+            );
+          }),
+        if (!kIsWeb)
+          _buildNavBarItem("JournyTracker", Icons.directions, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => JourneyTracker()),
+            );
+          }),
         _buildIconButton(
           icon: Icons.person,
           onPressed: () {
@@ -761,18 +784,6 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
-        _buildNavBarItem("panic", Icons.emergency_outlined, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PanicButton()),
-          );
-        }),
-        _buildNavBarItem("JournyTracker", Icons.directions, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => JourneyTracker()),
-          );
-        }),
         _buildNavBarItem("Logout", Icons.logout, () async {
           bool confirmed = await showDialog(
             context: context,
@@ -831,27 +842,27 @@ class ResponsiveAppBarActions extends StatelessWidget {
   Widget _buildNavBarItem(String title, IconData icon, VoidCallback onPressed) {
     return kIsWeb
         ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-            tooltip: title,
-          )
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+      tooltip: title,
+    )
         : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(icon, color: Color(0xFF769DC9)),
-                onPressed: onPressed,
-                tooltip: title,
-              ),
-              GestureDetector(
-                onTap: onPressed,
-                child: Text(
-                  title,
-                  style: TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ),
-            ],
-          );
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(icon, color: Color(0xFF769DC9)),
+          onPressed: onPressed,
+          tooltip: title,
+        ),
+        GestureDetector(
+          onTap: onPressed,
+          child: Text(
+            title,
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildIconButton({
@@ -860,26 +871,26 @@ class ResponsiveAppBarActions extends StatelessWidget {
   }) {
     return kIsWeb
         ? IconButton(
-            icon: Icon(icon, color: Colors.white),
-            onPressed: onPressed,
-          )
+      icon: Icon(icon, color: Colors.white),
+      onPressed: onPressed,
+    )
         : InkWell(
-            onTap: onPressed,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(icon, color: Color(0xFF769DC9)),
-                  onPressed: null, // Disable IconButton onPressed
-                  tooltip: "User Profile",
-                ),
-                Text(
-                  "User Profile",
-                  style: TextStyle(color: Color(0xFF769DC9)),
-                ),
-              ],
-            ),
-          );
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(icon, color: Color(0xFF769DC9)),
+            onPressed: null, // Disable IconButton onPressed
+            tooltip: "User Profile",
+          ),
+          Text(
+            "User Profile",
+            style: TextStyle(color: Color(0xFF769DC9)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

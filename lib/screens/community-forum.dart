@@ -47,11 +47,17 @@ class CommunityForumPage extends StatelessWidget {
             ),
             title: Text(
               'Community Forum',
-              style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: 'outfit',
+              ),
             ),
-            centerTitle: true,
+            centerTitle: kIsWeb ? null : true,
             iconTheme: IconThemeData(color: Colors.white),
-            leading: ResponsiveAppBarActions(),
+            leading: kIsWeb ? null : ResponsiveAppBarActions(),
+            actions: kIsWeb ? [ResponsiveAppBarActions()] : null,
           ),
           body: Container(
             decoration: BoxDecoration(
@@ -449,38 +455,54 @@ class ResponsiveAppBarActions extends StatelessWidget {
                   builder: (context) => const CommunityForumPage()),
             );
           }),
-        if (!kIsWeb) // Check if the app is not running on the web
+        if (!kIsWeb)
           _buildNavBarItem("Emergency Contact", Icons.phone, () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddContact()),
             );
           }),
-        _buildNavBarItem("Map", Icons.map, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MapPage()),
-          );
-        }),
+        if (!kIsWeb)
+          _buildNavBarItem("Map", Icons.map, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapPage()),
+            );
+          }),
         _buildNavBarItem("Safety Directory", Icons.book, () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const SafetyDirectory()),
           );
         }),
-        _buildNavBarItem("Crime Registeration", Icons.report, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const CrimeRegistrationForm()),
-          );
-        }),
+        if (!kIsWeb)
+          _buildNavBarItem("Crime Registeration", Icons.report, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CrimeRegistrationForm()),
+            );
+          }),
         _buildNavBarItem("Blogs", Icons.newspaper, () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
+        if (!kIsWeb)
+          _buildNavBarItem("panic", Icons.emergency_outlined, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PanicButton()),
+            );
+          }),
+        if (!kIsWeb)
+          _buildNavBarItem("JournyTracker", Icons.directions, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => JourneyTracker()),
+            );
+          }),
         _buildIconButton(
           icon: Icons.person,
           onPressed: () {
@@ -490,18 +512,6 @@ class ResponsiveAppBarActions extends StatelessWidget {
             );
           },
         ),
-        _buildNavBarItem("panic", Icons.emergency_outlined, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PanicButton()),
-          );
-        }),
-        _buildNavBarItem("JournyTracker", Icons.directions, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => JourneyTracker()),
-          );
-        }),
         _buildNavBarItem("Logout", Icons.logout, () async {
           bool confirmed = await showDialog(
             context: context,
