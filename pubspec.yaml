@@ -81,7 +81,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   twilio_flutter: ^0.0.9
   volume_watcher: ^2.0.1
-  firebase: ^9.0.0
+
   android_physical_buttons: ^0.1.0
 
 dev_dependencies:
@@ -161,6 +161,7 @@ flutter:
     - assets/forget1.jpg
     - assets/forget2.jpg
     - assets/safety.jpg
+    - assets/panic button.jpeg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

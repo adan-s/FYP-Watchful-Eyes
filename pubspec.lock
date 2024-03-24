@@ -808,6 +808,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  hardware_buttons_find_flutter:
+    dependency: "direct main"
+    description:
+      name: hardware_buttons_find_flutter
+      sha256: e8ac72d7ee4bd21246e60640229137b940b90762c67233afeb606d3747902ba7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   hive:
     dependency: transitive
     description:

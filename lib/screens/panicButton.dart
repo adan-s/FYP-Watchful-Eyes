@@ -16,32 +16,81 @@ class PanicButton extends StatefulWidget {
 class _PanicButtonState extends State<PanicButton> {
   LocationData? currentLocation;
   int volumeUpCount = 0;
+  double _previousVolume = 0.0;
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Panic Button'),
+        backgroundColor: Color(0xFF769DC9),
+        title: Text(
+          'Panic Button',
+          style: TextStyle(color: Colors.white), // White color for the text
+        ),
+        centerTitle: true,
       ),
       body: VolumeWatcher(
         onVolumeChangeListener: (volume) {
-          if (volume >= 1 || volume == 0 ) { // Volume up button pressed
+          if (volume >= _previousVolume) {
             volumeUpCount++;
             if (volumeUpCount == 3) {
               _handlePanicButtonPress();
-              volumeUpCount = 0; // Reset volume up count
+              volumeUpCount = 0;
             }
           }
+          _previousVolume = volume;
         },
-        child: Center(
-          child: Text(
-            'Press Volume Up three times to trigger panic button.',
-            textAlign: TextAlign.center,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF769DC9),
+                Color(0xFF769DC9),
+                Color(0xFF7EA3CA),
+                Color(0xFF769DC9),
+                Color(0xFFCBE1EE),
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Padding(
+                padding: EdgeInsets.only(bottom: 20), // Adjusted padding
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: Container(
+                    width: 250,
+                    height: 250,
+                    child: Image.asset(
+                      'assets/panic button.jpeg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Text(
+                  'In case of emergency, press the volume button three times to send the message to your emergency contacts along with your current location.',
+                  textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  //fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+
+            ],
           ),
         ),
       ),
     );
   }
+
 
   Future<bool> _isLocationPermissionGranted() async {
     return await Permission.location.status.isGranted;
