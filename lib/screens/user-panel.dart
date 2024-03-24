@@ -13,6 +13,7 @@ import 'package:fyp/screens/safety-directory.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shake/shake.dart';
+import 'package:volume_watcher/volume_watcher.dart';
 import '../authentication/EmergencycontactsRepo.dart';
 import '../authentication/authentication_repo.dart';
 import 'blogs.dart';
@@ -35,6 +36,8 @@ class _UserPanelState extends State<UserPanel>
   late Animation<double> _fadeAnimation;
   LocationData? currentLocation;
   late ShakeDetector detector;
+  int volumeUpCount = 0;
+  double _previousVolume = 0.0;
 
   @override
   void initState() {
@@ -193,7 +196,20 @@ class _UserPanelState extends State<UserPanel>
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),
-        body: SingleChildScrollView(
+
+
+        body: VolumeWatcher(
+          onVolumeChangeListener: (volume) {
+            if (volume > _previousVolume) { // Volume increased (volume up button pressed)
+              volumeUpCount++;
+              if (volumeUpCount == 3) {
+                _handlePanicButtonPress();
+                volumeUpCount = 0; // Reset volume up count
+              }
+            }
+            _previousVolume = volume; // Update previous volume
+          },
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -496,8 +512,7 @@ class _UserPanelState extends State<UserPanel>
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
-                            ),
-                            SizedBox(height: 20),
+                            ), SizedBox(height: 20),
                           ],
                         )
                     ],
@@ -508,9 +523,35 @@ class _UserPanelState extends State<UserPanel>
           ),
         ),
       ),
+
+      ),
+
     );
+
+  }
+  Future<bool> _isLocationPermissionGranted() async {
+    return await Permission.location.status.isGranted;
+  }
+
+  void _handlePanicButtonPress() async {
+    // Check if location permission is granted
+    if (await _isLocationPermissionGranted()) {
+      try {
+        // Get the current location
+        await _getCurrentLocation();
+
+        // Send emergency message
+        await _sendEmergencyMessage();
+      } catch (e) {
+        print("Error handling panic button press: $e");
+      }
+    } else {
+      print("Location permission not granted");
+      Fluttertoast.showToast(msg: 'Location permission not granted');
+    }
   }
 }
+
 
 class ResponsiveAppBarActions extends StatelessWidget {
   @override
@@ -563,7 +604,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const BlogPage()),
           );
         }),
-        _buildNavBarItem("panic", Icons.newspaper, () {
+        _buildNavBarItem("panic", Icons.emergency_outlined, () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => PanicButton()),
