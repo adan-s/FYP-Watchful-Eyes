@@ -333,7 +333,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               child: const Text('Yes', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    Colors.green, // Choose your desired button color
+                    Colors.green,
               ),
             ),
             TextButton(
@@ -342,7 +342,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               },
               child: const Text('No', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Choose your desired button color
+                backgroundColor: Colors.red,
               ),
             ),
           ],

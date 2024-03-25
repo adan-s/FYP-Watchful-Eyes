@@ -284,12 +284,6 @@ class CrimeDataPage extends StatelessWidget {
               content: Text('Are you sure you want to logout?'),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false); // No, do not logout
-                  },
-                  child: Text('No'),
-                ),
-                TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop(true); // Yes, logout
 
@@ -302,7 +296,19 @@ class CrimeDataPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  child: Text('Yes'),
+                  child: const Text('Yes', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    Colors.green,
+                  ),
+                ),
+
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('No', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
                 ),
               ],
             );

@@ -1737,12 +1737,19 @@ class ResponsiveAppBarActions extends StatelessWidget {
                 content: Text("Are you sure you want to logout?"),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text("No"),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Yes', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      Colors.green,
+                    ),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text("Yes"),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('No', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
                   ),
                 ],
               );

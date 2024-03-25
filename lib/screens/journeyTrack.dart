@@ -4,6 +4,8 @@ import 'package:background_sms/background_sms.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -82,19 +84,43 @@ class _JourneyTrackerState extends State<JourneyTracker> {
             }
           } else {
             print('Current location is null');
-            Fluttertoast.showToast(msg: 'Failed to fetch location');
+            Get.snackbar(
+              "Error! ",
+              "Failed to fetch location.",
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              snackPosition: SnackPosition.BOTTOM,
+            );
           }
         } else {
           print('User is not authenticated');
-          Fluttertoast.showToast(msg: 'User is not authenticated');
+          Get.snackbar(
+            "Error! ",
+            "User is not authenticated.",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
       } else {
         print('SMS permission not granted');
-        Fluttertoast.showToast(msg: 'SMS permission not granted');
+        Get.snackbar(
+          "Error! ",
+          "SMS permission not granted.",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (e) {
       print('Error sending emergency message: $e');
-      Fluttertoast.showToast(msg: 'Error sending emergency message: $e');
+      Get.snackbar(
+        "Error! ",
+        "Can't send emergency message.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
@@ -111,10 +137,24 @@ class _JourneyTrackerState extends State<JourneyTracker> {
 
     if (result == SmsStatus.sent) {
       print('Message sent successfully');
-      Fluttertoast.showToast(msg: 'Message sent successfully');
+
+      Get.snackbar(
+        "Alert!",
+        "Message sent successfully.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
     } else {
       print('Failed to send message');
-      Fluttertoast.showToast(msg: 'Failed to send message');
+      Get.snackbar(
+        "Alert!",
+        "Message not sent.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
@@ -237,6 +277,7 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                           title: Text('Select Reason'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildReasonButton('Walking Alone'),
                               _buildReasonButton('Going for a Run'),
@@ -271,14 +312,14 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: 16, right: 8),
-                        child: Icon(Icons.info_outline, color: Colors.grey),
+                        child: Icon(Icons.info_outline, color: Colors.black),
                       ),
                       Text(
                         selectedReason.isEmpty
                             ? 'Select Reason'
                             : selectedReason,
                         // Display selected reason if available
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
@@ -300,13 +341,13 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                         padding: EdgeInsets.only(left: 16, right: 8),
                         child: Icon(
                           Icons.alarm,
-                          color: Colors.grey,
+                          color: Colors.black,
                         ),
                       ),
                       Text(
                         'Set Alarm',
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -335,7 +376,7 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.alarm_off, color: Colors.grey),
+                          Icon(Icons.alarm_off, color: Colors.black),
                           // Icon on the left side
                           SizedBox(width: 4),
                           // Adjust the width as needed
@@ -392,12 +433,19 @@ class _JourneyTrackerState extends State<JourneyTracker> {
       onPressed: () {
         Navigator.of(context).pop(reason);
       },
-      child: Text(
-        reason,
-        style: TextStyle(color: Colors.black),
+      child: Row(
+        children: [
+          Icon(Icons.circle_outlined, color: Colors.black, size: 16),
+          SizedBox(width: 8), // Add some space between bullet point and text
+          Text(
+            reason,
+            style: TextStyle(color: Colors.black),
+          ),
+        ],
       ),
     );
   }
+
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');

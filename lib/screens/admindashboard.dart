@@ -135,7 +135,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               if (kIsWeb)
                 ListTile(
                   leading:
-                  Icon(Icons.supervised_user_circle, color: Colors.white),
+                      Icon(Icons.supervised_user_circle, color: Colors.white),
                   title: Text(
                     'User Management',
                     style: TextStyle(
@@ -167,8 +167,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     );
                   },
                 ),
-
-              if(kIsWeb)
+              if (kIsWeb)
                 Divider(
                   color: Colors.white,
                 ),
@@ -201,8 +200,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => CrimeDataPage()),
+                      MaterialPageRoute(builder: (context) => CrimeDataPage()),
                     );
                   },
                 ),
@@ -213,7 +211,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
-                  await _showLogoutConfirmationDialog(context);
+                      await _showLogoutConfirmationDialog(context);
 
                   if (confirmLogout) {
                     await AuthenticationRepository.instance.logout();
@@ -285,7 +283,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       child: Column(
                         children: [
                           Text(
-                            (kIsWeb) ? 'Total Number of Users': 'Total Users',
+                            (kIsWeb) ? 'Total Number of Users' : 'Total Users',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -361,7 +359,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       child: Column(
                         children: [
                           Text(
-                            (kIsWeb) ?'Total Registered Cases': 'Registered Cases',
+                            (kIsWeb)
+                                ? 'Total Registered Cases'
+                                : 'Registered Cases',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -431,12 +431,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
               content: Text('Are you sure you want to logout?'),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false); // No, do not logout
-                  },
-                  child: Text('No'),
-                ),
-                TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop(true); // Yes, logout
 
@@ -449,7 +443,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  child: Text('Yes'),
+                  child:
+                  const Text('Yes', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child:
+                      const Text('No', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
                 ),
               ],
             );

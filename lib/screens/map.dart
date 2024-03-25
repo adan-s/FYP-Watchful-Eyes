@@ -925,11 +925,26 @@ class _MapPageState extends State<MapPage> {
 }
 
 Widget _buildInfoRow(IconData icon, String title, String description) {
+  Color iconColor = Colors.black;
+
+  // Change the icon color based on the description
+  if (title == 'Destination') {
+    iconColor = Colors.blue;
+  } else if (title == 'Harassment') {
+    iconColor = Colors.red;
+  } else if (title == 'Accident') {
+    iconColor = Colors.red;
+  } else if (title == 'Domestic Abuse') {
+    iconColor = Colors.pink;
+  } else if (title == 'Other Crimes') {
+    iconColor = Colors.yellow;
+  }
+
   return Row(
     children: [
       Icon(
         icon,
-        color: Colors.black,
+        color: iconColor,
       ),
       SizedBox(width: 8),
       Column(
@@ -1031,12 +1046,19 @@ class ResponsiveAppBarActions extends StatelessWidget {
                 content: Text("Are you sure you want to logout?"),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text("No"),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Yes', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      Colors.green,
+                    ),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text("Yes"),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('No', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
                   ),
                 ],
               );
