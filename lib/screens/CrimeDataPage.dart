@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
@@ -97,8 +98,7 @@ class CrimeDataPage extends StatelessWidget {
                 ),
               ),
               ListTile(
-                leading:
-                Icon(Icons.dashboard, color: Colors.white),
+                leading: Icon(Icons.dashboard, color: Colors.white),
                 title: Text(
                   'Dashboard',
                   style: TextStyle(
@@ -107,82 +107,95 @@ class CrimeDataPage extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading:
-                Icon(Icons.supervised_user_circle, color: Colors.white),
-                title: Text(
-                  'User Management',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context); // Close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UserManagement()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.analytics, color: Colors.white),
-                title: Text(
-                  'Analytics and Reports',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AnalyticsAndReports()),
+                    MaterialPageRoute(builder: (context) => AdminDashboard()),
                   );
                 },
               ),
               Divider(
                 color: Colors.white,
               ),
-              ListTile(
-                leading: Icon(Icons.check, color: Colors.white),
-                title: Text(
-                  'Community Forum Posts',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading:
+                      Icon(Icons.supervised_user_circle, color: Colors.white),
+                  title: Text(
+                    'User Management',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserManagement()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommunityForumPostsAdmin()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.warning, color: Colors.white),
-                title: Text(
-                  'Registered Complaints',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.analytics, color: Colors.white),
+                  title: Text(
+                    'Analytics and Reports',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AnalyticsAndReports()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Colors.white,
-              ),
+              if (kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.check, color: Colors.white),
+                  title: Text(
+                    'Community Forum Posts',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CommunityForumPostsAdmin()),
+                    );
+                  },
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.warning, color: Colors.white),
+                  title: Text(
+                    'Registered Complaints',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CrimeDataPage()),
+                    );
+                  },
+                ),
+              if (!kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
-                  await _showLogoutConfirmationDialog(context);
+                      await _showLogoutConfirmationDialog(context);
 
                   if (confirmLogout) {
                     await AuthenticationRepository.instance.logout();
@@ -241,7 +254,10 @@ class CrimeDataPage extends StatelessWidget {
               itemCount: crimeDataList.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> crimeData = crimeDataList[index];
-                return CrimeDataCard(crimeData: crimeData, userEmail: '',);
+                return CrimeDataCard(
+                  crimeData: crimeData,
+                  userEmail: '',
+                );
               },
             );
           },
@@ -252,44 +268,46 @@ class CrimeDataPage extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> fetchCrimeData() async {
     QuerySnapshot snapshot =
-    await FirebaseFirestore.instance.collection('crimeData').get();
+        await FirebaseFirestore.instance.collection('crimeData').get();
 
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Logout Confirmation'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // No, do not logout
-              },
-              child: Text('No'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(true); // Yes, logout
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Logout Confirmation'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // No, do not logout
+                  },
+                  child: Text('No'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(true); // Yes, logout
 
-                // Perform logout
-                await AuthenticationRepository.instance.logout();
+                    // Perform logout
+                    await AuthenticationRepository.instance.logout();
 
-                // Redirect to the login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        );
-      },
-    ) ??
+                    // Redirect to the login screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text('Yes'),
+                ),
+              ],
+            );
+          },
+        ) ??
         false;
   }
 }
@@ -298,18 +316,29 @@ class CrimeDataCard extends StatelessWidget {
   final Map<String, dynamic> crimeData;
   final String userEmail;
 
-  const CrimeDataCard({Key? key, required this.crimeData, required this.userEmail}) : super(key: key);
+  const CrimeDataCard(
+      {Key? key, required this.crimeData, required this.userEmail})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        elevation: 5.0,
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ListTile(
-            title: Text('Full Name: ${crimeData['fullName']}'),
-            subtitle: Text('Crime Type: ${crimeData['crimeType']}'),
+            title: Text(
+              'Full Name: ${crimeData['fullName']}',
+              style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+            ),
+            subtitle: Text(
+              'Crime Type: ${crimeData['crimeType']}',
+              style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+            ),
             onTap: () {
               Navigator.push(
                 context,
@@ -321,18 +350,48 @@ class CrimeDataCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GestureDetector(
-              onTap: () => _showStatusUpdateDialog(context),
-              child: Text(
-                'Update Status',
-                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => _showStatusUpdateDialog(context),
+                  child: Container(
+                    color: Colors.blue,
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Update Status',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CrimeDetailPage(crimeData: crimeData),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    color: Colors.green,
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Show Details',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+
           SizedBox(height: 8),
-        ],
-      ),
-    );
+        ]));
   }
 
   void _showStatusUpdateDialog(BuildContext context) {
@@ -383,13 +442,16 @@ class CrimeDataCard extends StatelessWidget {
   }
 
   void _sendWhatsAppMessage(String status) async {
-    String phoneNumber = crimeData['phoneNumber']; // Assuming you have 'phoneNumber' in crimeData
+    String phoneNumber = crimeData[
+        'phoneNumber']; // Assuming you have 'phoneNumber' in crimeData
 
     if (phoneNumber.isNotEmpty) {
-      String formattedPhoneNumber = '+92${phoneNumber.substring(1)}'; // Remove the first zero and add +92
+      String formattedPhoneNumber =
+          '+92${phoneNumber.substring(1)}'; // Remove the first zero and add +92
       String message = _constructMessage(status);
       String encodedMessage = Uri.encodeComponent(message);
-      String url = 'whatsapp://send?phone=$formattedPhoneNumber&text=$encodedMessage';
+      String url =
+          'whatsapp://send?phone=$formattedPhoneNumber&text=$encodedMessage';
 
       if (await canLaunch(url)) {
         await launch(url);

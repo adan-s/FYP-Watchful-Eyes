@@ -117,6 +117,10 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     );
                   },
                 ),
+                Divider(
+                  color: Colors.white,
+                ),
+                if (kIsWeb)
                 ListTile(
                   leading:
                       Icon(Icons.supervised_user_circle, color: Colors.white),
@@ -134,55 +138,62 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     );
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.analytics, color: Colors.white),
-                  title: Text(
-                    'Analytics and Reports',
-                    style: TextStyle(
-                      color: Colors.white,
+                if (kIsWeb)
+                  ListTile(
+                    leading: Icon(Icons.analytics, color: Colors.white),
+                    title: Text(
+                      'Analytics and Reports',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AnalyticsAndReports()),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AnalyticsAndReports()),
-                    );
-                  },
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
-                ListTile(
-                  leading: Icon(Icons.check, color: Colors.white),
-                  title: Text(
-                    'Community Forum Posts',
-                    style: TextStyle(
-                      color: Colors.white,
+
+                  if(kIsWeb)
+                  Divider(
+                    color: Colors.white,
+                  ),
+                if (!kIsWeb)
+                  ListTile(
+                    leading: Icon(Icons.check, color: Colors.white),
+                    title: Text(
+                      'Community Forum Posts',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.warning, color: Colors.white),
-                  title: Text(
-                    'Registered Complaints',
-                    style: TextStyle(
-                      color: Colors.white,
+                if (!kIsWeb)
+                  ListTile(
+                    leading: Icon(Icons.warning, color: Colors.white),
+                    title: Text(
+                      'Registered Complaints',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CrimeDataPage()),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CrimeDataPage()),
-                    );
-                  },
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
+                if (!kIsWeb)
+                  Divider(
+                    color: Colors.white,
+                  ),
                 GestureDetector(
                   onTap: () async {
                     bool confirmLogout =

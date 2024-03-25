@@ -274,7 +274,10 @@ class _JourneyTrackerState extends State<JourneyTracker> {
                         child: Icon(Icons.info_outline, color: Colors.grey),
                       ),
                       Text(
-                        'Select Reason',
+                        selectedReason.isEmpty
+                            ? 'Select Reason'
+                            : selectedReason,
+                        // Display selected reason if available
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -349,7 +352,6 @@ class _JourneyTrackerState extends State<JourneyTracker> {
             ),
           ),
         ),
-
       ),
     );
   }

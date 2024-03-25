@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -309,77 +310,87 @@ class _AnalyticsAndReportsState extends State<AnalyticsAndReports> {
                   );
                 },
               ),
-              ListTile(
-                leading:
-                    Icon(Icons.supervised_user_circle, color: Colors.white),
-                title: Text(
-                  'User Management',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => UserManagement()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.analytics, color: Colors.white),
-                title: Text(
-                  'Analytics and Reports',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
               Divider(
                 color: Colors.white,
               ),
-              ListTile(
-                leading: Icon(Icons.check, color: Colors.white),
-                title: Text(
-                  'Community Forum Posts',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading:
+                  Icon(Icons.supervised_user_circle, color: Colors.white),
+                  title: Text(
+                    'User Management',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserManagement()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CommunityForumPostsAdmin()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.warning, color: Colors.white),
-                title: Text(
-                  'Registered Complaints',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.analytics, color: Colors.white),
+                  title: Text(
+                    'Analytics and Reports',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AnalyticsAndReports()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Colors.white,
-              ),
+
+              if(kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.check, color: Colors.white),
+                  title: Text(
+                    'Community Forum Posts',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.warning, color: Colors.white),
+                  title: Text(
+                    'Registered Complaints',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CrimeDataPage()),
+                    );
+                  },
+                ),
+              if (!kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
-                      await _showLogoutConfirmationDialog(context);
+                  await _showLogoutConfirmationDialog(context);
 
                   if (confirmLogout) {
                     await AuthenticationRepository.instance.logout();

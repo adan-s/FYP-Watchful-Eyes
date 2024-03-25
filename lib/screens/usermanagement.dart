@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/admindashboard.dart';
@@ -109,74 +110,81 @@ class UserManagement extends StatelessWidget {
                   );
                 },
               ),
-              ListTile(
-                leading:
-                    Icon(Icons.supervised_user_circle, color: Colors.white),
-                title: Text(
-                  'User Management',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.analytics, color: Colors.white),
-                title: Text(
-                  'Analytics and Reports',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AnalyticsAndReports()),
-                  );
-                },
-              ),
               Divider(
                 color: Colors.white,
               ),
-              ListTile(
-                leading: Icon(Icons.check, color: Colors.white),
-                title: Text(
-                  'Community Forum Posts',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading:
+                      Icon(Icons.supervised_user_circle, color: Colors.white),
+                  title: Text(
+                    'User Management',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserManagement()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CommunityForumPostsAdmin()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.warning, color: Colors.white),
-                title: Text(
-                  'Registered Complaints',
-                  style: TextStyle(
-                    color: Colors.white,
+              if (kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.analytics, color: Colors.white),
+                  title: Text(
+                    'Analytics and Reports',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AnalyticsAndReports()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CrimeDataPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Colors.white,
-              ),
+              if (kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.check, color: Colors.white),
+                  title: Text(
+                    'Community Forum Posts',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              if (!kIsWeb)
+                ListTile(
+                  leading: Icon(Icons.warning, color: Colors.white),
+                  title: Text(
+                    'Registered Complaints',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CrimeDataPage()),
+                    );
+                  },
+                ),
+              if (!kIsWeb)
+                Divider(
+                  color: Colors.white,
+                ),
               GestureDetector(
                 onTap: () async {
                   bool confirmLogout =
@@ -590,9 +598,9 @@ class UserManagement extends StatelessWidget {
         if (userQuerySnapshot.docs.isNotEmpty) {
           var user = FirebaseAuth.instance.currentUser;
           if (user != null) {
-
             await user.delete();
-            print('User with email $userEmail deleted from Firebase Authentication');
+            print(
+                'User with email $userEmail deleted from Firebase Authentication');
           } else {
             print('No user is currently signed in.');
           }
@@ -607,7 +615,6 @@ class UserManagement extends StatelessWidget {
       // Handle error as needed
     }
   }
-
 
   Widget UserDataDisplay(
       {required DocumentSnapshot<Map<String, dynamic>> userSnapshot}) {
