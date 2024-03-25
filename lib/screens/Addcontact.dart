@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp/authentication/EmergencycontactsRepo.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../authentication/models/EmergencyContact.dart';
 import 'EmergencyContact.dart';
 import 'community-forum.dart';
@@ -20,7 +23,7 @@ class AddContact extends StatelessWidget {
         builder: (context) => AlertDialog(
           title: Text('Invalid Phone Number'),
           content:
-              Text('Please enter a valid phone number format: +923XXXXXXXXX'),
+          Text('Please enter a valid phone number format: +923XXXXXXXXX'),
           actions: [
             ElevatedButton(
               onPressed: () {
@@ -42,6 +45,15 @@ class AddContact extends StatelessWidget {
     await _contactRepository.addEmergencyContact(userEmail, contact);
     _nameController.clear();
     _phoneNumberController.clear();
+
+    Get.snackbar(
+      "Congratulations",
+      "Contact added successfully.",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+
   }
 
   bool _isValidPhoneNumber(String phoneNumber) {
@@ -116,22 +128,22 @@ class AddContact extends StatelessWidget {
                 SizedBox(height: 16),
                 // Centered TextField for Phone Number
                 Center(
-                  child: TextField(
+                  child:TextField(
                     controller: _phoneNumberController,
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
-                      hintText: '+923215722553',
+                      hintText: '+923000000000',
                       hintStyle: TextStyle(color: Colors.white),
                       labelStyle: TextStyle(color: Colors.white),
                       prefixIcon: Icon(
                         Icons.phone, // Use the phone icon
                         color: Colors.white,
                       ),
-                      counterText: '', // To hide the character counter
+                      counterText: '',
                     ),
+                    inputFormatters: [PhoneNumberFormatter()],
                     keyboardType: TextInputType.phone,
                     style: TextStyle(color: Colors.white),
-                    maxLength: 13, // Set the maximum length
                   ),
                 ),
                 SizedBox(height: 32),
@@ -229,3 +241,27 @@ class AddContact extends StatelessWidget {
     );
   }
 }
+
+class PhoneNumberFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // Only allow digits and limit the length to 12 characters
+    String newText = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (newText.length > 12) {
+      newText = newText.substring(0, 12);
+    }
+
+    // Format the phone number
+    StringBuffer formattedText = StringBuffer('+');
+    for (int i = 0; i < newText.length; i++) {
+      formattedText.write(newText[i]);
+    }
+
+    return TextEditingValue(
+      text: formattedText.toString(),
+      selection: TextSelection.collapsed(offset: formattedText.length),
+    );
+  }
+}
+

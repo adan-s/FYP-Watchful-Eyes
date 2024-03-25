@@ -338,6 +338,7 @@ class _PostCardState extends State<PostCard> {
         return AlertDialog(
           title: Text('Comments'),
           content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               CommentSection(comments: widget.post.comments),
               SizedBox(height: 16),
@@ -355,7 +356,10 @@ class _PostCardState extends State<PostCard> {
                 Navigator.of(context).pop();
                 setState(() {});
               },
-              child: Text('Close'),
+              child: Text('Close', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -376,7 +380,10 @@ class _PostCardState extends State<PostCard> {
                 }
                 setState(() {});
               },
-              child: Text('Add Comment'),
+              child: Text('Add Comment', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
             ),
           ],
         );
@@ -522,15 +529,16 @@ class ResponsiveAppBarActions extends StatelessWidget {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Yes', style: TextStyle(color: Colors.white)),
+                    child: const Text('Yes',
+                        style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      Colors.green,
+                      backgroundColor: Colors.green,
                     ),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: const Text('No', style: TextStyle(color: Colors.white)),
+                    child:
+                        const Text('No', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                     ),
