@@ -21,7 +21,7 @@ class ProfileController extends GetxController {
       Get.snackbar("Error", "Login to Continue",
         backgroundColor: Colors.red,
         colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,);
+        snackPosition: SnackPosition.BOTTOM,);
       throw Exception("User not logged in");
     }
   }
@@ -59,7 +59,7 @@ class ProfileController extends GetxController {
           "Email is Empty!",
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
+          snackPosition: SnackPosition.BOTTOM,
         );
 
         return;
@@ -78,7 +78,7 @@ class ProfileController extends GetxController {
           "Username is Empty!",
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
+          snackPosition: SnackPosition.BOTTOM,
         );
 
         return;
@@ -90,23 +90,12 @@ class ProfileController extends GetxController {
           "Contact No is Empty!",
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
+          snackPosition: SnackPosition.BOTTOM,
         );
 
         return;
       }
 
-      // Check if ContactNo contains only digits
-      if (!RegExp(r'^[0-9]+$').hasMatch(ContactNo)) {
-        Get.snackbar(
-          "Error",
-          "Contact No should only contain digits",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-        );
-        return;
-      }
 
       // Update the document
       await _database.collection('Users').doc(userDoc.docs.first.id).update({
@@ -120,7 +109,7 @@ class ProfileController extends GetxController {
         "Profile updated successfully",
         backgroundColor: Colors.green,
         colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
+        snackPosition: SnackPosition.BOTTOM,
       );
 
     } catch (e) {
@@ -147,7 +136,7 @@ class ProfileController extends GetxController {
           "Profile image updated successfully",
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
+          snackPosition: SnackPosition.BOTTOM,
         );
       } else {
         print('User with email $email not found');
@@ -159,7 +148,7 @@ class ProfileController extends GetxController {
         "Error updating image",
         backgroundColor: Colors.green,
         colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
+        snackPosition: SnackPosition.BOTTOM,
       );
       // Handle the error as needed
     }

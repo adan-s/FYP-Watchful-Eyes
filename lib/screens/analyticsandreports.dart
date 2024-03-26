@@ -989,14 +989,8 @@ Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
             content: Text('Are you sure you want to logout?'),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text('No'),
-              ),
-              TextButton(
                 onPressed: () async {
-                  Navigator.of(context).pop(true);
+                  Navigator.of(context).pop(true); // Yes, logout
 
                   // Perform logout
                   await AuthenticationRepository.instance.logout();
@@ -1007,7 +1001,19 @@ Future<bool> _showLogoutConfirmationDialog(BuildContext context) async {
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
-                child: Text('Yes'),
+                child:
+                const Text('Yes', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child:
+                const Text('No', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
               ),
             ],
           );

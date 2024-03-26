@@ -55,7 +55,8 @@ class NotificationService {
   void sendNotifications() async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      Set<String> recipients = {}; ;
+      Set<String> recipients = {};
+      ;
       String crimeType = "null";
       String fullName = "null";
       bool isAnonymous = false;
@@ -84,7 +85,8 @@ class NotificationService {
           print(userLocation);
 
 
-          if (crimeDataMap.containsKey('location') && crimeDataMap['location'] != null) {
+          if (crimeDataMap.containsKey('location') &&
+              crimeDataMap['location'] != null) {
             double crimeLatitude = crimeDataMap['location']['latitude'];
             double crimeLongitude = crimeDataMap['location']['longitude'];
 
@@ -117,7 +119,8 @@ class NotificationService {
           'Date: $date\n'
           'Time: $time\n'
           'Crime Type: $crimeType\n'
-          'Location: https://www.google.com/maps?q=${userLocation!.latitude},${userLocation!.longitude}\n';
+          'Location: https://www.google.com/maps?q=${userLocation!
+          .latitude},${userLocation!.longitude}\n';
 
       if (!isAnonymous) {
         message += 'Name: $fullName\n';

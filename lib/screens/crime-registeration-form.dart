@@ -48,7 +48,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
 
   void registerCrime() {
     NotificationService(userLocation: _selectedLocation).sendNotifications();
-  }
+    }
 
   Future<String> getAddressFromCoordinates(
       double latitude, double longitude) async {

@@ -121,23 +121,24 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                   color: Colors.white,
                 ),
                 if (kIsWeb)
-                ListTile(
-                  leading:
-                      Icon(Icons.supervised_user_circle, color: Colors.white),
-                  title: Text(
-                    'User Management',
-                    style: TextStyle(
-                      color: Colors.white,
+                  ListTile(
+                    leading:
+                        Icon(Icons.supervised_user_circle, color: Colors.white),
+                    title: Text(
+                      'User Management',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserManagement()),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UserManagement()),
-                    );
-                  },
-                ),
                 if (kIsWeb)
                   ListTile(
                     leading: Icon(Icons.analytics, color: Colors.white),
@@ -155,8 +156,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                       );
                     },
                   ),
-
-                  if(kIsWeb)
+                if (kIsWeb)
                   Divider(
                     color: Colors.white,
                   ),
@@ -263,7 +263,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                     );
                   },
                   child:
-                  const Text('Yes', style: TextStyle(color: Colors.white)),
+                      const Text('Yes', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),
@@ -271,7 +271,7 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
                   child:
-                  const Text('No', style: TextStyle(color: Colors.white)),
+                      const Text('No', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),
@@ -491,15 +491,21 @@ class _PostCardState extends State<PostCard> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                deletePost(postId);
               },
-              child: Text('No'),
+              child: Text('Yes', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                deletePost(postId);
               },
-              child: Text('Yes'),
+              child: Text('No', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
             ),
           ],
         );

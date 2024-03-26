@@ -1188,7 +1188,7 @@ class ResponsiveRow extends StatelessWidget {
 Future<List<Place>> _getNearbyPlaces(
     double latitude, double longitude, String type) async {
   final apiKey =
-      'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U'; // Replace with your API key
+      'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
   final radius = 2000;
 
   final url =

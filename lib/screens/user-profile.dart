@@ -263,12 +263,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   decoration: const InputDecoration(
                     labelText: 'Contact No',
                     counterText: '',
-                    hintText: '11111111111',
+                    hintText: '+9230000000000',
                     hintStyle: TextStyle(color: Colors.grey),
                     suffixIcon: Icon(Icons.phone, color: Colors.grey),
                   ),
                   keyboardType: TextInputType.phone,
-                  maxLength: 11,
+                  inputFormatters: [PhoneNumberFormatter()],
                 ),
               ],
             ),
@@ -278,7 +278,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               onPressed: () async {
                 bool confirmUpdate = await _showConfirmationDialog(context);
                 if (confirmUpdate) {
-                  if (contactNoController.text.length == 11 &&
+                  if (contactNoController.text.isNotEmpty &&
                       nameController.text.isNotEmpty) {
                     await _handleUpdateProfile(
                       nameController.text,
@@ -292,7 +292,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       "Invalid input. Please check username and contact number.",
                       backgroundColor: Colors.red,
                       colorText: Colors.white,
-                      snackPosition: SnackPosition.TOP,
+                      snackPosition: SnackPosition.BOTTOM,
                     );
                   }
                 }
@@ -421,5 +421,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
         },
       );
     }
+  }
+}
+
+
+class PhoneNumberFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // Only allow digits and limit the length to 12 characters
+    String newText = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (newText.length > 12) {
+      newText = newText.substring(0, 12);
+    }
+
+    // Format the phone number
+    StringBuffer formattedText = StringBuffer('+');
+    for (int i = 0; i < newText.length; i++) {
+      formattedText.write(newText[i]);
+    }
+
+    return TextEditingValue(
+      text: formattedText.toString(),
+      selection: TextSelection.collapsed(offset: formattedText.length),
+    );
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fyp/screens/CommunityForumPostsAdmin.dart';
 import 'package:fyp/screens/analyticsandreports.dart';
@@ -9,6 +13,7 @@ import 'package:fyp/screens/home.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/usermanagement.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../authentication/authentication_repo.dart';
 import 'Addcontact.dart';
@@ -23,7 +28,118 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  TextEditingController _searchController = TextEditingController();
+  GoogleMapController? _controller;
+  Set<Marker>? _markers;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMarkers();
+  }
+
+  Future<void> _fetchMarkers() async {
+    Set<Marker> markers = await _buildMarkers();
+    setState(() {
+      _markers = markers;
+    });
+  }
+
+  Future<Set<Marker>> _buildMarkers() async {
+    Set<Marker> markers = {};
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await FirebaseFirestore.instance.collection('crimeData').get();
+    List<Map<String, dynamic>> crimeData =
+    querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    // Map to store the count of crimes per city
+    Map<String, int> cityCrimeCount = {};
+
+    // Iterate through crime data to calculate count per city
+    for (var crime in crimeData) {
+      double lat = crime['location']['latitude'];
+      double lng = crime['location']['longitude'];
+      String? city = await _fetchCity(lat, lng);
+      if (city != null) {
+        cityCrimeCount[city] = (cityCrimeCount[city] ?? 0) + 1;
+      }
+    }
+
+    // Create markers for each city with crime count
+    for (var entry in cityCrimeCount.entries) {
+      String city = entry.key;
+      int count = entry.value;
+
+      LatLng? position = await _getCityPosition(city);
+      if (position != null) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(city),
+            position: position,
+            infoWindow: InfoWindow(
+              title: city,
+              snippet: 'Crime Count: $count',
+            ),
+          ),
+        );
+      }
+    }
+
+    return markers;
+  }
+
+  Future<LatLng?> _getCityPosition(String city) async {
+    final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
+    final url = 'https://maps.googleapis.com/maps/api/geocode/json?address=$city&key=$apiKey';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['status'] == 'OK') {
+          final results = jsonData['results'] as List<dynamic>;
+          if (results.isNotEmpty) {
+            final geometry = results[0]['geometry'];
+            final location = geometry['location'];
+            double lat = location['lat'];
+            double lng = location['lng'];
+            return LatLng(lat, lng);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching city position: $e');
+    }
+    return null;
+  }
+
+  Future<String?> _fetchCity(double lat, double lng) async {
+    final apiKey = 'AIzaSyC_U0sxKqJJesyY297XStbt8Z9mIWXbP9U';
+    final url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['status'] == 'OK') {
+          final results = jsonData['results'] as List<dynamic>;
+          if (results.isNotEmpty) {
+            final addressComponents =
+                results[0]['address_components'] as List<dynamic>;
+            for (var component in addressComponents) {
+              final types = component['types'] as List<dynamic>;
+              if (types.contains('locality')) {
+                return component['long_name'];
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching city: $e');
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -413,9 +529,21 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ],
             ),
             Expanded(
-              child: Homescreen(),
+              child: GoogleMap(
+                onMapCreated: (controller) {
+                  setState(() {
+                    _controller = controller;
+                  });
+                },
+                mapType: MapType.normal,
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(0, 0),
+                  zoom: 11.0,
+                ),
+                myLocationEnabled: true,
+                markers: _markers ?? {},
+              ),
             ),
-            // ... (existing code)
           ],
         ),
       ),
@@ -444,7 +572,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     );
                   },
                   child:
-                  const Text('Yes', style: TextStyle(color: Colors.white)),
+                      const Text('Yes', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                   ),
