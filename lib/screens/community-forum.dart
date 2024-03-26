@@ -497,7 +497,7 @@ class ResponsiveAppBarActions extends StatelessWidget {
           );
         }),
         if (!kIsWeb)
-          _buildNavBarItem("panic", Icons.emergency_outlined, () {
+          _buildNavBarItem("Panic Button", Icons.emergency_outlined, () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PanicButton()),
