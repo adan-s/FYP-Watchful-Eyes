@@ -35,7 +35,6 @@ class _UserPanelState extends State<UserPanel>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   LocationData? currentLocation;
-  late ShakeDetector detector;
   int volumeUpCount = 0;
   double _previousVolume = 0.0;
 
@@ -45,7 +44,6 @@ class _UserPanelState extends State<UserPanel>
     _getCurrentLocation();
     _getPermission();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _showEmergencyDialog();
     });
 
     _animationController = AnimationController(
@@ -58,45 +56,17 @@ class _UserPanelState extends State<UserPanel>
 
     _animationController.forward();
 
-    detector = ShakeDetector.autoStart(
-      onPhoneShake: () async {
-        // Handle phone shake
-        if (currentLocation != null) {
-          await _sendEmergencyMessage();
-        }
-      },
-      shakeThresholdGravity: 4.0,
-    );
-    detector.startListening();
+
+
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    detector.stopListening();
+
     super.dispose();
   }
 
-  void _showEmergencyDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Emergency Instructions"),
-          content: Text(
-              "In case of an emergency, shake your mobile device to send your location to your emergency contacts."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<void> _getPermission() async {
     await [Permission.sms].request();

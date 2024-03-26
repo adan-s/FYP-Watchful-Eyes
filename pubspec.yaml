@@ -83,6 +83,8 @@ dependencies:
   volume_watcher: ^2.0.1
 
   android_physical_buttons: ^0.1.0
+  gallery_saver: ^2.3.2
+  open_file: ^3.2.1
 
 
 dev_dependencies:

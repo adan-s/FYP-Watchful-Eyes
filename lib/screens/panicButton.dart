@@ -67,18 +67,22 @@ class _PanicButtonState extends State<PanicButton> {
                   padding: EdgeInsets.only(bottom: 20), // Adjusted padding
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(150),
-                    child: Container(
-                      width: 250,
-                      height: 250,
-                      child: Image.asset(
-                        'assets/panic button.jpeg',
-                        fit: BoxFit.cover,
+                    child: GestureDetector(
+                      onTap: _handlePanicButtonPress,
+                      child: Container(
+                        width: 250,
+                        height: 250,
+                        child: Image.asset(
+                          'assets/panic button.jpeg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
                 ),
+
                 Padding(
-                  padding: EdgeInsets.only(left: 20,right: 20), // Adjusted padding
+                  padding: EdgeInsets.only(left: 20,right: 20),
                   child: Text(
                     'In case of emergency, press the volume button three times to send the message to your emergency contacts along with your current location.',
                     textAlign: TextAlign.center,
