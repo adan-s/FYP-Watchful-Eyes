@@ -123,6 +123,9 @@ class _SignupState extends State<Signup> {
       controller: controller.firstName,
       maxLength: 20,
       keyboardType: TextInputType.name,
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r'[0-9]')),
+      ],
       onSaved: (value) {
         if (value != null) {
           controller.firstName.text = value;
@@ -144,19 +147,22 @@ class _SignupState extends State<Signup> {
         if (value == null || value.isEmpty) {
           return 'First Name is required';
         }
-        // Check if the input contains only alphabetical characters
-        if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-          return 'Enter a valid First Name';
+        if (!RegExp(r'^[a-zA-Z]*$').hasMatch(value)) {
+          return 'Enter a valid First Name (only letters allowed)';
         }
         return null;
       },
     );
+
 
     final lastNameField = TextFormField(
       autofocus: false,
       controller: controller.lastName,
       keyboardType: TextInputType.name,
       maxLength: 20,
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r'[0-9]')),
+      ],
       onSaved: (value) {
         if (value != null) {
           controller.lastName.text = value;
@@ -178,13 +184,14 @@ class _SignupState extends State<Signup> {
         if (value == null || value.isEmpty) {
           return 'Last Name is required';
         }
-        // Check if the input contains only alphabetical characters
+
         if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-          return 'Enter a valid Last Name';
+          return 'Enter a valid Last Name (only letters allowed)';
         }
         return null;
       },
     );
+
 
     final emailField = TextFormField(
       autofocus: false,

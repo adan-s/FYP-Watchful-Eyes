@@ -245,10 +245,12 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                       decoration: const InputDecoration(
                         labelText: 'Full Name',
                         counterText: '',
-                        labelStyle: TextStyle(
-                            fontFamily: 'outfit', color: Colors.white),
+                        labelStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
                         prefixIcon: Icon(Icons.person, color: Colors.white),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r'[0-9]')),
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Full Name is required';
@@ -262,6 +264,7 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: controller.phoneNumberController,
@@ -721,7 +724,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     try {
       final pdf = pw.Document();
 
-      // Add content to the PDF document
       pdf.addPage(
         pw.Page(
           build: (pw.Context context) {
