@@ -14,6 +14,7 @@ import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/usermanagement.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 import '../authentication/authentication_repo.dart';
 import 'Addcontact.dart';
@@ -143,7 +144,32 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    LocationData? _currentLocation;
+
+    Future<void> _fetchCurrentLocation() async {
+      Location location = Location();
+
+      try {
+        _currentLocation = await location.getLocation();
+        setState(() {
+          _controller?.moveCamera(
+            CameraUpdate.newLatLng(
+              LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),
+            ),
+          );
+        });
+      } catch (e) {
+        print('Error fetching current location: $e');
+      }
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      _fetchCurrentLocation();
+    }
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -537,7 +563,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 },
                 mapType: MapType.normal,
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(0, 0),
+                  target: _currentLocation != null
+                      ? LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!)
+                      : LatLng(0, 0),
                   zoom: 11.0,
                 ),
                 myLocationEnabled: true,
