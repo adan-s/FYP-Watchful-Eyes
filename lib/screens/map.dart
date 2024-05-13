@@ -711,9 +711,6 @@ class _MapPageState extends State<MapPage> {
                   colors: [
                     Color(0xFF769DC9),
                     Color(0xFF769DC9),
-                    Color(0xFF7EA3CA),
-                    Color(0xFF769DC9),
-                    Color(0xFFCBE1EE),
                   ],
                 ),
               ),

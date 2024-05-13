@@ -193,9 +193,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
               colors: [
                 Color(0xFF769DC9),
                 Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -210,9 +207,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     colors: [
                       Color(0xFF769DC9),
                       Color(0xFF769DC9),
-                      Color(0xFF7EA3CA),
-                      Color(0xFF769DC9),
-                      Color(0xFFCBE1EE),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -383,9 +377,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
             colors: [
               Color(0xFF769DC9),
               Color(0xFF769DC9),
-              Color(0xFF7EA3CA),
-              Color(0xFF769DC9),
-              Color(0xFFCBE1EE),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -410,11 +401,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFFCBE1EE),
                             Color(0xFF769DC9),
-                            Color(0xFF7EA3CA),
                             Color(0xFF769DC9),
-                            Color(0xFFCBE1EE),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -486,11 +474,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFFCBE1EE),
                             Color(0xFF769DC9),
-                            Color(0xFF7EA3CA),
                             Color(0xFF769DC9),
-                            Color(0xFFCBE1EE),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,

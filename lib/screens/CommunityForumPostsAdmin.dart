@@ -39,9 +39,6 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                 colors: [
                   Color(0xFF769DC9),
                   Color(0xFF769DC9),
-                  Color(0xFF7EA3CA),
-                  Color(0xFF769DC9),
-                  Color(0xFFCBE1EE),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -56,9 +53,6 @@ class CommunityForumPostsAdmin extends StatelessWidget {
                       colors: [
                         Color(0xFF769DC9),
                         Color(0xFF769DC9),
-                        Color(0xFF7EA3CA),
-                        Color(0xFF769DC9),
-                        Color(0xFFCBE1EE),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -229,9 +223,6 @@ class CommunityForumPostsAdmin extends StatelessWidget {
               colors: [
                 Color(0xFF769DC9),
                 Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
               ],
             ),
           ),

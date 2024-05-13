@@ -152,7 +152,10 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF769DC9), Color(0xFF769DC9)],
+                colors: [
+                  Color(0xFF769DC9),
+                  Color(0xFF769DC9),
+                ],
                 end: Alignment.bottomCenter,
                 begin: Alignment.topCenter,
               ),
@@ -173,9 +176,6 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
               colors: [
                 Color(0xFF769DC9),
                 Color(0xFF769DC9),
-                Color(0xFF7EA3CA),
-                Color(0xFF769DC9),
-                Color(0xFFCBE1EE),
               ],
               end: Alignment.bottomCenter,
               begin: Alignment.topCenter,
@@ -197,11 +197,8 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFFCBE1EE),
                     Color(0xFF769DC9),
-                    Color(0xFF7EA3CA),
                     Color(0xFF769DC9),
-                    Color(0xFFCBE1EE),
                   ],
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,

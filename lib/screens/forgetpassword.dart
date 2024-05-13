@@ -138,11 +138,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFF000104),
-                              Color(0xFF18293F),
-                              Color(0xFF141E2C),
-                              Color(0xFF18293F),
-                              Color(0xFF000104),
+                              Color(0xFF769DC9),
+                              Color(0xFF769DC9),
                             ],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,

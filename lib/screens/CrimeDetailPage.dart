@@ -18,7 +18,10 @@ class CrimeDetailPage extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF769DC9), Color(0xFF769DC9)],
+              colors: [
+                Color(0xFF769DC9),
+                Color(0xFF769DC9)
+              ],
             ),
           ),
         ),
@@ -38,9 +41,8 @@ class CrimeDetailPage extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFFCFCFC),
-              Color(0xFFFCFCFC),
-              Color(0xFFFCFCFC),
+              Color(0xFF769DC9),
+              Color(0xFF769DC9),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

@@ -206,9 +206,6 @@ class _UserPanelState extends State<UserPanel>
                             colors: [
                               Color(0xFF769DC9),
                               Color(0xFF769DC9),
-                              Color(0xFF7EA3CA),
-                              Color(0xFF769DC9),
-                              Color(0xFFCBE1EE),
                             ],
                           ),
                         ),
@@ -296,10 +293,7 @@ class _UserPanelState extends State<UserPanel>
                       end: Alignment.bottomCenter,
                       colors: [
                         Color(0xFF769DC9),
-                        Color(0xFF7EA3CA),
-                        Color(0xFFCBE1EE),
-                        Color(0xFFCBE1EE),
-                        Color(0xFFCBE1EE),
+                        Color(0xFF769DC9),
                       ],
                     ),
                   ),
@@ -400,11 +394,8 @@ class _UserPanelState extends State<UserPanel>
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        Color(0xFFCBE1EE),
                         Color(0xFF769DC9),
-                        Color(0xFF7EA3CA),
                         Color(0xFF769DC9),
-                        Color(0xFFCBE1EE),
                       ],
                     ),
                   ),

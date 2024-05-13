@@ -111,9 +111,6 @@ class _PostNewItemPageState extends State<PostNewItemPage> {
             colors: [
               Color(0xFF769DC9),
               Color(0xFF769DC9),
-              Color(0xFF7EA3CA),
-              Color(0xFF769DC9),
-              Color(0xFFCBE1EE),
             ],
           ),
         ),
