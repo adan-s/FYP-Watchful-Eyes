@@ -421,17 +421,17 @@ Future<String?> forgetPassword(BuildContext context) async {
               Navigator.pop(context, null);
             },
             style: TextButton.styleFrom(
-              backgroundColor: Colors.red, // Set cancel button background color
+              backgroundColor: Colors.red,
             ),
             child: Text('Cancel',
                 style: TextStyle(
-                    color: Colors.white)), // Set cancel button text color
+                    color: Colors.white)),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context, emailController.text.trim());
 
-              // Send the reset email
+
               String? email = emailController.text.trim();
               if (email != null) {
                 try {
@@ -454,11 +454,11 @@ Future<String?> forgetPassword(BuildContext context) async {
               }
             },
             style: TextButton.styleFrom(
-              backgroundColor: Colors.green, // Set OK button background color
+              backgroundColor: Colors.green,
             ),
             child: Text('OK',
                 style:
-                    TextStyle(color: Colors.white)), // Set OK button text color
+                    TextStyle(color: Colors.white)),
           ),
         ],
       );

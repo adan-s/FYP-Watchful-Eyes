@@ -1,12 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:fyp/screens/CrimeDataPage.dart';
 import 'package:fyp/screens/journeyTrack.dart';
 import 'package:fyp/screens/login_screen.dart';
+
 import 'package:fyp/screens/user-panel.dart';
 import 'package:get/get.dart';
 
+Future _firebaseBackgroundMessage(RemoteMessage message) async{
+  if (message.notification != null){
+    print("Notification  Recieve");
+  }
+}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -27,6 +34,7 @@ void main() async {
       // Handle initialization errors
       print('Error initializing Firebase: $e');
     }
+
   runApp(const MyApp());
 }
 

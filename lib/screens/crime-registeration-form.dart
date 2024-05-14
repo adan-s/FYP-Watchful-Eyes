@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,13 @@ import 'package:fyp/screens/panicButton.dart';
 import 'package:fyp/screens/safety-directory.dart';
 import 'package:fyp/screens/user-panel.dart';
 import 'package:fyp/screens/user-profile.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -79,6 +84,58 @@ class _CrimeRegistrationFormState extends State<CrimeRegistrationForm> {
     } catch (e) {
       print("Error converting coordinates to address: $e");
       return "Error fetching address";
+    }
+  }
+  double calculateDistance(GeoPoint point1, GeoPoint point2) {
+    return Geolocator.distanceBetween(
+      point1.latitude,
+      point1.longitude,
+      point2.latitude,
+      point2.longitude,
+    );
+  }
+  Future<void> sendEmailNotification(String email) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final currentUserEmail = currentUser?.email;
+
+    if (currentUserEmail != null) {
+      final smtpServer = gmail('your@gmail.com', 'your_password');
+
+      final message = Message()
+        ..from = Address(currentUserEmail, 'Your Name')
+        ..recipients.add(email)
+        ..subject = 'Crime Alert!'
+        ..text = 'A crime has been reported near your location.'
+        ..html = '<h1>Crime Alert!</h1>\n<p>A crime has been reported near your location.</p>';
+
+      try {
+        final sendReport = await send(message, smtpServer);
+        print('Email sent: $sendReport');
+      } catch (e) {
+        print('Error sending email: $e');
+      }
+    } else {
+      print('Current user email not found.');
+    }
+  }
+
+
+  Future<void> notifyUsersNearby(GeoPoint crimeLocation) async {
+    const double radius = 2000; // 2km radius
+
+    final querySnapshot = await FirebaseFirestore.instance.collection('Users').get();
+
+    for (var userDoc in querySnapshot.docs) {
+      final userLocation = userDoc['location'];
+      if (userLocation != null && userLocation is GeoPoint) {
+        final distance = calculateDistance(crimeLocation, userLocation);
+        if (distance <= radius) {
+          final email = userDoc['email'] as String?;
+          if (email != null) {
+            await sendEmailNotification(email);
+          }
+        }
+      }
     }
   }
 
@@ -1045,4 +1102,6 @@ class ResponsiveRow extends StatelessWidget {
         ),
     ]);
   }
+
 }
+

@@ -8,6 +8,21 @@ import '../authentication/authentication_repo.dart';
 import 'EmergencyContact.dart';
 import 'community-forum.dart';
 
+
+class NameInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // Only allow letters
+    String newText = newValue.text.replaceAll(RegExp(r'[^a-zA-Z\s]'), '');
+
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
+  }
+}
+
 class AddContact extends StatelessWidget {
   final EmergencycontactsRepo _contactRepository = EmergencycontactsRepo();
   final TextEditingController _nameController = TextEditingController();

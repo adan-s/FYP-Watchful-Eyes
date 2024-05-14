@@ -42,7 +42,7 @@ dependencies:
   geolocator: ^10.1.0
   firebase_auth: ^4.13.0
   cloud_firestore: ^4.13.0
-  firebase_core: ^2.22.0
+  firebase_core: ^2.27.0
   firebase_database: ^10.3.4
   get: ^4.6.1
   flutter_otp_text_field: ^1.1.1
@@ -85,11 +85,15 @@ dependencies:
   android_physical_buttons: ^0.1.0
   gallery_saver: ^2.3.2
   open_file: ^3.2.1
+  firebase_messaging: ^14.7.19
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.4.4
+  firebase_database_mocks: ^0.6.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

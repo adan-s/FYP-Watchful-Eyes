@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fyp/screens/login_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
 
 import '../authentication/authentication_repo.dart';
@@ -84,7 +85,26 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     String selectedGender = 'Female';
     final controller = Get.put(Signupcontroller());
+    LocationData? currentLocation;
     final authenticationRepository = Get.put(AuthenticationRepository());
+
+    Future<void> _getCurrentLocation() async {
+      try {
+        var location = Location();
+        LocationData userLocation = await location.getLocation();
+        setState(() {
+          currentLocation = userLocation;
+        });
+      } catch (e) {
+        print("Error getting location: $e");
+      }
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      _getCurrentLocation();
+    }
 
     final usernameField = TextFormField(
       autofocus: false,
@@ -489,6 +509,25 @@ class _SignupState extends State<Signup> {
           )
         : SizedBox.shrink();
 
+    final locationField = TextFormField(
+      autofocus: false,
+      enabled: false, // Disable editing of the location field
+      initialValue: currentLocation != null
+          ? 'Lat: ${currentLocation!.latitude}, Lng: ${currentLocation!.longitude}'
+          : 'Fetching location...',
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.location_on, color: Colors.white),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Current Location",
+        hintStyle: TextStyle(fontFamily: 'outfit', color: Colors.white),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      style: TextStyle(fontFamily: 'outfit', color: Colors.white),
+    );
+
+
     final signupButton = Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -500,35 +539,46 @@ class _SignupState extends State<Signup> {
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (controller.email.text.isNotEmpty) {
-              usermodel newUser = usermodel(
-                username: controller.username.text.trim(),
-                firstName: controller.firstName.text.trim(),
-                lastName: controller.lastName.text.trim(),
-                email: controller.email.text.trim(),
-                contactNo: controller.contactNo.text.trim(),
-                cnic: controller.cnic.text.trim(),
-                dob: controller.dob.text.trim(),
-                gender: selectedGender,
-                password: controller.password.text.trim(),
-                confirmPassword: controller.confirmPassword.text.trim(),
-                profileImage: '',
-              );
+              try {
+                // Ensure location is fetched before proceeding
+                await _getCurrentLocation();
 
-              // User is signing up with email
-              await Signupcontroller.instance.RegisterUser(
-                controller.email.text.trim(),
-                controller.password.text.trim(),
-                newUser,
-              );
-              controller.username.clear();
-              controller.firstName.clear();
-              controller.lastName.clear();
-              controller.email.clear();
-              controller.contactNo.clear();
-              controller.cnic.clear();
-              controller.dob.clear();
-              controller.password.clear();
-              controller.confirmPassword.clear();
+                usermodel newUser = usermodel(
+                  username: controller.username.text.trim(),
+                  firstName: controller.firstName.text.trim(),
+                  lastName: controller.lastName.text.trim(),
+                  email: controller.email.text.trim(),
+                  contactNo: controller.contactNo.text.trim(),
+                  cnic: controller.cnic.text.trim(),
+                  dob: controller.dob.text.trim(),
+                  gender: selectedGender,
+                  password: controller.password.text.trim(),
+                  confirmPassword: controller.confirmPassword.text.trim(),
+                  profileImage: '',
+                  latitude: currentLocation?.latitude ?? 0.0,
+                  longitude: currentLocation?.longitude ?? 0.0,
+                );
+
+                await Signupcontroller.instance.RegisterUser(
+                  controller.email.text.trim(),
+                  controller.password.text.trim(),
+                  newUser,
+                );
+
+                // Clear the controllers after successful registration
+                controller.username.clear();
+                controller.firstName.clear();
+                controller.lastName.clear();
+                controller.email.clear();
+                controller.contactNo.clear();
+                controller.cnic.clear();
+                controller.dob.clear();
+                controller.password.clear();
+                controller.confirmPassword.clear();
+              } catch (e) {
+                print("Error during registration: $e");
+                // Handle error (e.g., show a message to the user)
+              }
             }
           }
         },
@@ -551,6 +601,8 @@ class _SignupState extends State<Signup> {
         ),
       ),
     );
+
+
 
     return Scaffold(
       body: Container(

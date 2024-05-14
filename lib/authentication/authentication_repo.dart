@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fyp/authentication/models/user_model.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,27 +48,30 @@ class AuthenticationRepository extends GetxController {
     print('User details saved locally');
   }
 
-  Future<void> registerUser(String email, String password, String username) async {
+  Future<void> registerUser(String email, String password, usermodel newUser) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      // Create user with email and password
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final currentUser = FirebaseAuth.instance.currentUser;
+      final User? currentUser = userCredential.user;
 
       // Send email verification to the user
       await currentUser?.sendEmailVerification();
 
-      await FirebaseFirestore.instance.collection('Users').doc(email).set({
-        'username': username,
-        'email': email,
-      });
+      // Save user details in Firestore
+      await FirebaseFirestore.instance.collection('Users').doc(currentUser?.uid).set(newUser.toJson());
+
+      // Save user details locally
+      await saveUserDetailsLocally(currentUser!);
     } catch (e) {
       print('Registration error: $e');
       rethrow;
     }
   }
+
 
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
