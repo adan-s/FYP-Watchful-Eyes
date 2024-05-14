@@ -102,7 +102,7 @@ class AddContact extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(14.0),
                 child: Center(
                   child: Image.asset(
                     'assets/emergencycall.png',

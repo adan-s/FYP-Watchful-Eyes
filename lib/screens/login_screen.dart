@@ -114,11 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.transparent,
                 child: Container(
                   width: 400,
-                  height:250,
+                  height: 250,
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10.0), // Smaller border radius
+                    borderRadius:
+                        BorderRadius.circular(10.0), // Smaller border radius
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         "Reset Password",
-                        style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 20.0),
                       Expanded(
@@ -139,10 +143,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   String? email = await forgetPassword(context);
                                   if (email != null) {
                                     try {
-                                      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-                                      print("Password reset email sent to $email");
+                                      await FirebaseAuth.instance
+                                          .sendPasswordResetEmail(email: email);
+                                      print(
+                                          "Password reset email sent to $email");
                                     } catch (e) {
-                                      print("Error sending password reset email: $e");
+                                      print(
+                                          "Error sending password reset email: $e");
                                     }
                                   }
                                 },
@@ -155,18 +162,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.mail_outline_rounded, size: 40.0, color: Colors.white),
+                                      const Icon(Icons.mail_outline_rounded,
+                                          size: 40.0, color: Colors.white),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
-                                            style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16.0, color: Colors.white),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                                    fontSize: 16.0,
+                                                    color: Colors.white),
                                           ),
                                           Text(
                                             "Reset via Email Verification",
-                                            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 14.0, color: Colors.white),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .copyWith(
+                                                    fontSize: 14.0,
+                                                    color: Colors.white),
                                           ),
                                         ],
                                       ),
@@ -197,7 +216,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-
       ],
     );
 
@@ -231,7 +249,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Set the callback for successful login
           controller.setOnLoginSuccess(() async {
-
             Get.offAll(() => UserPanel());
           });
 
@@ -252,13 +269,13 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 fontFamily: 'outfit',
                 fontSize: 20,
-                color:  Colors.black,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Icon(
               Icons.login,
-              color:  Colors.black,
+              color: Colors.black,
             ),
           ],
         ),
@@ -266,12 +283,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     final errorText = Obx(() => Center(
-      child: Text(
-        controller.errorMessage.value,
-        style: TextStyle(color: Colors.red),
-      ),
-    ));
-
+          child: Text(
+            controller.errorMessage.value,
+            style: TextStyle(color: Colors.red),
+          ),
+        ));
 
     return Scaffold(
       body: Container(
@@ -407,7 +423,9 @@ Future<String?> forgetPassword(BuildContext context) async {
             style: TextButton.styleFrom(
               backgroundColor: Colors.red, // Set cancel button background color
             ),
-            child: Text('Cancel', style: TextStyle(color: Colors.white)), // Set cancel button text color
+            child: Text('Cancel',
+                style: TextStyle(
+                    color: Colors.white)), // Set cancel button text color
           ),
           TextButton(
             onPressed: () async {
@@ -417,7 +435,8 @@ Future<String?> forgetPassword(BuildContext context) async {
               String? email = emailController.text.trim();
               if (email != null) {
                 try {
-                  await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                  await FirebaseAuth.instance
+                      .sendPasswordResetEmail(email: email);
                   print("Password reset email sent to $email");
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -437,7 +456,9 @@ Future<String?> forgetPassword(BuildContext context) async {
             style: TextButton.styleFrom(
               backgroundColor: Colors.green, // Set OK button background color
             ),
-            child: Text('OK', style: TextStyle(color: Colors.white)), // Set OK button text color
+            child: Text('OK',
+                style:
+                    TextStyle(color: Colors.white)), // Set OK button text color
           ),
         ],
       );
