@@ -335,8 +335,7 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  Future<void> _showPath(
-      double startLatitude, double startLongitude, String destination) async {
+  Future<void> _showPath(double startLatitude, double startLongitude, String destination) async {
     try {
       List<LatLng> points =
           await _getDirections(startLatitude, startLongitude, destination);

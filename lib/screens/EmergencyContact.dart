@@ -149,6 +149,15 @@ class _EmergencyContactListScreenState
     );
   }
 
+  bool _isValidPhoneNumber(String phoneNumber) {
+    // Define the regex pattern for the required phone number format
+    RegExp regex = RegExp(r'^\+923\d{9}$');
+
+    // Check if the phone number matches the pattern
+    return regex.hasMatch(phoneNumber);
+  }
+
+
   void editEmergencyContact(EmergencyContact contact) async {
     var originalName = contact.name;
     var originalPhoneNumber = contact.phoneNumber;
@@ -183,6 +192,48 @@ class _EmergencyContactListScreenState
           actions: <Widget>[
             TextButton(
               onPressed: () async {
+                // Validate the entered name
+                if (originalName.trim().isEmpty) {
+                  // Show an error message or handle the empty name field
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Empty Name'),
+                      content: Text('Name field cannot be empty.'),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
+                // Validate the edited phone number format
+                if (!_isValidPhoneNumber(originalPhoneNumber)) {
+                  // Show an error message or handle the invalid phone number format
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Invalid Phone Number'),
+                      content: Text('Please enter a valid phone number format: +923XXXXXXXXX'),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
                 // Close the dialogue box and save changes
                 Navigator.of(context).pop(EmergencyContact(
                   name: originalName,
@@ -240,10 +291,20 @@ class _EmergencyContactListScreenState
           await _contactRepository.updateEmergencyContact(
               userEmail!, contact.name, updatedContact);
           loadEmergencyContacts();
+
+          // Show snackbar for successful edit
+          Get.snackbar(
+            "Contact Edited",
+            "Contact edited successfully",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
         }
       }
     }
   }
+
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {

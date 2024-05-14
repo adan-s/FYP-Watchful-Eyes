@@ -58,7 +58,7 @@ class AddContact extends StatelessWidget {
 
   bool _isValidPhoneNumber(String phoneNumber) {
     // Define the regex pattern for the required phone number format
-    RegExp regex = RegExp(r'^\+\d{12}$'); // + followed by 12 digits
+    RegExp regex = RegExp(r'^\+923\d{9}$');
 
     // Check if the phone number matches the pattern
     return regex.hasMatch(phoneNumber);
