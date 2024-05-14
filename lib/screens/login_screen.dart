@@ -109,22 +109,24 @@ class _LoginScreenState extends State<LoginScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
+              backgroundColor: Color(0xFF769DC9),
               builder: (context) => Material(
                 color: Colors.transparent,
                 child: Container(
                   width: 400,
+                  height:250,
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(10.0), // Smaller border radius
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Select One!",
-                        style: Theme.of(context).textTheme.headline6,
+                        "Reset Password",
+                        style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 20.0),
                       Expanded(
@@ -137,15 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   String? email = await forgetPassword(context);
                                   if (email != null) {
                                     try {
-                                      await FirebaseAuth.instance
-                                          .sendPasswordResetEmail(
-                                        email: email,
-                                      );
-                                      print(
-                                          "Password reset email sent to $email");
+                                      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                                      print("Password reset email sent to $email");
                                     } catch (e) {
-                                      print(
-                                          "Error sending password reset email: $e");
+                                      print("Error sending password reset email: $e");
                                     }
                                   }
                                 },
@@ -158,65 +155,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.mail_outline_rounded,
-                                          size: 40.0, color: Colors.white),
+                                      const Icon(Icons.mail_outline_rounded, size: 40.0, color: Colors.white),
                                       const SizedBox(width: 5.0),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Email",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6!
-                                                .copyWith(fontSize: 16.0),
+                                            style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16.0, color: Colors.white),
                                           ),
                                           Text(
                                             "Reset via Email Verification",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .copyWith(fontSize: 14.0),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.transparent,
-                                    border: Border.all(color: Colors.white),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.phone,
-                                          size: 40.0, color: Colors.white),
-                                      const SizedBox(width: 5.0),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Contact No",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6!
-                                                .copyWith(fontSize: 16.0),
-                                          ),
-                                          Text(
-                                            "Reset via Phone Verification",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .copyWith(fontSize: 14.0),
+                                            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 14.0, color: Colors.white),
                                           ),
                                         ],
                                       ),
@@ -247,6 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+
       ],
     );
 
@@ -423,7 +374,11 @@ Future<String?> forgetPassword(BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Enter your email"),
+        backgroundColor: Color(0xFF769DC9), // Set background color
+        title: Text(
+          "Enter your email",
+          style: TextStyle(color: Colors.white), // Set text color
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -439,6 +394,7 @@ Future<String?> forgetPassword(BuildContext context) async {
                 ),
                 contentPadding: EdgeInsets.all(12),
               ),
+              style: TextStyle(color: Colors.white),
             ),
             SizedBox(height: 10),
           ],
@@ -448,13 +404,40 @@ Future<String?> forgetPassword(BuildContext context) async {
             onPressed: () {
               Navigator.pop(context, null);
             },
-            child: Text('Cancel'),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red, // Set cancel button background color
+            ),
+            child: Text('Cancel', style: TextStyle(color: Colors.white)), // Set cancel button text color
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context, emailController.text.trim());
+
+              // Send the reset email
+              String? email = emailController.text.trim();
+              if (email != null) {
+                try {
+                  await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                  print("Password reset email sent to $email");
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Email sent successfully',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  print("Error sending password reset email: $e");
+                }
+              }
             },
-            child: Text('OK'),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.green, // Set OK button background color
+            ),
+            child: Text('OK', style: TextStyle(color: Colors.white)), // Set OK button text color
           ),
         ],
       );

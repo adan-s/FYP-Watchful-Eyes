@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fyp/authentication/EmergencycontactsRepo.dart';
-import 'package:fyp/authentication/authentication_repo.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import '../authentication/models/EmergencyContact.dart';
+import '../authentication/EmergencycontactsRepo.dart';
+import '../authentication/authentication_repo.dart';
 import 'EmergencyContact.dart';
 import 'community-forum.dart';
 
@@ -53,7 +52,6 @@ class AddContact extends StatelessWidget {
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
     );
-
   }
 
   bool _isValidPhoneNumber(String phoneNumber) {
@@ -83,8 +81,7 @@ class AddContact extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Color(0xFF769DC9),
-          title:
-              Text('Emergency Contact', style: TextStyle(color: Colors.white)),
+          title: Text('Emergency Contact', style: TextStyle(color: Colors.white)),
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
           leading: ResponsiveAppBarActions(),
@@ -100,138 +97,133 @@ class AddContact extends StatelessWidget {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // Center content vertically
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Centered TextField for Name
-                Center(
-                  child: TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: TextStyle(color: Colors.white),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Image.asset(
+                    'assets/emergencycall.png',
+                    height: 200, // Adjust the height as needed
+                    width: 200, // Adjust the width as needed
                   ),
                 ),
-                SizedBox(height: 16),
-                // Centered TextField for Phone Number
-                Center(
-                  child:TextField(
-                    controller: _phoneNumberController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: '+923000000000',
-                      hintStyle: TextStyle(color: Colors.white),
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(
-                        Icons.phone, // Use the phone icon
-                        color: Colors.white,
-                      ),
-                      counterText: '',
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    labelStyle: TextStyle(color: Colors.white),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.white,
                     ),
-                    inputFormatters: [PhoneNumberFormatter()],
-                    keyboardType: TextInputType.phone,
-                    style: TextStyle(color: Colors.white),
                   ),
+                  style: TextStyle(color: Colors.white),
                 ),
-                SizedBox(height: 32),
-                // Row with Add Contact and Show Contacts buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                      ),
-                      onPressed: () {
-                        if (_nameController.text.isNotEmpty &&
-                            _phoneNumberController.text.isNotEmpty) {
-                          if (userEmail != null) {
-                            _addEmergencyContact(context, userEmail);
-                          } else {
-                            // Handle the case when userEmail is null
-                          }
+              ),
+              SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _phoneNumberController,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    hintText: '+923000000000',
+                    hintStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.white),
+                    prefixIcon: Icon(
+                      Icons.phone,
+                      color: Colors.white,
+                    ),
+                    counterText: '',
+                  ),
+                  inputFormatters: [PhoneNumberFormatter()],
+                  keyboardType: TextInputType.phone,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      onPrimary: Colors.black,
+                    ),
+                    onPressed: () {
+                      if (_nameController.text.isNotEmpty &&
+                          _phoneNumberController.text.isNotEmpty) {
+                        if (userEmail != null) {
+                          _addEmergencyContact(context, userEmail);
                         } else {
-
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Incomplete Form'),
-                              content: Text(
-                                  'Please fill in both name and phone number.'),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
+                          // Handle the case when userEmail is null
                         }
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.add_call,
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Incomplete Form'),
+                            content: Text('Please fill in both name and phone number.'),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Add Contact",
-                            style: TextStyle(
-                              fontFamily: 'outfit',
-                              fontSize: 14,
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.black,
-                        ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  EmergencyContactListScreen()),
                         );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.contacts_outlined,
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add_call),
+                        Text(
+                          "Add Contact",
+                          style: TextStyle(
+                            fontFamily: 'outfit',
+                            fontSize: 14,
                           ),
-                          Text(
-                            "Show Contacts",
-                            style: TextStyle(
-                              fontFamily: 'outfit',
-                              fontSize: 14,
-                            ),
-                          ),
-
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      onPrimary: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EmergencyContactListScreen()),
+                      );
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.contacts_outlined),
+                        Text(
+                          "Show Contacts",
+                          style: TextStyle(
+                            fontFamily: 'outfit',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -261,4 +253,3 @@ class PhoneNumberFormatter extends TextInputFormatter {
     );
   }
 }
-
